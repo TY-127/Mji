@@ -20,6 +20,8 @@ M叽是一款 Android AI 角色互动应用，包含单聊、群聊、语音通�
 
 ## 构建
 
+面向普通用户的完整步骤见：[下载、编译与安装简易教程](docs/下载编译安装教程.md)。
+
 1. 安装 Android Studio、Android SDK 和 JDK 11+。
 2. 在项目根目录配置本机 `local.properties`，不要提交该文件。
 3. 运行：
