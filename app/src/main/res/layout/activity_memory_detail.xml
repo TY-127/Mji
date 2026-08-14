@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <!-- 顶部栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#1A1A1A"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:paddingEnd="16dp" />
+
+        <TextView
+            android:id="@+id/tvAiName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="的记忆"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- 新增记忆按钮 -->
+        <TextView
+            android:id="@+id/btnAddMemory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="＋"
+            android:textColor="#AAAAFF"
+            android:textSize="26sp"
+            android:paddingStart="16dp" />
+    </LinearLayout>
+
+    <!-- Tab栏（可横向滚动，支持6个tab） -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:background="#0D0D0D">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tabUserInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤 用户信息"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:background="@drawable/bg_glass_panel"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tabSharedEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎭 共同经历"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tabFuturePlan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅 未来的事"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tabMiscTreasure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✨ 零碎宝箱"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <!-- 新增：关键时刻tab（自动生成） -->
+            <TextView
+                android:id="@+id/tabKeyEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💫 关键时刻"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <!-- 新增：时间线tab（自动生成） -->
+            <TextView
+                android:id="@+id/tabTimeline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📖 时间线"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- 空状态提示 -->
+    <TextView
+        android:id="@+id/tvEmptyMemory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="32dp"
+        android:textColor="#555555"
+        android:textSize="14sp"
+        android:lineSpacingMultiplier="1.6"
+        android:visibility="gone" />
+
+    <!-- 记忆列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMemoryList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp" />
+
+</LinearLayout>

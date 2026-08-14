@@ -1,0 +1,16 @@
+[
+  {
+    "id": "guess_number",
+    "name": "猜数字",
+    "icon": "🎯",
+    "description": "猜一个1-100之间的数字，看谁先猜中",
+    "file": "games/guess_number.html"
+  },
+  {
+    "id": "truth_dare",
+    "name": "真心话大冒险",
+    "icon": "🎴",
+    "description": "抽卡回答，真心话还是大冒险？",
+    "file": "games/truth_dare.html"
+  }
+]

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>入群审核后台</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <main>
+    <section id="loginPanel" class="panel login">
+      <span class="eyebrow">观南 · 小手机</span>
+      <h1>管理员登录</h1>
+      <form id="loginForm">
+        <input id="loginEmail" type="email" placeholder="管理员邮箱" autocomplete="username" required>
+        <input id="loginPassword" type="password" placeholder="密码（至少 12 位）" autocomplete="current-password" required>
+        <button type="submit">登录</button>
+      </form>
+      <p id="loginNotice" role="alert"></p>
+    </section>
+    <div id="dashboard" class="hidden">
+    <header>
+      <div>
+        <span class="eyebrow">观南 · 小手机</span>
+        <h1>审核工作台</h1>
+        <p id="identity">正在验证管理员身份…</p>
+      </div>
+      <div><button id="refresh">刷新队列</button> <button id="logout">退出</button></div>
+    </header>
+
+    <nav aria-label="审核状态">
+      <button data-status="pending" class="active">待审核</button>
+      <button data-status="approved">已通过</button>
+      <button data-status="rejected">已拒绝</button>
+    </nav>
+
+    <p id="notice" role="status"></p>
+    <section id="queue" class="queue"></section>
+
+    <section id="adminPanel" class="panel hidden">
+      <h2>管理员账号</h2>
+      <form id="adminForm">
+        <input id="adminEmail" type="email" placeholder="审核员邮箱" required>
+        <input id="adminPassword" type="password" placeholder="密码（新增账号至少 12 位）" minlength="12" autocomplete="new-password">
+        <select id="adminRole">
+          <option value="reviewer">普通审核员</option>
+          <option value="owner">主管理员</option>
+        </select>
+        <button type="submit">添加或更新</button>
+      </form>
+      <p id="adminFormNotice" class="form-hint" role="status">新增账号必须设置至少 12 位密码；更新已有账号时可留空。</p>
+      <div id="adminList"></div>
+    </section>
+    </div>
+  </main>
+
+  <dialog id="reviewDialog">
+    <form method="dialog" class="dialog-card">
+      <button class="close" value="cancel" aria-label="关闭">×</button>
+      <h2 id="dialogTitle">审核材料</h2>
+      <img id="materialImage" alt="待审核截图">
+      <label>拒绝原因（拒绝时必填）
+        <textarea id="reason" rows="3" maxlength="300"></textarea>
+      </label>
+      <div class="actions">
+        <button id="reject" type="button" class="reject">拒绝</button>
+        <button id="approve" type="button" class="approve">通过</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

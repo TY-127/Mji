@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- 简约小屋轮廓 -->
+    <path
+        android:pathData="M8,30 L32,9 L56,30"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="5.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M14,28 L14,55 L50,55 L50,28"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="5.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- 爪印：在小尺寸下仍保持清晰 -->
+    <path
+        android:pathData="M24,45 C24,39.5 27.6,36 32,36 C36.4,36 40,39.5 40,45 C40,50 36.6,52.5 32,52.5 C27.4,52.5 24,50 24,45 Z"
+        android:fillColor="#FF000000" />
+    <path
+        android:pathData="M20,35 A3.5,4 0,1 0,27 35 A3.5,4 0,1 0,20 35"
+        android:fillColor="#FF000000" />
+    <path
+        android:pathData="M28.5,31 A3.5,4 0,1 0,35.5 31 A3.5,4 0,1 0,28.5 31"
+        android:fillColor="#FF000000" />
+    <path
+        android:pathData="M37,35 A3.5,4 0,1 0,44 35 A3.5,4 0,1 0,37 35"
+        android:fillColor="#FF000000" />
+</vector>

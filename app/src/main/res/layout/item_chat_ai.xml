@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvAiMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:background="@android:drawable/toast_frame"
+        android:backgroundTint="#E9E9EB"
+        android:padding="12dp"
+        android:text="这是AI回复的消息"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+</LinearLayout>

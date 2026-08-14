@@ -1,0 +1,23 @@
+{
+  "name": "qq-review-cloudflare",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "node --check src/index.js && node --check src/core.js && node --check public/app.js && node --check public/admin/admin.js",
+    "test": "node --test",
+    "db:local": "wrangler d1 migrations apply qq-review --local",
+    "db:remote": "wrangler d1 migrations apply qq-review --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.44.0"
+  },
+  "overrides": {
+    "sharp": "^0.35.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

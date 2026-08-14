@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="60dp"
+    android:height="60dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Remix Icon: route-line -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M4,15V8.5C4,6.0147 6.0147,4 8.5,4C10.9853,4 13,6.0147 13,8.5V15.5C13,16.8807 14.1193,18 15.5,18C16.8807,18 18,16.8807 18,15.5V8.8293C16.8348,8.4175 16,7.3062 16,6C16,4.3431 17.3431,3 19,3C20.6569,3 22,4.3431 22,6C22,7.3062 21.1652,8.4175 20,8.8293V15.5C20,17.9853 17.9853,20 15.5,20C13.0147,20 11,17.9853 11,15.5V8.5C11,7.1193 9.8807,6 8.5,6C7.1193,6 6,7.1193 6,8.5V15H9L5,20L1,15H4ZM19,7C19.5523,7 20,6.5523 20,6C20,5.4477 19.5523,5 19,5C18.4477,5 18,5.4477 18,6C18,6.5523 18.4477,7 19,7Z" />
+</vector>

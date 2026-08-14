@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>匿名信箱</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;500&display=swap');
+
+    :root {
+      --cream:  #FBECCF;
+      --forest: #7B986C;
+      --moss:   #D5D3A0;
+      --sage:   #A2B891;
+      --ivory:  #F9F1E4;
+      --dark:   #3d4a38;
+      --mid:    #5a6e54;
+      --border: rgba(123,152,108,0.22);
+      --shadow: rgba(61,74,56,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width: 100%; height: 100%;
+  font-family: 'Noto Serif SC', serif;
+  background: var(--ivory);
+  color: var(--dark);
+  overflow: hidden;
+  position: relative;
+}
+
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 55% at 5% 15%, rgba(213,211,160,0.38) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 75% at 95% 85%, rgba(162,184,145,0.30) 0%, transparent 55%);
+    }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 54px;
+      background: rgba(251,236,207,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px;
+    }
+    .nav-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 19px; color: var(--forest); letter-spacing: 3px;
+    }
+    .nav-back {
+      width: 34px; height: 34px; border: none; background: none;
+      cursor: pointer; color: var(--forest); font-size: 22px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-refresh {
+      width: 34px; height: 34px; border: none; background: none;
+      cursor: pointer; color: var(--forest); font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .5s;
+    }
+    .nav-refresh.spinning { transform: rotate(360deg); }
+
+    .tabs {
+      position: fixed; top: 54px; left: 0; right: 0; z-index: 99;
+      display: flex;
+      background: rgba(249,241,228,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      flex: 1; padding: 11px 0; border: none; background: none; cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px; color: var(--mid); position: relative; transition: color .25s;
+    }
+    .tab-btn.active { color: var(--forest); font-weight: 500; }
+    .tab-btn.active::after {
+      content: ''; position: absolute; bottom: 0; left: 22%; right: 22%;
+      height: 2px; background: var(--forest); border-radius: 2px;
+    }
+
+    .char-bar {
+      position: fixed; top: 104px; left: 0; right: 0; z-index: 98;
+      padding: 9px 14px; display: flex; gap: 9px; overflow-x: auto;
+      background: rgba(249,241,228,0.92);
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .char-bar::-webkit-scrollbar { display: none; }
+    .char-chip {
+      flex-shrink: 0; padding: 5px 13px; border-radius: 18px;
+      border: 1.5px solid var(--border); background: var(--ivory);
+      font-size: 13px; color: var(--mid); cursor: pointer;
+      transition: all .22s; white-space: nowrap;
+    }
+    .char-chip.active { background: var(--forest); color: #fff; border-color: var(--forest); }
+
+   .page { display: none; position: absolute; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box; }
+   .page.active { display: block; }
+   .page-char { top: 154px; min-height: calc(100vh - 154px); }
+   .page-user { top: 104px; min-height: calc(100vh - 104px); }
+
+    .list-wrap { padding: 14px 14px 96px; display: flex; flex-direction: column; gap: 13px; }
+
+    .letter-card {
+      background: rgba(251,236,207,0.75);
+      border: 1px solid rgba(123,152,108,0.18);
+      border-radius: 14px; padding: 15px;
+      box-shadow: 0 2px 14px var(--shadow);
+      position: relative;
+      animation: fadeUp .32s ease both;
+      user-select: none; -webkit-user-select: none;
+      transition: background .2s;
+    }
+    .letter-card.pressing { background: rgba(213,211,160,0.65); }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .card-header { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--sage); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: #fff;
+      font-family: 'Ma Shan Zheng', cursive;
+      overflow: hidden;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .anon-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--moss); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .sender-name { font-size: 13px; font-weight: 500; color: var(--forest); }
+    .send-time { font-size: 11px; color: var(--sage); margin-top: 1px; }
+    .anon-badge {
+      font-size: 10px; padding: 2px 7px; border-radius: 10px;
+      background: rgba(162,184,145,0.22); color: var(--mid);
+      border: 1px solid rgba(162,184,145,0.38);
+      white-space: nowrap;
+    }
+
+   .question-text {
+  font-size: 14px; line-height: 1.72; color: var(--dark);
+  padding: 9px 11px;
+  background: rgba(249,241,228,0.65);
+  border-left: 3px solid var(--moss);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 10px;
+  word-break: break-word;      /* ← 加这行 */
+  white-space: pre-wrap;       /* ← 加这行 */
+}
+
+.answer-text {
+  font-size: 14px; line-height: 1.75; color: var(--dark);
+  padding: 10px 12px;
+  background: rgba(123,152,108,0.09);
+  border-radius: 8px; border: 1px solid rgba(123,152,108,0.18);
+  word-break: break-word;      /* ← 加这行 */
+  white-space: pre-wrap;       /* ← 加这行 */
+}
+
+    .answer-label {
+      font-size: 11px; color: var(--sage); margin-bottom: 5px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .answer-label::before { content:'✦'; font-size:8px; color: var(--forest); }
+    .answer-text {
+      font-size: 14px; line-height: 1.75; color: var(--dark);
+      padding: 10px 12px;
+      background: rgba(123,152,108,0.09);
+      border-radius: 8px; border: 1px solid rgba(123,152,108,0.18);
+    }
+    .answer-pending {
+      font-size: 13px; color: var(--sage); font-style: italic;
+      display: flex; align-items: center; gap: 6px; padding: 4px 0;
+    }
+
+    .dots { display: inline-flex; gap: 3px; }
+    .dots span {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--sage);
+      animation: blink 1.2s infinite;
+    }
+    .dots span:nth-child(2){ animation-delay:.2s; }
+    .dots span:nth-child(3){ animation-delay:.4s; }
+    @keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+    .del-overlay {
+      position: absolute; inset: 0; border-radius: 14px;
+      background: rgba(180,80,60,0.10);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+    }
+    .del-btn-inner {
+      background: #c0705a; color: #fff;
+      padding: 8px 24px; border-radius: 10px;
+      font-size: 14px; font-family: 'Noto Serif SC', serif;
+      cursor: pointer; box-shadow: 0 2px 10px rgba(192,112,90,0.3);
+    }
+
+    .reply-area { margin-top: 10px; display: flex; gap: 8px; }
+    .reply-input {
+      flex: 1; padding: 8px 11px;
+      background: rgba(249,241,228,0.85);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px; color: var(--dark); resize: none; outline: none;
+      transition: border-color .2s;
+    }
+    .reply-input:focus { border-color: var(--forest); }
+    .reply-btn {
+      padding: 8px 13px; border-radius: 10px;
+      background: var(--forest); color: #fff;
+      border: none; cursor: pointer;
+      font-family: 'Noto Serif SC', serif; font-size: 13px;
+      transition: opacity .2s; align-self: flex-end;
+    }
+    .reply-btn:active { opacity: .8; }
+
+    .reactions { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(162,184,145,0.2); }
+    .reaction-row { display: flex; gap: 8px; align-items: flex-start; margin-top: 7px; }
+    .reaction-av {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #fff; overflow: hidden;
+      background: var(--sage);
+    }
+    .reaction-av img { width: 100%; height: 100%; object-fit: cover; }
+    .reaction-text { font-size: 12px; color: var(--mid); padding-top: 3px; line-height: 1.5; }
+
+    .ask-fab {
+      position: fixed; bottom: 26px; right: 18px; z-index: 200;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: var(--forest); border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(123,152,108,0.42);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 22px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .ask-fab:active { transform: scale(.91); }
+
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(61,74,56,0.38);
+      backdrop-filter: blur(5px);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .modal-box {
+      width: 100%; max-width: 480px;
+      background: var(--cream); border-radius: 20px 20px 0 0;
+      padding: 18px 18px 38px;
+      animation: slideUp .28s cubic-bezier(.34,1.15,.64,1);
+    }
+    @keyframes slideUp { from{transform:translateY(55px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 17px; color: var(--forest);
+      margin-bottom: 4px; text-align: center; letter-spacing: 2px;
+    }
+    .modal-to { font-size: 12px; color: var(--sage); margin-bottom: 12px; text-align: center; }
+    .modal-textarea {
+      width: 100%; height: 105px;
+      background: rgba(249,241,228,0.9);
+      border: 1.5px solid var(--border); border-radius: 11px; padding: 11px;
+      font-family: 'Noto Serif SC', serif; font-size: 14px; color: var(--dark);
+      resize: none; outline: none; transition: border-color .2s;
+    }
+    .modal-textarea:focus { border-color: var(--forest); }
+    .modal-hint { font-size: 11px; color: var(--sage); margin: 7px 0 14px; text-align: right; }
+    .modal-actions { display: flex; gap: 9px; }
+    .modal-cancel {
+      flex: 1; padding: 11px; border-radius: 11px;
+      border: 1.5px solid var(--border); background: transparent; color: var(--mid);
+      font-family: 'Noto Serif SC', serif; font-size: 14px; cursor: pointer;
+    }
+    .modal-send {
+      flex: 2; padding: 11px; border-radius: 11px;
+      background: var(--forest); color: #fff; border: none;
+      font-family: 'Noto Serif SC', serif; font-size: 14px; cursor: pointer;
+    }
+    .modal-send:active { opacity: .85; }
+
+    .empty-state {
+      text-align: center; padding: 55px 20px;
+      color: var(--sage); font-size: 14px; line-height: 2.2;
+    }
+    .empty-icon { font-size: 38px; margin-bottom: 10px; opacity: .45; }
+
+    .loading-screen {
+      position: fixed; inset: 0; z-index: 500;
+      background: var(--ivory);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+    }
+    .loading-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px; color: var(--forest); letter-spacing: 4px;
+    }
+    .loading-sub { font-size: 13px; color: var(--sage); }
+
+    * { scrollbar-width: thin; scrollbar-color: rgba(162,184,145,0.35) transparent; }
+  </style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-title">匿名信箱</div>
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div class="loading-sub">正在读取角色列表…</div>
+</div>
+
+<div class="nav">
+  <button class="nav-back" onclick="history.back()">‹</button>
+  <span class="nav-title">匿名信箱</span>
+  <button class="nav-refresh" id="refreshBtn" onclick="doRefresh()">↻</button>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-char" onclick="switchTab('char')">角色信箱</button>
+  <button class="tab-btn"        id="tab-user" onclick="switchTab('user')">我的信箱</button>
+</div>
+
+<div class="char-bar" id="charBar"></div>
+
+<div class="page page-char active" id="page-char">
+  <div class="list-wrap" id="charList"></div>
+</div>
+
+<div class="page page-user" id="page-user">
+  <div class="list-wrap" id="userList"></div>
+</div>
+
+<button class="ask-fab" id="askFab" onclick="openAskModal()">✉</button>
+
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-title">悄悄问一句</div>
+    <div class="modal-to" id="modalTo"></div>
+    <textarea class="modal-textarea" id="askInput" placeholder="你想匿名问什么……" maxlength="200"></textarea>
+    <div class="modal-hint"><span id="charCount">0</span>/200</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">算了</button>
+      <button class="modal-send"   onclick="submitQuestion()">寄出去</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════════════
+  // 全局状态
+  // ══════════════════════════════════════════════
+  let contacts  = [];
+  let apiConfig = {};
+  let currentChar = '';
+  let currentTab  = 'char';
+  const VERSION = 'v5';
+  const K_CHAR = 'mailbox_char_' + VERSION;
+  const K_USER = 'mailbox_user_' + VERSION;
+  const K_INIT = 'mailbox_init_' + VERSION;
+  let charLetters = load(K_CHAR);
+  let userLetters = load(K_USER);
+
+  function load(k){ try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return []} }
+  function save(k,d){ localStorage.setItem(k,JSON.stringify(d)); }
+  function escHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function timeStr(){
+    const d=new Date();
+    return `${d.getMonth()+1}月${d.getDate()}日 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+  function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+  const COLORS=['#7B986C','#8a7a5a','#6a7a8a','#9a7a6a','#7a8a9a','#8a6a7a','#6a8a7a'];
+  function getColor(id){
+    let h=0; for(let i=0;i<id.length;i++) h=id.charCodeAt(i)+((h<<5)-h);
+    return COLORS[Math.abs(h)%COLORS.length];
+  }
+  function avatarHtml(ch, size=36){
+    const color=getColor(ch.id), initial=(ch.name||'?')[0];
+    if(ch.avatar){
+      return `<div class="avatar" style="width:${size}px;height:${size}px"><img src="${escHtml(ch.avatar)}" onerror="this.parentNode.innerText='${escHtml(initial)}'" /></div>`;
+    }
+    return `<div class="avatar" style="width:${size}px;height:${size}px;background:${color};font-size:${Math.floor(size*0.4)}px">${escHtml(initial)}</div>`;
+  }
+  function anonAvatarHtml(size=36){
+    return `<div class="anon-avatar" style="width:${size}px;height:${size}px;font-size:${Math.floor(size*0.45)}px">✉</div>`;
+  }
+
+  // ══════════════════════════════════════════════
+  // 初始化
+  // ══════════════════════════════════════════════
+  function init(){
+
+    try {
+      if(window.Android){
+        contacts  = JSON.parse(window.Android.getContacts());
+        apiConfig = JSON.parse(window.Android.getApiConfig());
+      } else {
+        contacts  = [{id:'test1',name:'测试角色',avatar:''},{id:'test2',name:'角色B',avatar:''}];
+        apiConfig = {apiUrl:'https://api.gemai.cc/',apiKey:'test',modelName:'gemini-pro'};
+      }
+    } catch(e){ contacts=[]; apiConfig={}; }
+
+    if(!contacts.length){
+      document.getElementById('loadingScreen').innerHTML=
+        '<div class="loading-title">暂无角色</div><div class="loading-sub">请先在 Chat 里添加角色</div>';
+      return;
+    }
+
+    currentChar = contacts[0].id;
+    document.getElementById('loadingScreen').style.display='none';
+
+    // 首次初始化标记
+    // 不再清空已有数据，只在完全没有数据时才初始化
+if(!charLetters.length && !userLetters.length){
+    localStorage.setItem(K_INIT, '1');
+}
+
+
+    ensureInitialLetters();
+    ensureUserLetters();
+    renderCharBar();
+    renderCharList();
+    renderUserList();
+
+    document.getElementById('askInput').addEventListener('input',function(){
+      document.getElementById('charCount').textContent=this.value.length;
+    });
+  }
+
+  // ══════════════════════════════════════════════
+  // 生成初始信件（错开时间，避免并发）
+  // ══════════════════════════════════════════════
+  async function ensureInitialLetters(){
+    for(const ch of contacts){
+      const have = charLetters.filter(l=>l.cid===ch.id).length;
+      if(have < 3){
+        for(let i=have; i<3; i++){
+          const letter={
+            id: Date.now()+Math.random(),
+            cid: ch.id, q:null, a:null, npc:true, t:timeStr()
+          };
+          charLetters.push(letter);
+          save(K_CHAR, charLetters);
+          // 错开1.5秒避免并发限速
+          await sleep(1500 * (i + contacts.indexOf(ch) * 3));
+          generateNpcQuestion(letter.id, ch.id);
+        }
+      }
+    }
+  }
+
+  async function ensureUserLetters(){
+    if(userLetters.length < 3 && contacts.length > 0){
+      const shuffled=[...contacts].sort(()=>Math.random()-.5);
+      const toAdd = shuffled.slice(0, Math.min(4, shuffled.length));
+      for(let i=0; i<toAdd.length; i++){
+        const ch = toAdd[i];
+        const letter={id:Date.now()+Math.random(), from:ch.id, q:null, a:null, reactions:{}, t:timeStr()};
+        userLetters.push(letter);
+        save(K_USER, userLetters);
+        await sleep(2000 * i);
+        generateUserQuestion(letter.id, ch.id);
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // API 调用
+  // ══════════════════════════════════════════════
+  async function callAI(systemPrompt, userPrompt, retries=2){
+    if(!apiConfig.apiUrl || !apiConfig.apiKey) throw new Error('API未配置');
+    let url = apiConfig.apiUrl.replace(/\/$/, '');
+    if(!url.endsWith('/chat/completions')){
+      url += url.includes('/v1') ? '/chat/completions' : '/v1/chat/completions';
+    }
+    for(let attempt=0; attempt<=retries; attempt++){
+      try{
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiConfig.apiKey
+          },
+          body: JSON.stringify({
+            model: apiConfig.modelName,
+            messages: [
+              {role:'system', content: systemPrompt},
+              {role:'user',   content: userPrompt}
+            ],
+            max_tokens: 150,
+            temperature: 1.0
+          })
+        });
+        if(!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        const text = data.choices?.[0]?.message?.content?.trim() || '';
+        if(text) return text;
+        throw new Error('空响应');
+      } catch(e){
+        if(attempt < retries){
+          await sleep(2000 * (attempt + 1));
+        } else {
+          throw e;
+        }
+      }
+    }
+  }
+
+  // NPC 对角色提问（问题由AI生成，完全随机）
+  async function generateNpcQuestion(letterId, charId){
+    const ch = contacts.find(c=>c.id===charId); if(!ch) return;
+    const randomSeed = Math.floor(Math.random()*1000);
+    const system = `你是一个匿名陌生人，正在向"${ch.name}"的匿名信箱投递提问。
+  要求：提问要走心、私密、有点触动人心，可以涉及情感、过去、秘密、内心深处的想法。
+  禁止重复或雷同。随机种子：${randomSeed}。
+  只输出提问内容本身（一句疑问句，25字以内），不加任何引号和前缀。`;
+    try{
+      const q = await callAI(system, '请生成一个独特的匿名提问');
+      const l = charLetters.find(x=>x.id===letterId);
+      if(l){ l.q=q; save(K_CHAR,charLetters); }
+      if(currentTab==='char' && charId===currentChar) renderCharList();
+      // 问题生成后延迟2秒再生成回答
+      await sleep(2000);
+      generateCharAnswer(letterId, charId, q);
+    } catch(e){
+      const l = charLetters.find(x=>x.id===letterId);
+      if(l){ l.q='有什么话，你一直没能说出口？'; save(K_CHAR,charLetters); }
+      if(currentTab==='char' && charId===currentChar) renderCharList();
+      await sleep(2000);
+      generateCharAnswer(letterId, charId, l?l.q:'');
+    }
+  }
+
+  // 角色回答
+  async function generateCharAnswer(letterId, charId, question){
+    const ch = contacts.find(c=>c.id===charId); if(!ch||!question) return;
+    const system = `你正在扮演"${ch.name}"这个角色。
+  你在自己的匿名信箱里收到了一个来自陌生人的匿名提问，你不知道对方是谁。
+  请用符合你人设和性格的方式回答这个问题（50字以内）。
+  可以坦诚、可以神秘、可以冷淡、可以温柔，保持角色一致性。
+  只输出回答内容本身，不加任何引号和前缀。`;
+try{
+      const ans = await callAI(system, question);
+      const l = charLetters.find(x=>x.id===letterId);
+      if(l){ l.a=ans; save(K_CHAR,charLetters); }
+      // 写入记忆：角色回答了匿名提问
+      try{ Android.onLetterAnswered(charId, question, ans); }catch(e){}
+    } catch(e){
+      const l = charLetters.find(x=>x.id===letterId);
+      if(l){ l.a='这个问题……让我想想。'; save(K_CHAR,charLetters); }
+    }
+    if(currentTab==='char' && charId===currentChar) renderCharList();
+}
+  // 角色对用户的匿名提问（用户看到的是"匿名用户"）
+  async function generateUserQuestion(letterId, charId){
+    const ch = contacts.find(c=>c.id===charId); if(!ch) return;
+    const randomSeed = Math.floor(Math.random()*1000);
+    const system = `你是"${ch.name}"，你想匿名给一个你认识的人发一个私密提问。
+  对方不知道这是你发的，你也不会暴露身份。
+  提问要走心、私密、可以涉及情感、内心、关系、秘密，尺度不限，符合你的人设风格。
+  随机种子：${randomSeed}。
+  只输出提问内容本身（一句疑问句，30字以内），不加任何引号和前缀。`;
+    try{
+      const q = await callAI(system, '请生成一个匿名提问');
+      const l = userLetters.find(x=>x.id===letterId);
+      if(l){ l.q=q; save(K_USER,userLetters); }
+    } catch(e){
+      const l = userLetters.find(x=>x.id===letterId);
+      if(l){ l.q='你有没有一件事，一直想说却没说出口？'; save(K_USER,userLetters); }
+    }
+    if(currentTab==='user') renderUserList();
+  }
+
+  // 其他角色对用户回答的反应
+  async function generateReactions(letterId, userAnswer){
+    const letter = userLetters.find(l=>l.id===letterId); if(!letter) return;
+    const reactors = contacts.filter(c=>c.id!==letter.from).slice(0,3);
+    for(let i=0; i<reactors.length; i++){
+      const ch = reactors[i];
+      await sleep(1500 * i);
+      const system = `你是"${ch.name}"，你看到了用户对一个匿名提问的回答。
+  请用符合你人设的方式做出简短反应（20字以内），可以有情绪，可以若无其事，可以不提及。
+  只输出反应内容本身，不加任何引号和前缀。`;
+      try{
+      const r = await callAI(system, `提问：${letter.q}\n用户的回答：${userAnswer}`);
+        letter.reactions[ch.id] = r;
+        // 写入记忆：角色看到了用户对匿名提问的回答
+        try{ Android.onLetterAnswered(ch.id, letter.q || '', '用户回答了匿名提问：'+userAnswer+'。我的反应：'+r); }catch(e){}
+      } catch(e){
+        letter.reactions[ch.id] = '……';
+      }
+      save(K_USER, userLetters);
+      if(currentTab==='user') renderUserList();
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // 刷新（新增一条信件）
+  // ══════════════════════════════════════════════
+  async function doRefresh(){
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning');
+    setTimeout(()=>btn.classList.remove('spinning'), 500);
+
+    if(currentTab==='char'){
+      const ch = contacts.find(c=>c.id===currentChar); if(!ch) return;
+      const letter={id:Date.now()+Math.random(), cid:ch.id, q:null, a:null, npc:true, t:timeStr()};
+      charLetters.push(letter);
+      save(K_CHAR, charLetters);
+      renderCharList();
+      await generateNpcQuestion(letter.id, ch.id);
+    } else {
+      const shuffled = [...contacts].sort(()=>Math.random()-.5);
+      const ch = shuffled[0];
+      const letter={id:Date.now()+Math.random(), from:ch.id, q:null, a:null, reactions:{}, t:timeStr()};
+      userLetters.push(letter);
+      save(K_USER, userLetters);
+      renderUserList();
+      await generateUserQuestion(letter.id, ch.id);
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // Tab 切换
+  // ══════════════════════════════════════════════
+  function switchTab(tab){
+    currentTab=tab;
+    ['char','user'].forEach(t=>{
+      document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+      document.getElementById('page-'+t).classList.toggle('active',t===tab);
+    });
+    document.getElementById('charBar').style.display=tab==='char'?'flex':'none';
+    document.getElementById('askFab').style.display=tab==='char'?'flex':'none';
+  }
+
+  // ══════════════════════════════════════════════
+  // 渲染
+  // ══════════════════════════════════════════════
+  function renderCharBar(){
+    document.getElementById('charBar').innerHTML=contacts.map(c=>
+      `<div class="char-chip ${c.id===currentChar?'active':''}" onclick="selectChar('${escHtml(c.id)}')">${escHtml(c.name)}</div>`
+    ).join('');
+  }
+  function selectChar(id){ currentChar=id; renderCharBar(); renderCharList(); }
+
+  function renderCharList(){
+    const el=document.getElementById('charList');
+    const ch=contacts.find(c=>c.id===currentChar); if(!ch){el.innerHTML='';return;}
+    const list=charLetters.filter(l=>l.cid===currentChar);
+    if(!list.length){
+      el.innerHTML=`<div class="empty-state"><div class="empty-icon">✉</div>还没有任何提问<br>点右上角刷新收信</div>`;
+      return;
+    }
+    el.innerHTML=list.map((l,i)=>{
+      const qHtml = l.q
+        ? `<div class="question-text">${escHtml(l.q)}</div>`
+        : `<div class="question-pending"><span class="dots"><span></span><span></span><span></span></span> 正在生成提问…</div>`;
+      const ansHtml = l.a
+        ? `<div class="answer-label">${escHtml(ch.name)} 的回答</div><div class="answer-text">${escHtml(l.a)}</div>`
+        : `<div class="answer-pending"><span class="dots"><span></span><span></span><span></span></span> 正在思考中…</div>`;
+      return `<div class="letter-card" data-id="${l.id}" data-type="char" style="animation-delay:${i*0.04}s">
+        <div class="card-header">
+          ${l.npc ? anonAvatarHtml() : avatarHtml({id:'user',name:'我',avatar:''})}
+          <div style="flex:1">
+            <div class="sender-name">${l.npc ? '匿名用户' : '你'}</div>
+            <div class="send-time">${l.t}</div>
+          </div>
+          <span class="anon-badge">投递给 ${escHtml(ch.name)}</span>
+        </div>
+        ${qHtml}
+        <div class="card-header" style="margin-top:10px;margin-bottom:6px">
+          ${avatarHtml(ch, 28)}
+          <div style="flex:1"><div class="sender-name" style="font-size:12px">${escHtml(ch.name)} 的回答</div></div>
+        </div>
+        ${ansHtml}
+      </div>`;
+    }).join('');
+    bindLongPress(el,'char');
+  }
+
+  function renderUserList(){
+    const el=document.getElementById('userList');
+    if(!userLetters.length){
+      el.innerHTML=`<div class="empty-state"><div class="empty-icon">📬</div>还没有人给你写信<br>点右上角刷新收信</div>`;
+      return;
+    }
+    el.innerHTML=userLetters.map((l,i)=>{
+      const qHtml = l.q
+        ? `<div class="question-text">${escHtml(l.q)}</div>`
+        : `<div class="question-pending"><span class="dots"><span></span><span></span><span></span></span> 正在写信中…</div>`;
+      let bodyHtml='';
+      if(l.a){
+        const rHtml=Object.entries(l.reactions).map(([cid,r])=>{
+          const rc=contacts.find(c=>c.id===cid); if(!rc) return '';
+          return `<div class="reaction-row">${avatarHtml(rc,24)}<div class="reaction-text"><span style="color:var(--forest);font-size:11px">${escHtml(rc.name)}</span>：${escHtml(r)}</div></div>`;
+        }).join('');
+        bodyHtml=`<div class="answer-label">你的回答</div>
+          <div class="answer-text">${escHtml(l.a)}</div>
+          ${rHtml?`<div class="reactions">${rHtml}</div>`:''}`;
+      } else if(l.q){
+        bodyHtml=`<div class="reply-area">
+          <textarea class="reply-input" id="ri_${l.id}" placeholder="写下你的回答…" rows="2"></textarea>
+          <button class="reply-btn" onclick="submitReply('${l.id}')">回答</button>
+        </div>`;
+      }
+      return `<div class="letter-card" data-id="${l.id}" data-type="user" style="animation-delay:${i*0.04}s">
+        <div class="card-header">
+          ${anonAvatarHtml()}
+          <div style="flex:1">
+            <div class="sender-name">匿名用户</div>
+            <div class="send-time">${l.t}</div>
+          </div>
+        </div>
+        ${qHtml}
+        ${bodyHtml}
+      </div>`;
+    }).join('');
+    bindLongPress(el,'user');
+  }
+
+  // ══════════════════════════════════════════════
+  // 用户回答
+  // ══════════════════════════════════════════════
+  function submitReply(id){
+    const l=userLetters.find(x=>String(x.id)===String(id)); if(!l) return;
+    const inp=document.getElementById('ri_'+id);
+    const ans=inp?inp.value.trim():'';
+    if(!ans){if(inp)inp.style.borderColor='#c07a5a';return;}
+    l.a=ans; save(K_USER,userLetters); renderUserList();
+    generateReactions(l.id, ans);
+  }
+
+  // ══════════════════════════════════════════════
+  // 提问弹窗（用户匿名提问角色）
+  // ══════════════════════════════════════════════
+  function openAskModal(){
+    const ch=contacts.find(c=>c.id===currentChar);
+    document.getElementById('modalTo').textContent=`你的提问将以匿名方式发送给 ${ch?ch.name:'?'}`;
+    document.getElementById('modal').style.display='flex';
+    document.getElementById('askInput').value='';
+    document.getElementById('charCount').textContent='0';
+    setTimeout(()=>document.getElementById('askInput').focus(),300);
+  }
+  function closeModal(){ document.getElementById('modal').style.display='none'; }
+  function closeModalOutside(e){ if(e.target===document.getElementById('modal')) closeModal(); }
+
+  function submitQuestion(){
+    const q=document.getElementById('askInput').value.trim(); if(!q) return;
+    closeModal();
+    const newL={id:Date.now()+Math.random(), cid:currentChar, q, a:null, npc:false, t:timeStr()};
+    charLetters.push(newL); save(K_CHAR,charLetters); renderCharList();
+    generateCharAnswer(newL.id, currentChar, q);
+  }
+
+  // ══════════════════════════════════════════════
+  // 长按删除
+  // ══════════════════════════════════════════════
+  function bindLongPress(container,type){
+    container.querySelectorAll('.letter-card').forEach(card=>{
+      let timer=null;
+      const startPress=()=>{
+        timer=setTimeout(()=>{
+          const ov=document.createElement('div');
+          ov.className='del-overlay';
+          ov.innerHTML='<div class="del-btn-inner">删除这封信</div>';
+          card.appendChild(ov); card.classList.add('pressing');
+          ov.querySelector('.del-btn-inner').addEventListener('click',()=>deleteLetter(card.dataset.id,type));
+          const cancel=(e)=>{
+            if(!card.contains(e.target)){
+              ov.remove(); card.classList.remove('pressing');
+              document.removeEventListener('touchstart',cancel);
+              document.removeEventListener('mousedown',cancel);
+            }
+          };
+          setTimeout(()=>{
+            document.addEventListener('touchstart',cancel,{passive:true});
+            document.addEventListener('mousedown',cancel);
+          },50);
+        },600);
+      };
+      const endPress=()=>clearTimeout(timer);
+      card.addEventListener('touchstart',startPress,{passive:true});
+      card.addEventListener('touchend',endPress);
+      card.addEventListener('touchcancel',endPress);
+      card.addEventListener('mousedown',startPress);
+      card.addEventListener('mouseup',endPress);
+    });
+  }
+
+  function deleteLetter(id,type){
+    if(type==='char'){
+      charLetters=charLetters.filter(l=>String(l.id)!==String(id));
+      save(K_CHAR,charLetters); renderCharList();
+    } else {
+      userLetters=userLetters.filter(l=>String(l.id)!==String(id));
+      save(K_USER,userLetters); renderUserList();
+    }
+  }
+
+  window.addEventListener('load',init);
+</script>
+</body>
+</html>

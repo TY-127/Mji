@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F2F6">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingHorizontal="16dp"
+        android:background="#FFFFFF">
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="&lt; 返回"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="模型设置"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:text="保存"
+            android:textSize="16sp"
+            android:textColor="#007AFF"/>
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="主 API (LLM)"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="API 链接"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editApiUrl"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="https://api..."
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="API 密钥"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editApiKey"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="sk-..."
+                        android:inputType="textPassword"
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="选择模型"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/editSelectModel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="输入或选择模型..."
+                        android:text="gemini-3.1-pro"
+                        android:textSize="16sp"
+                        android:textColor="#333333"
+                        android:singleLine="true"/>
+                    <TextView
+                        android:id="@+id/btnDropdownArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="▼"
+                        android:textColor="#C7C7CC"
+                        android:textSize="12sp"
+                        android:padding="10dp"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/btnFetchModel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="🔄 拉取模型"
+                        android:textColor="#007AFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+                    <View android:layout_width="1dp" android:layout_height="match_parent" android:background="#E5E5EA"/>
+                    <TextView
+                        android:id="@+id/btnTestLink"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="🔗 链接测试"
+                        android:textColor="#007AFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+                <!-- ===== 朋友的 TTS 服务器 ===== -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="NSW4678服务器"
+                            android:textSize="16sp"/>
+
+                        <Switch
+                            android:id="@+id/switchUseGuannan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/editGuannanKey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="NSW4678服务器的密匙"
+                        android:layout_marginTop="8dp"/>
+                    <EditText
+                        android:id="@+id/editGuannanUrl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="TTS 服务器地址（含完整路径）"
+                        android:inputType="textUri"
+                        android:singleLine="true"
+                        android:layout_marginTop="8dp"/>
+                    <!-- 默认声音 / 语言字段已移除：音色与语言改在「角色设置」里按角色单独填写 -->
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="语音 API (TTS)"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="TTS 密钥"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editTtsApiKey"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="填入硅基流动 Key"
+                        android:inputType="textPassword"
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="通话情绪分析（Qwen-Omni）"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="12dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="听懂语气、哭腔、叹气和声线"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+                    <Switch
+                        android:id="@+id/switchVoiceMood"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <EditText
+                    android:id="@+id/editVoiceMoodApiUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="百炼兼容 API 地址"
+                    android:singleLine="true"/>
+                <EditText
+                    android:id="@+id/editVoiceMoodApiKey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="百炼 API Key"
+                    android:inputType="textPassword"
+                    android:singleLine="true"/>
+                <EditText
+                    android:id="@+id/editVoiceMoodModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="qwen-omni-turbo"
+                    android:singleLine="true"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="开启后会将通话录音并行发送给多模态模型；失败时自动使用 SenseVoice 与本地停顿检测。"
+                    android:textColor="#8E8E93"
+                    android:textSize="12sp"
+                    android:layout_marginTop="6dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnMcpManager"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:text="MCP 工具管理  ›"
+                android:textColor="#007AFF"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:autoLink="web"
+                android:text="M叽官方仓库：https://github.com/w1990709164-bot/Mji\nPolyForm Noncommercial 1.0.0 · 禁止商业倒卖"
+                android:textColor="#8E8E93"
+                android:textIsSelectable="true"
+                android:textSize="12sp"/>
+
+            <!-- ── 电台新闻搜索API设置 ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="电台新闻搜索 API"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="用于「赛博新闻」节目搜索真实新闻。不填 Key 时，可以在业务代码里走 AI 虚构新闻。支持：Serper / Bing Search / Tavily"
+                    android:textColor="#888888"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.25"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="搜索类型"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/editRadioSearchType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="选择搜索服务"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:inputType="none"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E5E5EA"
+                    android:layout_marginStart="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="搜索 Key"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editRadioSearchKey"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="粘贴搜索 API Key"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:inputType="textVisiblePassword"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E5E5EA"/>
+
+                <TextView
+                    android:id="@+id/btnSaveRadioSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center"
+                    android:text="📻 单独保存电台搜索API"
+                    android:textColor="#007AFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="参数设置"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="温度 (Temperature)" android:textColor="#111111" android:textSize="16sp" />
+                    <TextView android:id="@+id/tvTemperatureValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="0.6" android:textColor="#3B82F6" android:textSize="16sp" android:textStyle="bold" />
+                </RelativeLayout>
+                <SeekBar android:id="@+id/seekBarTemp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:layout_marginBottom="16dp" android:max="20" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" />
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="推理深度:" android:textColor="#111111" android:textSize="16sp" />
+                    <TextView android:id="@+id/tvDepthValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="50" android:textColor="#3B82F6" android:textSize="16sp" android:textStyle="bold" />
+                </RelativeLayout>
+                <SeekBar android:id="@+id/seekBarDepth" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:layout_marginBottom="16dp" android:max="100" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" />
+                <TextView
+                    android:id="@+id/btnSetWallpaper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:text="更换手机桌面壁纸"
+                    android:textColor="#111111"
+                    android:textSize="16sp" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" />
+                <TextView
+                    android:id="@+id/btnExportDatabase"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:text="💾 导出存档 (全量备份)"
+                    android:textColor="#007AFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" />
+                <TextView
+                    android:id="@+id/btnImportDatabase"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:text="📂 载入记忆 (全量恢复)"
+                    android:textColor="#FF3B30"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <!-- ── 向量记忆（长期记忆）设置 ── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="向量记忆（长期记忆）"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:paddingTop="24dp"
+                android:paddingBottom="8dp"
+                android:paddingStart="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- 开关 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="启用向量记忆"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+                    <Switch android:id="@+id/switchEmbEnable" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <!-- 向量API地址 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="向量链接"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editEmbApiUrl"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="https://api.openai.com"
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <!-- 向量API Key -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="向量 Key"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editEmbApiKey"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="sk-..."
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:inputType="textPassword"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <!-- 向量模型 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="向量模型"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editEmbModel"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="text-embedding-3-small"
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ── AI 生图设置 ── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AI 生图"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:paddingTop="24dp"
+                android:paddingBottom="8dp"
+                android:paddingStart="16dp"/>
+
+            <!-- 生图API卡片 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- 生图API地址 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="生图链接"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editImgApiUrl"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="https://api..."
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <!-- 生图API Key -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="生图 Key"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editImgApiKey"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="sk-..."
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:inputType="textPassword"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <!-- 生图模型 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="生图模型"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/editImgModel"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="选择或输入模型"
+                        android:textSize="16sp"
+                        android:singleLine="true"/>
+                    <TextView
+                        android:id="@+id/btnImgDropdownArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="▼"
+                        android:textColor="#888888"
+                        android:textSize="14sp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="4dp"/>
+                    <TextView
+                        android:id="@+id/btnFetchImgModel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="拉取"
+                        android:textColor="#007AFF"
+                        android:textSize="16sp"
+                        android:paddingStart="8dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 提示词卡片 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="生图提示词"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:paddingBottom="8dp"
+                android:paddingStart="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- 负面提示词 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="负面词"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editImgNegativePrompt"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="如：blurry, bad hands, nsfw"
+                        android:textSize="16sp"
+                        android:maxLines="2"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <!-- 用户自定义提示词 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="我的偏好"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editImgUserPrompt"
+                        android:textColor="#000000"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="如：雪景, 日系, 室内"
+                        android:textSize="16sp"
+                        android:maxLines="2"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 生图场景开关卡片 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="生图场景"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:paddingBottom="8dp"
+                android:paddingStart="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="朋友圈配图"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+                    <Switch android:id="@+id/switchImgMoments" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="私聊智能生图"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+                    <Switch android:id="@+id/switchImgChat" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="黑客系统相册"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+                    <Switch android:id="@+id/switchImgHacker" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E5E5EA" android:layout_marginStart="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="梦男之家"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+                    <Switch android:id="@+id/switchImgDreamHouse" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

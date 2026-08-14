@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!--
+        整个聊天界面由 WebView 全屏渲染。
+        顶栏、底栏、气泡、背景全部在 HTML/CSS 里实现。
+        用户导入的 CSS 通过 JS 注入到页面中。
+    -->
+    <WebView
+        android:id="@+id/chatWebView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:overScrollMode="never"
+        android:background="#00000000" />
+
+</FrameLayout>

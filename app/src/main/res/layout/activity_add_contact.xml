@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 头像选择 -->
+        <ImageView
+            android:id="@+id/ivSelectAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            android:background="#E0E0E0"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <!-- 用户ID -->
+        <EditText
+            android:id="@+id/etUserId"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入用户ID"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <!-- 真实姓名 -->
+        <EditText
+            android:id="@+id/etRealName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入真实姓名"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <!-- 生日 -->
+        <EditText
+            android:id="@+id/etBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入生日 (例:1999-01-01)"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <!-- 身份信息(大输入框) -->
+        <EditText
+            android:id="@+id/etIdentityInfo"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:gravity="top"
+            android:hint="请输入身份背景设定（提示词）..."
+            android:textColorHint="#999999"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:inputType="textMultiLine" />
+
+        <!-- ⚡ 极其致命的耐心值输入框！ -->
+        <EditText
+            android:id="@+id/etPatience"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="30dp"
+            android:background="#FFFFFF"
+            android:hint="请输入耐心值（分钟，默认60）"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:inputType="number"
+            android:paddingHorizontal="12dp" />
+        <!-- 与角色的关系 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="与角色的关系"
+                android:textColor="#333333"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/spinnerRelationship"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- 保存按钮 -->
+        <Button
+            android:id="@+id/btnSaveContact"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="#07C160"
+            android:text="创建AI角色"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>真心话大冒险</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
+:root{
+  --rose:#e05070;--rose2:#b83050;--gold:#c8845a;
+  --cream:#fdf7f2;--warm:#f5eae2;--panel:rgba(255,252,250,0.9);
+  --text:#2a1810;--soft:#7a5248;--mute:#b89088;
+  --shadow:rgba(160,50,60,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;font-family:'Noto Serif SC',serif;background:var(--cream);color:var(--text);overflow:hidden;}
+body{display:flex;flex-direction:column;height:100vh;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 15% 0%,rgba(224,80,112,.08),transparent 60%),
+             radial-gradient(ellipse 60% 55% at 85% 100%,rgba(200,132,90,.06),transparent 60%);}
+.screen{display:none;position:relative;z-index:1;flex-direction:column;align-items:center;
+  height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:48px;}
+.screen.active{display:flex;animation:fu .32s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.top{width:100%;background:linear-gradient(135deg,var(--rose),var(--rose2));
+  padding:16px 20px 14px;text-align:center;color:#fff;flex-shrink:0;position:relative;overflow:hidden;}
+.top::after{content:'♥ ♦ ♠ ♣ ♥ ♦ ♠ ♣ ♥ ♦ ♠ ♣';
+  position:absolute;bottom:3px;left:0;right:0;font-size:8px;
+  color:rgba(255,255,255,.15);letter-spacing:6px;text-align:center;}
+.top h2{font-size:18px;font-weight:700;letter-spacing:3px;}
+.top p{font-size:11px;opacity:.75;margin-top:2px;}
+.btn{width:calc(100% - 32px);margin:12px 16px 0;padding:14px;border:none;border-radius:14px;
+  font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;}
+.btn:active{transform:translateY(2px);}
+.btn-rose{background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;
+  box-shadow:0 5px 18px rgba(176,48,80,.28);}
+.btn-outline{background:transparent;color:var(--rose);border:2px solid var(--rose);box-shadow:none;}
+.btn-gold{background:linear-gradient(135deg,#d4965a,#b87840);color:#fff;
+  box-shadow:0 5px 16px rgba(180,110,60,.25);}
+.btn-ghost{background:rgba(224,80,112,.07);color:var(--soft);border:1.5px solid rgba(224,80,112,.2);box-shadow:none;font-size:13px;padding:11px;}
+.zone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:calc(100% - 32px);margin:12px 16px 0;}
+.zone-card{padding:14px 8px;border-radius:14px;background:var(--panel);border:2px solid transparent;
+  box-shadow:0 2px 10px var(--shadow);cursor:pointer;text-align:center;transition:all .2s;}
+.zone-card:active{transform:scale(.96);}
+.zone-card.sel{border-color:var(--rose);background:rgba(224,80,112,.06);}
+.zone-icon{font-size:26px;margin-bottom:5px;}
+.zone-name{font-size:13px;font-weight:700;}
+.zone-desc{font-size:10px;color:var(--mute);margin-top:2px;line-height:1.3;}
+.players{display:flex;align-items:center;justify-content:center;gap:24px;padding:20px 20px 4px;}
+.pchip{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pav{width:54px;height:54px;border-radius:50%;border:3px solid rgba(224,80,112,.3);
+  overflow:hidden;background:var(--warm);display:flex;align-items:center;justify-content:center;
+  font-size:22px;box-shadow:0 4px 14px var(--shadow);}
+.pav img{width:100%;height:100%;object-fit:cover;}
+.pname{font-size:12px;color:var(--soft);font-weight:600;}
+.vs{font-size:24px;color:var(--rose);animation:hb 1.6s infinite ease-in-out;}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.dice-row{display:flex;justify-content:center;gap:44px;padding:24px 20px 8px;}
+.dice-box{text-align:center;}
+.dlabel{font-size:11px;color:var(--soft);margin-bottom:8px;font-weight:600;}
+.dice{width:74px;height:74px;border-radius:16px;
+  background:linear-gradient(135deg,#fff8f5,#f0e0d8);
+  border:2px solid rgba(224,80,112,.25);
+  box-shadow:0 6px 20px var(--shadow),inset 0 2px 4px rgba(255,255,255,.7);
+  display:flex;align-items:center;justify-content:center;
+  font-size:38px;transition:transform .1s;user-select:none;}
+.dice.roll{animation:dr .5s ease;}
+@keyframes dr{0%{transform:rotate(0)scale(1)}25%{transform:rotate(-15deg)scale(1.1)}
+  50%{transform:rotate(15deg)scale(.95)}75%{transform:rotate(-8deg)scale(1.05)}100%{transform:rotate(0)scale(1)}}
+.dice-msg{text-align:center;font-size:15px;font-weight:700;color:var(--rose);
+  padding:12px 20px 4px;min-height:48px;}
+.round-info{text-align:center;font-size:13px;color:var(--soft);padding:8px 20px 0;}
+.spread{display:flex;justify-content:center;padding:18px 16px 8px;min-height:160px;}
+.citem{width:108px;height:150px;border-radius:13px;cursor:pointer;position:relative;
+  flex-shrink:0;margin-left:-20px;transition:transform .2s;}
+.citem:first-child{margin-left:0;}
+.citem:nth-child(1){transform:rotate(-9deg);z-index:1;}
+.citem:nth-child(2){transform:rotate(-3deg) translateY(-5px);z-index:2;}
+.citem:nth-child(3){transform:rotate(1deg) translateY(-9px);z-index:3;}
+.citem:nth-child(4){transform:rotate(6deg) translateY(-5px);z-index:2;}
+.citem:nth-child(5){transform:rotate(11deg);z-index:1;}
+.citem:active{transform:rotate(0)translateY(-22px)scale(1.06)!important;z-index:10!important;}
+.cback{width:100%;height:100%;border-radius:13px;
+  background:linear-gradient(135deg,var(--rose) 0%,#a02848 50%,#6030a0 100%);
+  border:2px solid rgba(255,255,255,.2);
+  box-shadow:0 6px 20px var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.cback-icon{font-size:30px;opacity:.9;animation:gp 2.5s infinite ease-in-out;}
+@keyframes gp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.cback-txt{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:2px;}
+.bigcard{width:180px;min-height:240px;border-radius:18px;
+  background:linear-gradient(160deg,#fff8f5,#f8eee8);
+  border:2px solid rgba(224,80,112,.2);
+  box-shadow:0 12px 36px var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px;gap:10px;margin:18px auto 0;}
+.type-badge{padding:3px 12px;border-radius:999px;font-size:12px;font-weight:800;color:#fff;}
+.type-truth{background:linear-gradient(135deg,#e05070,#b83050);}
+.type-dare{background:linear-gradient(135deg,#5090d0,#3070b0);}
+.card-text{font-size:15px;line-height:1.65;color:var(--text);text-align:center;}
+.loading-box{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 20px;}
+.dots{display:flex;gap:6px;}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--rose);
+  animation:bk 1.2s infinite ease-in-out;}
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes bk{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.loading-txt{font-size:14px;color:var(--soft);}
+.chat-scroll{width:100%;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 0;}
+.cmsg{display:flex;gap:8px;margin-bottom:10px;align-items:flex-end;}
+.cmsg.right{flex-direction:row-reverse;}
+.cav{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:var(--warm);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.cav img{width:100%;height:100%;object-fit:cover;}
+.cbubble{max-width:72%;padding:10px 13px;border-radius:16px;
+  font-size:14px;line-height:1.65;word-break:break-word;}
+.cmsg.left .cbubble{background:var(--panel);border:1px solid rgba(224,80,112,.1);
+  border-bottom-left-radius:4px;box-shadow:0 2px 8px var(--shadow);}
+.cmsg.right .cbubble{background:linear-gradient(135deg,var(--rose),var(--rose2));
+  color:#fff;border-bottom-right-radius:4px;}
+.ctime{text-align:center;font-size:10px;color:var(--mute);margin:6px 0;}
+.typing-ind{display:flex;gap:4px;padding:10px 14px;background:var(--panel);
+  border-radius:14px;border-bottom-left-radius:4px;width:fit-content;}
+.typing-ind span{width:6px;height:6px;border-radius:50%;background:var(--mute);
+  animation:bk 1.2s infinite ease-in-out;}
+.typing-ind span:nth-child(2){animation-delay:.2s;}
+.typing-ind span:nth-child(3){animation-delay:.4s;}
+.input-bar{width:100%;padding:10px 14px;background:rgba(253,247,242,.97);
+  border-top:1px solid rgba(224,80,112,.1);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.input-bar textarea{flex:1;padding:10px 13px;border-radius:14px;
+  border:1.5px solid rgba(224,80,112,.2);background:var(--warm);
+  font-family:'Noto Serif SC',serif;font-size:14px;color:var(--text);
+  resize:none;outline:none;max-height:100px;line-height:1.5;transition:border-color .2s;}
+.input-bar textarea:focus{border-color:var(--rose);}
+.send-btn{width:40px;height:40px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--rose),var(--rose2));
+  color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 10px rgba(176,48,80,.25);}
+.send-btn:active{transform:scale(.92);}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;}
+.slabel{width:100%;padding:14px 20px 4px;font-size:10px;letter-spacing:2px;color:var(--mute);}
+.summary-card{width:calc(100% - 32px);margin:12px 16px 0;padding:18px;
+  background:rgba(224,80,112,.05);border-radius:16px;border:1px solid rgba(224,80,112,.15);}
+.summary-card p{font-size:13px;line-height:1.9;color:var(--soft);}
+.action-row{display:flex;gap:10px;width:calc(100% - 32px);margin:10px 16px 0;}
+.action-row .btn{margin:0;flex:1;}
+.panel-info{width:calc(100% - 32px);margin:12px 16px 0;padding:12px 16px;
+  background:var(--panel);border-radius:14px;border:1px solid rgba(224,80,112,.1);
+  font-size:13px;color:var(--soft);text-align:center;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);
+  opacity:0;background:var(--text);color:#fff;padding:9px 18px;border-radius:999px;
+  font-size:13px;font-weight:600;white-space:nowrap;z-index:999;
+  transition:opacity .25s,transform .25s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<!-- S1: 区域选择 -->
+<div class="screen active" id="s-zone">
+  <div class="top"><h2>真心话大冒险</h2><p>恋人牌局 · 每局不同</p></div>
+  <div class="players">
+    <div class="pchip">
+      <div class="pav"><span id="user-av-z">🙂</span></div>
+      <div class="pname" id="user-name-z">你</div>
+    </div>
+    <div class="vs">♥</div>
+    <div class="pchip">
+      <div class="pav" id="ai-av-z"><span>🤖</span></div>
+      <div class="pname" id="ai-name-z">TA</div>
+    </div>
+  </div>
+  <div class="slabel">选择今晚的牌局氛围</div>
+  <div class="zone-grid">
+    <div class="zone-card sel" data-zone="daily" onclick="selectZone(this)">
+      <div class="zone-icon">☀️</div>
+      <div class="zone-name">日常区</div>
+      <div class="zone-desc">轻松有趣<br>随时可玩</div>
+    </div>
+    <div class="zone-card" data-zone="romance" onclick="selectZone(this)">
+      <div class="zone-icon">🌙</div>
+      <div class="zone-name">情感区</div>
+      <div class="zone-desc">暧昧深情<br>二人世界</div>
+    </div>
+    <div class="zone-card" data-zone="daring" onclick="selectZone(this)">
+      <div class="zone-icon">🔥</div>
+      <div class="zone-name">挑战区</div>
+      <div class="zone-desc">大胆刺激<br>勇气牌局</div>
+    </div>
+  </div>
+  <button class="btn btn-rose" onclick="startGenerate()">生成今日题库 ✨</button>
+</div>
+
+<!-- S2: 生成中 -->
+<div class="screen" id="s-loading">
+  <div class="top"><h2>准备牌局</h2><p>正在生成专属题目…</p></div>
+  <div class="loading-box">
+    <div style="font-size:52px">🃏</div>
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="loading-txt" id="load-txt">AI 正在洗牌中…</div>
+  </div>
+</div>
+
+<!-- S3: 掷骰 -->
+<div class="screen" id="s-dice">
+  <div class="top"><h2>掷骰决定命运</h2><p>点数低的接受挑战</p></div>
+  <div class="players">
+    <div class="pchip">
+      <div class="pav"><span id="user-av-d">🙂</span></div>
+      <div class="pname" id="user-name-d">你</div>
+    </div>
+    <div class="vs">⚔️</div>
+    <div class="pchip">
+      <div class="pav" id="ai-av-d"><span>🤖</span></div>
+      <div class="pname" id="ai-name-d">TA</div>
+    </div>
+  </div>
+  <div class="round-info" id="round-info">第 1 轮 / 共 10 轮</div>
+  <div class="dice-row">
+    <div class="dice-box">
+      <div class="dlabel" id="d-user-lbl">你</div>
+      <div class="dice" id="dice-user">🎲</div>
+    </div>
+    <div class="dice-box">
+      <div class="dlabel" id="d-ai-lbl">TA</div>
+      <div class="dice" id="dice-ai">🎲</div>
+    </div>
+  </div>
+  <div class="dice-msg" id="dice-msg">点击下方按钮掷骰</div>
+  <button class="btn btn-rose" id="btn-roll" onclick="doRoll()">🎲 掷骰子</button>
+  <button class="btn btn-outline" id="btn-enter-card" style="display:none" onclick="enterCard()">翻牌接受挑战 →</button>
+</div>
+
+<!-- S4: 抽卡 -->
+<div class="screen" id="s-card">
+  <div class="top"><h2 id="card-title">你来抽一张</h2><p id="card-sub">从牌堆中选一张翻开</p></div>
+  <div class="panel-info" id="card-whose">等待翻牌…</div>
+  <div class="spread" id="card-spread"></div>
+  <div id="card-reveal" style="display:none;width:100%;flex-direction:column;align-items:center;">
+    <div class="bigcard">
+      <div class="type-badge" id="rv-badge">真心话</div>
+      <div class="card-text" id="rv-text"></div>
+    </div>
+  </div>
+  <button class="btn btn-gold" id="btn-ai-pick" style="display:none" onclick="aiPickCard()">让 <span id="ai-pick-name">TA</span> 随机抽一张 🃏</button>
+  <button class="btn btn-rose" id="btn-enter-chat" style="display:none" onclick="enterChat()">开始挑战 💬</button>
+</div>
+
+<!-- S5: 对话 -->
+<div class="screen" id="s-chat" style="padding-bottom:0;">
+  <div class="top" style="padding:12px 20px 10px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="text-align:left;">
+        <div style="font-size:14px;font-weight:700;" id="chat-round-lbl">第1轮</div>
+        <div style="font-size:10px;opacity:.75;" id="chat-type-lbl">真心话</div>
+      </div>
+      <div style="text-align:right;max-width:55%;">
+        <div style="font-size:11px;opacity:.8;word-break:break-all;" id="chat-card-prev"></div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-scroll" id="chat-area"></div>
+  <!-- 继续游戏 bar -->
+  <div id="bar-continue" style="display:none;padding:10px 14px;background:rgba(253,247,242,.97);border-top:1px solid rgba(224,80,112,.1);">
+    <button class="btn btn-rose" style="margin:0;width:100%;" onclick="nextRound()">继续游戏 →</button>
+  </div>
+  <!-- 输入 bar -->
+  <div class="input-bar" id="bar-input" style="display:none;">
+    <textarea id="chat-input" rows="1" placeholder="写下你的回答…" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="btn-send" onclick="sendUserMsg()">➤</button>
+  </div>
+  <!-- 回答后操作 bar -->
+  <div id="bar-after" style="display:none;padding:10px 14px;background:rgba(253,247,242,.97);border-top:1px solid rgba(224,80,112,.1);">
+    <div class="action-row">
+      <button class="btn btn-ghost" onclick="showInputBar()">💬 继续聊</button>
+      <button class="btn btn-rose" style="margin:0;" onclick="nextRound()">下一轮 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S6: 结束 -->
+<div class="screen" id="s-end">
+  <div class="top"><h2>牌局结束</h2><p>感谢今晚的真心与冒险</p></div>
+  <div class="players" style="padding-top:24px;">
+    <div class="pchip">
+      <div class="pav"><span id="end-user-av">🙂</span></div>
+      <div class="pname" id="end-user-name">你</div>
+    </div>
+    <div class="vs">💕</div>
+    <div class="pchip">
+      <div class="pav" id="end-ai-av"><span>🤖</span></div>
+      <div class="pname" id="end-ai-name">TA</div>
+    </div>
+  </div>
+  <div class="slabel">今晚的故事</div>
+  <div class="summary-card">
+    <div class="loading-box" id="summary-loading" style="padding:16px 0;">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="loading-txt">正在整理今晚的故事…</div>
+    </div>
+    <p id="summary-text" style="display:none;"></p>
+  </div>
+  <button class="btn btn-rose" onclick="restartGame()">再来一局 🎴</button>
+  <button class="btn btn-outline" onclick="endAndNotify()" style="margin-top:8px;">结束并告知TA ✉️</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 状态 ──
+let zone='daily', cards=[], round=0, totalRounds=10;
+let loserIsUser=false, currentCard=null, gameLog=[];
+let aiName='TA', aiPersona='', aiAvatarUri='', userName='你';
+
+// ── Android 桥接 ──
+const _cbs={}; let _cbId=0;
+function callAI(prompt,onOk,onFail){
+  const id='cb'+(++_cbId);
+  _cbs[id]=(text,err)=>{ delete _cbs[id]; err?onFail&&onFail(err):onOk&&onOk(text); };
+  try{ Android.callAI(prompt,id); }
+  catch(e){ delete _cbs[id]; onFail&&onFail(e.message); }
+}
+window.__aiCallback=function(id,text,err){ const cb=_cbs[id]; if(cb)cb(text||'',err||null); };
+
+// ── 初始化 ──
+window.addEventListener('DOMContentLoaded',()=>{
+  try{ aiName=Android.getAiName()||'TA'; aiPersona=Android.getAiPersona()||''; aiAvatarUri=Android.getAiAvatar()||''; userName=Android.getUserName()||'你'; }catch(e){}
+  initUI();
+});
+
+function initUI(){
+  const avSrc=aiAvatarUri?(aiAvatarUri.startsWith('file://')?aiAvatarUri:'file://'+aiAvatarUri):'';
+  // 名字
+  ['z','d'].forEach(s=>{
+    const u=document.getElementById('user-name-'+s); if(u)u.textContent=userName;
+    const a=document.getElementById('ai-name-'+s); if(a)a.textContent=aiName;
+  });
+  document.getElementById('d-user-lbl').textContent=userName;
+  document.getElementById('d-ai-lbl').textContent=aiName;
+  document.getElementById('ai-pick-name').textContent=aiName;
+  document.getElementById('end-user-name').textContent=userName;
+  document.getElementById('end-ai-name').textContent=aiName;
+  // AI 头像
+  if(avSrc){
+    ['ai-av-z','ai-av-d','end-ai-av'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.innerHTML=`<img src="${avSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.textContent='🤖'">`;
+    });
+  }
+}
+
+// ── 区域选择 ──
+function selectZone(el){
+  document.querySelectorAll('.zone-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel'); zone=el.dataset.zone;
+}
+function zoneName(){ return {daily:'日常区',romance:'情感区',daring:'挑战区'}[zone]||'日常区'; }
+
+// ── 生成题库 ──
+function startGenerate(){
+  showScreen('s-loading');
+  const zDesc={daily:'轻松日常，聊生活趣事小秘密，氛围欢乐',romance:'暧昧浪漫，聊感情爱意，适合情侣深夜',daring:'大胆刺激，敢说敢做，稍带挑战性'}[zone];
+  const pNote=aiPersona?`\n（角色人设供参考，AI回答题目时需完全符合此人设，不得OOC：${aiPersona.slice(0,150)}）`:'';
+  const prompt=`你正在为一对情侣设计真心话大冒险题目。
+区域：${zoneName()}（${zDesc}）${pNote}
+
+请生成10道题，5道真心话(truth)、5道大冒险(dare)。
+真心话：说出内心真实想法或秘密。
+大冒险：完成某个行为或挑战（可口头描述完成）。
+题目要有创意，符合区域氛围，不要陈词滥调。
+
+只输出纯JSON数组，绝对不要任何解释、markdown代码块、前后缀文字：
+[{"type":"truth","text":"题目内容"},{"type":"dare","text":"题目内容"}]
+必须严格是合法JSON，不要在text字段里使用双引号，改用单引号或顿号。
+`;
+  callAI(prompt,(text)=>{
+    try{
+     let clean = text.replace(/```json|```/g, '').trim();
+// 尝试直接解析
+let data = null;
+try {
+  data = JSON.parse(clean);
+} catch(e1) {
+  // 尝试提取数组部分
+  const match = clean.match(/\[[\s\S]*\]/);
+  if (match) {
+    try {
+      data = JSON.parse(match[0]);
+    } catch(e2) {
+      // 尝试修复常见问题：去掉末尾多余逗号
+      try {
+        const fixed = match[0].replace(/,\s*([}\]])/g, '$1');
+        data = JSON.parse(fixed);
+      } catch(e3) {
+        toast('解析失败，请重试');
+        showScreen('s-zone');
+        return;
+      }
+    }
+  } else {
+    toast('解析失败，请重试');
+    showScreen('s-zone');
+    return;
+  }
+}
+if (Array.isArray(data) && data.length >= 5) {
+  cards = data.slice(0, 10);
+  round = 0;
+  gameLog = [];
+  showScreen('s-dice');
+  updateRoundInfo();
+} else {
+  toast('题目生成失败，请重试');
+  showScreen('s-zone');
+}
+    }catch(e){ toast('解析失败，请重试'); showScreen('s-zone'); }
+  },()=>{ toast('网络错误，请重试'); showScreen('s-zone'); });
+}
+
+// ── 掷骰 ──
+const DFACE=['','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣'];
+function updateRoundInfo(){ document.getElementById('round-info').textContent=`第 ${round+1} 轮 / 共 ${totalRounds} 轮`; }
+
+function doRoll(){
+  const btnR=document.getElementById('btn-roll'), btnN=document.getElementById('btn-enter-card');
+  btnR.disabled=true; btnN.style.display='none';
+  const du=document.getElementById('dice-user'), da=document.getElementById('dice-ai');
+  du.classList.add('roll'); da.classList.add('roll');
+  document.getElementById('dice-msg').textContent='骰子在飞…';
+  setTimeout(()=>{
+    du.classList.remove('roll'); da.classList.remove('roll');
+    let u,a; do{ u=Math.floor(Math.random()*6)+1; a=Math.floor(Math.random()*6)+1; }while(u===a);
+    du.textContent=DFACE[u]; da.textContent=DFACE[a];
+    loserIsUser=u<a;
+    const loser=loserIsUser?userName:aiName;
+    document.getElementById('dice-msg').textContent=`${u} : ${a} — ${loser}点数低，接受挑战！`;
+    btnR.disabled=false; btnN.style.display='block';
+  },900);
+}
+
+// ── 抽卡 ──
+function enterCard(){
+  currentCard=cards[round%cards.length];
+  showScreen('s-card');
+  document.getElementById('card-reveal').style.display='none';
+  document.getElementById('btn-enter-chat').style.display='none';
+  if(loserIsUser){
+    document.getElementById('card-title').textContent='你来抽一张';
+    document.getElementById('card-sub').textContent='从牌堆中选一张翻开';
+    document.getElementById('card-whose').textContent=`轮到你接受挑战！`;
+    document.getElementById('btn-ai-pick').style.display='none';
+    renderSpread(false);
+  } else {
+document.getElementById('card-title').textContent=`帮 ${aiName} 翻一张`;
+document.getElementById('card-sub').textContent=`${aiName} 输了，帮TA翻开一张牌`;
+document.getElementById('card-whose').textContent=`${aiName} 将接受这道题的挑战`;
+    document.getElementById('btn-ai-pick').style.display='block';
+    renderSpread(true);
+  }
+}
+
+function renderSpread(forAi){
+  const sp=document.getElementById('card-spread');
+  sp.style.display='flex';
+  sp.style.flexWrap='wrap';
+  sp.style.justifyContent='center';
+  sp.style.gap='10px';
+  sp.innerHTML='';
+  for(let i=0;i<5;i++){
+    const c=document.createElement('div'); c.className='citem';
+    c.style.cursor='pointer';
+    c.innerHTML='<div class="cback"><div class="cback-icon">💌</div><div class="cback-txt">翻开我</div></div>';
+    c.addEventListener('click',()=>revealCard());  // ✅ 所有牌都绑事件
+    sp.appendChild(c);
+  }
+}
+
+function aiPickCard(){ document.getElementById('btn-ai-pick').style.display='none'; revealCard(); }
+
+function revealCard(){
+  document.getElementById('card-spread').style.display = 'none';  // 翻牌后隐藏牌堆
+  document.getElementById('btn-ai-pick').style.display='none';
+  const rv=document.getElementById('card-reveal'); rv.style.display='flex';
+  const badge=document.getElementById('rv-badge');
+  badge.textContent=currentCard.type==='truth'?'💗 真心话':'✨ 大冒险';
+  badge.className='type-badge '+(currentCard.type==='truth'?'type-truth':'type-dare');
+  document.getElementById('rv-text').textContent=currentCard.text;
+  document.getElementById('btn-enter-chat').style.display='block';
+}
+
+// ── 进入对话 ──
+function enterChat(){
+  showScreen('s-chat');
+  document.getElementById('chat-round-lbl').textContent=`第 ${round+1} 轮`;
+  document.getElementById('chat-type-lbl').textContent=currentCard.type==='truth'?'💗 真心话':'✨ 大冒险';
+  const prev=currentCard.text; document.getElementById('chat-card-prev').textContent=prev.length>18?prev.slice(0,18)+'…':prev;
+  document.getElementById('chat-area').innerHTML='';
+  document.getElementById('bar-continue').style.display='none';
+  document.getElementById('bar-input').style.display='none';
+  document.getElementById('bar-after').style.display='none';
+  addChatTime();
+  if(loserIsUser){ aiAnnounceCard(()=>{ document.getElementById('bar-input').style.display='flex'; }); }
+  else { aiAnswerCard(); }
+}
+
+// AI 宣读题目
+function aiAnnounceCard(cb){
+  showTyping();
+  const typeW=currentCard.type==='truth'?'真心话':'大冒险';
+  callAI(buildPrompt(`你和 ${userName} 在玩真心话大冒险（${zoneName()}）。
+这一轮 ${userName} 输了，需要回答一道${typeW}。题目是：「${currentCard.text}」
+请以你的口吻宣读这道题（1-2句话），语气符合你的性格，带点期待或调侃。
+直接输出对话内容，不要任何格式标签。`),
+  (t)=>{ removeTyping(); addAiBubble(t.trim()); cb&&cb(); },
+  ()=>{ removeTyping(); addAiBubble(`好，你的${typeW}是：「${currentCard.text}」`); cb&&cb(); });
+}
+
+// AI 回答题目
+function aiAnswerCard(){
+  showTyping();
+  const typeW=currentCard.type==='truth'?'真心话':'大冒险';
+  callAI(buildPrompt(`你和 ${userName} 在玩真心话大冒险（${zoneName()}）。
+这一轮你输了，需要完成这道${typeW}：「${currentCard.text}」
+请以你的口吻认真回答（3-6句话）。真心话要真实有个性；大冒险要描述你的行动和感受。
+必须完全符合你的性格设定，不得OOC。直接输出回答，不要任何格式标签。`),
+  (t)=>{ removeTyping(); addAiBubble(t.trim()); setTimeout(showAfterAiAnswer,400); },
+  ()=>{ removeTyping(); addAiBubble('（TA想了很久，一时说不出来…）'); showAfterAiAnswer(); });
+}
+
+function showAfterAiAnswer(){
+  const bar=document.getElementById('bar-continue');
+  bar.innerHTML=`<div class="action-row">
+    <button class="btn btn-ghost" style="margin:0;" onclick="showInputBarForChat()">💬 和TA聊聊</button>
+    <button class="btn btn-rose" style="margin:0;" onclick="nextRound()">下一轮 →</button>
+  </div>`;
+  bar.style.display='block';
+}
+
+function showInputBarForChat(){
+  document.getElementById('bar-continue').style.display='none';
+  document.getElementById('bar-input').style.display='flex';
+  document.getElementById('chat-input').focus();
+}
+
+// ── 用户发消息 ──
+function sendUserMsg(){
+  const inp=document.getElementById('chat-input'), text=inp.value.trim();
+  if(!text)return;
+  const btn=document.getElementById('btn-send'); btn.disabled=true;
+  inp.value=''; autoResize(inp);
+  addUserBubble(text);
+  // 记录
+  let log=gameLog.find(l=>l.round===round);
+  if(!log){ log={round,loserIsUser,card:currentCard,userAnswer:text,aiReply:'',extra:[]}; gameLog.push(log); }
+  else { log.extra.push(userName+': '+text); }
+  showTyping();
+  const isFirstAnswer=loserIsUser&&!log.aiReply;
+  const promptStr=loserIsUser&&isFirstAnswer
+    ?buildPrompt(`你和 ${userName} 在玩真心话大冒险（${zoneName()}）。
+题目（${currentCard.type==='truth'?'真心话':'大冒险'}）：「${currentCard.text}」
+${userName} 的回答是：「${text}」
+请以你的口吻对TA的回答做出回应（2-4句话），可以感动、调侃、追问或分享感受。
+必须符合你的性格设定，不得OOC。直接输出回复，不要格式标签。`)
+    :buildPrompt(`你和 ${userName} 在玩真心话大冒险，正在聊天。
+本轮题目是：「${currentCard.text}」
+${userName} 说：「${text}」
+请以你的口吻自然回应（2-3句话），像真实对话。
+必须符合你的性格设定，不得OOC。直接输出回复。`);
+  callAI(promptStr,(reply)=>{
+    removeTyping(); const r=reply.trim(); addAiBubble(r); btn.disabled=false;
+    if(log) log.aiReply=(log.aiReply||'')+r+' ';
+    document.getElementById('bar-input').style.display='none';
+    document.getElementById('bar-after').style.display='block';
+  },()=>{ removeTyping(); addAiBubble('…'); btn.disabled=false;
+    document.getElementById('bar-input').style.display='none';
+    document.getElementById('bar-after').style.display='block';
+  });
+}
+
+function showInputBar(){
+  document.getElementById('bar-after').style.display='none';
+  document.getElementById('bar-input').style.display='flex';
+  document.getElementById('chat-input').focus();
+}
+
+// ── 下一轮 ──
+function nextRound(){
+  round++;
+  if(round>=totalRounds){ endGame(); return; }
+  document.getElementById('btn-enter-card').style.display='none';
+  document.getElementById('btn-roll').disabled=false;
+  document.getElementById('dice-user').textContent='🎲';
+  document.getElementById('dice-ai').textContent='🎲';
+  document.getElementById('dice-msg').textContent='点击下方按钮掷骰';
+  updateRoundInfo(); showScreen('s-dice');
+}
+
+// ── 游戏结束 ──
+function endGame(){
+  showScreen('s-end');
+  document.getElementById('summary-loading').style.display='flex';
+  document.getElementById('summary-text').style.display='none';
+  const logStr=gameLog.map((l,i)=>{
+    const tw=l.card.type==='truth'?'真心话':'大冒险';
+    const loser=l.loserIsUser?userName:aiName;
+    let s=`第${i+1}轮：${loser}抽到${tw}「${l.card.text}」`;
+    if(l.userAnswer) s+=`，${userName}说：「${l.userAnswer.slice(0,30)}」`;
+    if(l.aiReply) s+=`，你回应：「${l.aiReply.slice(0,30)}」`;
+    return s;
+  }).join('；\n');
+  callAI(buildPrompt(`你和 ${userName} 刚刚完成了一场${zoneName()}的真心话大冒险（共${totalRounds}轮）。
+游戏摘要：
+${logStr||'（暂无记录）'}
+
+请以你的口吻写一段温柔或俏皮的游戏总结（4-6句话），
+可以提到印象深刻的瞬间、感受，或对 ${userName} 说的话。
+必须完全符合你的性格设定，不得OOC。直接输出总结，不要格式标签。`),
+  (text)=>{
+    document.getElementById('summary-loading').style.display='none';
+    const el=document.getElementById('summary-text'); el.textContent=text.trim(); el.style.display='block';
+  },()=>{
+    document.getElementById('summary-loading').style.display='none';
+    const el=document.getElementById('summary-text'); el.textContent='今晚玩得很开心，谢谢你的真心与勇气。💕'; el.style.display='block';
+  });
+}
+
+function endAndNotify(){
+  const s=document.getElementById('summary-text').textContent;
+  try{ Android.onGameEvent('game_end_summary',JSON.stringify({summary:s,zone:zoneName(),rounds:round})); }catch(e){}
+  toast('已告知 '+aiName+' 今晚的故事 💌');
+  setTimeout(()=>{ try{Android.onGameEvent('exit','{}');}catch(e){} },1500);
+}
+
+function restartGame(){ round=0;cards=[];gameLog=[];currentCard=null; showScreen('s-zone'); }
+
+// ── Prompt 构建（严格人设）──
+function buildPrompt(task){
+  let langRule = '';
+  try {
+    const lang = Android.getAiLang() || '';
+    if (lang && lang !== '默认 (中文)' && lang !== 'Chinese' && lang !== '中文') {
+      langRule = `\n【语言规则】你的所有回复必须用${lang}说。每句话严格按格式：${lang}内容（中文翻译）。例如：I love you（我爱你）。括号内只写中文翻译，不要其他内容。`;
+    }
+  } catch(e) {}
+  const p=aiPersona
+    ?`你是「${aiName}」。以下是你的完整角色人设，你必须严格按照此人设的性格、说话方式、语气、习惯来回应，绝对不能OOC（出戏），不能说"作为AI"之类的话：\n${aiPersona}${langRule}\n\n`
+    :`你是「${aiName}」，一个有个性的恋人。${langRule}\n\n`;
+  return p+task.trim();
+}
+
+
+// ── 聊天气泡 ──
+function getAiAvHtml(size){
+  const s=size||34; const uri=aiAvatarUri?(aiAvatarUri.startsWith('file://')?aiAvatarUri:'file://'+aiAvatarUri):'';
+  return uri?`<img src="${uri}" style="width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;" onerror="this.parentNode.textContent='🤖'">`:'🤖';
+}
+
+function addAiBubble(text){
+  const area=document.getElementById('chat-area');
+  // 解析翻译格式：原文（中文翻译）
+  let displayHtml = '';
+  const transRegex = /（([^）]{2,200})）/g;
+  let hasTranslation = false;
+  let processed = text.replace(transRegex, (match, trans) => {
+    hasTranslation = true;
+    return `<span class="orig-hide"></span><span class="trans-text" style="color:#b83050;font-size:0.9em;display:block;margin-top:2px;">${esc(trans)}</span>`;
+  });
+  if (hasTranslation) {
+    // 重新处理：原文 + 翻译分行显示
+    const parts = text.split(/（[^）]{2,200}）/);
+    const transMatches = [...text.matchAll(/（([^）]{2,200})）/g)].map(m => m[1]);
+    displayHtml = parts.map((part, i) => {
+      const t = transMatches[i] ? `<span style="color:#b83050;font-size:0.9em;display:block;margin-top:2px;">${esc(transMatches[i])}</span>` : '';
+      return esc(part.trim()) + t;
+    }).join('');
+  } else {
+    displayHtml = esc(text);
+  }
+  const d=document.createElement('div'); d.className='cmsg left';
+  d.innerHTML=`<div class="cav">${getAiAvHtml()}</div><div class="cbubble">${displayHtml}</div>`;
+  area.appendChild(d); d.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
+function addUserBubble(text){
+  const area=document.getElementById('chat-area');
+  const d=document.createElement('div'); d.className='cmsg right';
+  d.innerHTML=`<div class="cbubble">${esc(text)}</div><div class="cav">🙂</div>`;
+  area.appendChild(d); d.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
+function showTyping(){
+  const area=document.getElementById('chat-area');
+  const d=document.createElement('div'); d.className='cmsg left'; d.id='typing-el';
+  d.innerHTML=`<div class="cav">${getAiAvHtml()}</div><div class="typing-ind"><span></span><span></span><span></span></div>`;
+  area.appendChild(d); d.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
+function removeTyping(){ const el=document.getElementById('typing-el'); if(el)el.remove(); }
+
+function addChatTime(){
+  const area=document.getElementById('chat-area');
+  const d=document.createElement('div'); d.className='ctime';
+  const n=new Date(); d.textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;
+  area.appendChild(d);
+}
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// ── 工具 ──
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+let _tt; function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2500); }
+</script>
+</body>
+</html>

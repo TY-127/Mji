@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <!-- 顶部个人信息卡片 -->
+    <RelativeLayout
+        android:id="@+id/layoutUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="20dp"
+        android:background="#CCFFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/ivMyAvatar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerVertical="true"
+            android:background="#E0E0E0" />
+
+        <TextView
+            android:id="@+id/tvMyName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/ivMyAvatar"
+            android:text="未设置昵称"
+            android:textColor="#111111"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvMyId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvMyName"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/ivMyAvatar"
+            android:text="用户ID: 未设置"
+            android:textColor="#999999"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@android:drawable/ic_menu_edit"
+            app:tint="#999999" />
+    </RelativeLayout>
+
+    <!-- 间距 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp" />
+
+    <!-- 功能列表卡片 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CCFFFFFF"
+        android:orientation="vertical">
+
+        <!-- 服务（记账） -->
+        <RelativeLayout
+            android:id="@+id/layoutLedger"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingStart="20dp"
+            android:paddingEnd="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="服务"
+                android:textColor="#111111"
+                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_media_next"
+                app:tint="#CCCCCC" />
+        </RelativeLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="20dp" android:background="#EEEEEE" />
+
+        <!-- 运动 -->
+        <RelativeLayout
+            android:id="@+id/layoutSport"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingStart="20dp"
+            android:paddingEnd="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="运动"
+                android:textColor="#111111"
+                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_media_next"
+                app:tint="#CCCCCC" />
+        </RelativeLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="20dp" android:background="#EEEEEE" />
+
+        <!-- 健康 -->
+        <RelativeLayout
+            android:id="@+id/layoutHealth"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingStart="20dp"
+            android:paddingEnd="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="健康"
+                android:textColor="#111111"
+                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_media_next"
+                app:tint="#CCCCCC" />
+        </RelativeLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="20dp" android:background="#EEEEEE" />
+
+        <!-- APP 主题 ← 新增 -->
+        <RelativeLayout
+            android:id="@+id/layoutTheme"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingStart="20dp"
+            android:paddingEnd="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="🎨  APP 主题"
+                android:textColor="#111111"
+                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_media_next"
+                app:tint="#CCCCCC" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

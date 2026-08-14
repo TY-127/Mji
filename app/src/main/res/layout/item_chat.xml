@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/tvSystemMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#D4D4D4"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp"
+        android:text="你已成功添加好友"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <!-- 左边：AI的区域 -->
+    <RelativeLayout
+        android:id="@+id/layoutLeft"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardAvatarLeft"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+            <ImageView
+                android:id="@+id/ivAvatarLeft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/msgContainerLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/cardAvatarLeft"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <!-- 引用气泡（AI消息） -->
+            <LinearLayout
+                android:id="@+id/layoutQuoteLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="match_parent"
+                    android:minHeight="36dp"
+                    android:background="#576B95"
+                    android:layout_marginEnd="8dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_quote_left"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="6dp">
+                    <TextView
+                        android:id="@+id/tvQuoteNameLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#576B95"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp" />
+                    <TextView
+                        android:id="@+id/tvQuoteContentLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#666666"
+                        android:textSize="13sp"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMsgLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chat_left"
+                android:padding="12dp"
+                android:text="AI回复"
+                android:textColor="#111111"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/ivImageLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="200dp"
+                android:maxHeight="200dp"
+                android:background="@drawable/bg_chat_left"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/layoutVoiceLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chat_left"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/btnPlayVoiceIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▶️"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="8dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ılıılıılıılı"
+                    android:textColor="#B0B0B0"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="12dp"
+                    android:letterSpacing="0.1"/>
+                <TextView
+                    android:id="@+id/tvVoiceDurationLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5&quot;"
+                    android:textColor="#111111"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTranslatedTextLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/msgContainerLeft"
+            android:layout_alignStart="@id/msgContainerLeft"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_chat_left"
+            android:padding="10dp"
+            android:text="翻译内容"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvVoiceToText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTranslatedTextLeft"
+            android:layout_alignStart="@id/msgContainerLeft"
+            android:layout_marginTop="4dp"
+            android:text="转文字"
+            android:textColor="#576B95"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTimeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvVoiceToText"
+            android:layout_alignStart="@id/msgContainerLeft"
+            android:layout_marginTop="4dp"
+            android:text="17:50"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <!-- 右边：你的主场 -->
+    <RelativeLayout
+        android:id="@+id/layoutRight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardAvatarRight"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+            <ImageView
+                android:id="@+id/ivAvatarRight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/msgContainerRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/cardAvatarRight"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical">
+
+            <!-- 引用气泡（用户消息） -->
+            <LinearLayout
+                android:id="@+id/layoutQuoteRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="match_parent"
+                    android:minHeight="36dp"
+                    android:background="#AAFFFFFF"
+                    android:layout_marginEnd="8dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_quote_right"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="6dp">
+                    <TextView
+                        android:id="@+id/tvQuoteNameRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EEFFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp" />
+                    <TextView
+                        android:id="@+id/tvQuoteContentRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="13sp"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMsgRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chat_right"
+                android:padding="12dp"
+                android:text="你的消息"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/ivImageRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="200dp"
+                android:maxHeight="200dp"
+                android:background="@drawable/bg_chat_right"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/msgContainerRight"
+            android:layout_alignEnd="@id/msgContainerRight"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvReadStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已发送"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginEnd="6dp" />
+            <TextView
+                android:id="@+id/tvTimeRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="17:52"
+                android:textColor="#999999"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

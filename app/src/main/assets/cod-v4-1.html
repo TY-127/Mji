@@ -1,0 +1,2517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOINT BASE · OPERATION REMNANT</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--parchment:#e8dcc8;--parchment-dark:#d4c4a8;--parchment-aged:#c4ad8a;--ink:#1a140e;--ink-faded:#3d2f1f;--ink-light:#7a5c3a;--bg:#130f08;--bg-mid:#1e1608;--bg-panel:#181208;--red:#7a1a1a;--gold:#a87a10;--gold-light:#c9961a;--olive:#3a4820;--panel-w:260px;--topbar-h:48px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:'Courier Prime',monospace;color:var(--parchment);height:100vh;overflow:hidden;user-select:none;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;}
+.screen{display:none;position:fixed;inset:0;z-index:10;}
+.screen.active{display:flex;}
+/* TITLE */
+#s-title{flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#221808 0%,var(--bg) 70%);}
+.title-bg{position:absolute;font-family:'Special Elite',cursive;font-size:clamp(8rem,22vw,18rem);color:rgba(255,255,255,0.012);letter-spacing:0.4em;pointer-events:none;}
+.title-card{background:var(--parchment);color:var(--ink);width:min(440px,90vw);padding:2.8rem 2.4rem 2.2rem;position:relative;box-shadow:0 0 0 1px var(--parchment-aged),0 0 0 5px var(--bg),0 0 0 6px var(--parchment-aged),10px 16px 50px rgba(0,0,0,0.8);}
+.title-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 15% 15%,rgba(180,140,70,0.12) 0%,transparent 55%),radial-gradient(ellipse at 85% 80%,rgba(140,100,40,0.1) 0%,transparent 55%);pointer-events:none;}
+.t-stamp{position:absolute;top:1.4rem;right:1.4rem;width:68px;height:68px;border:2.5px solid rgba(120,20,20,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;transform:rotate(14deg);}
+.t-stamp span{font-family:'Special Elite',cursive;font-size:0.42rem;color:rgba(120,20,20,0.8);text-align:center;letter-spacing:0.08em;line-height:1.4;text-transform:uppercase;}
+.t-class{font-family:'Special Elite',cursive;font-size:0.6rem;letter-spacing:0.3em;color:var(--red);border-top:1px solid var(--red);border-bottom:1px solid var(--red);padding:0.28rem 0;text-align:center;margin-bottom:1.6rem;}
+.t-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4.5vw,2rem);font-weight:900;color:var(--ink);text-align:center;line-height:1.1;letter-spacing:0.04em;}
+.t-sub{font-family:'Special Elite',cursive;font-size:0.62rem;letter-spacing:0.22em;color:var(--ink-light);text-align:center;margin-top:0.5rem;}
+.t-div{display:flex;align-items:center;gap:0.8rem;margin:1.3rem 0;}
+.t-div::before,.t-div::after{content:'';flex:1;height:1px;background:var(--parchment-aged);}
+.t-div i{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);display:block;}
+.t-flavor{font-family:'IM Fell English',serif;font-style:italic;font-size:0.78rem;color:var(--ink-light);text-align:center;line-height:1.7;margin-bottom:1.6rem;}
+.menu-btn{display:block;width:100%;padding:0.72rem 1rem 0.72rem 2rem;margin-bottom:0.55rem;background:transparent;border:1px solid var(--parchment-aged);color:var(--ink);font-family:'Special Elite',cursive;font-size:0.82rem;letter-spacing:0.14em;cursor:pointer;text-align:left;position:relative;transition:all 0.18s;}
+.menu-btn::before{content:'▸';position:absolute;left:0.75rem;color:var(--gold);transition:transform 0.18s;}
+.menu-btn:hover{background:var(--parchment-dark);border-color:var(--ink-faded);}
+.menu-btn:hover::before{transform:translateX(3px);}
+.menu-btn.dim{opacity:0.45;}
+.t-ver{font-size:0.58rem;color:var(--ink-light);text-align:center;margin-top:1rem;opacity:0.6;font-family:'Special Elite',cursive;letter-spacing:0.1em;}
+/* API */
+#s-api{align-items:center;justify-content:center;background:var(--bg-mid);}
+.doc-card{background:var(--parchment);color:var(--ink);width:min(500px,92vw);padding:2.4rem;box-shadow:6px 10px 40px rgba(0,0,0,0.7),0 0 0 1px var(--parchment-aged);max-height:90vh;overflow-y:auto;}
+.doc-head{border-bottom:2px solid var(--ink);padding-bottom:1rem;margin-bottom:1.6rem;display:flex;justify-content:space-between;align-items:flex-start;}
+.doc-head-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;line-height:1.2;}
+.doc-head-ref{font-family:'Special Elite',cursive;font-size:0.58rem;color:var(--ink-light);text-align:right;line-height:1.6;}
+.doc-sub{font-family:'Special Elite',cursive;font-size:0.6rem;letter-spacing:0.18em;color:var(--ink-light);margin-top:0.3rem;}
+.f-group{margin-bottom:1.3rem;}
+.f-label{font-family:'Special Elite',cursive;font-size:0.6rem;letter-spacing:0.2em;color:var(--ink-faded);display:block;margin-bottom:0.4rem;}
+.f-input,.f-select{width:100%;background:rgba(0,0,0,0.04);border:none;border-bottom:1px solid var(--parchment-aged);padding:0.5rem 0.3rem;font-family:'Courier Prime',monospace;font-size:0.85rem;color:var(--ink);outline:none;transition:border-color 0.2s;}
+.f-input:focus,.f-select:focus{border-bottom-color:var(--gold);}
+.f-input::placeholder{color:var(--ink-light);opacity:0.5;}
+.f-select{cursor:pointer;appearance:none;}
+.f-note{font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:var(--ink-light);margin-top:0.3rem;}
+.model-row{display:flex;gap:0.6rem;align-items:flex-end;}
+.model-row .f-select{flex:1;}
+.fetch-btn{background:var(--ink-faded);color:var(--parchment);border:none;padding:0.5rem 0.9rem;font-family:'Special Elite',cursive;font-size:0.7rem;letter-spacing:0.12em;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
+.fetch-btn:hover{background:var(--ink);}
+.btn-p{width:100%;padding:0.8rem;background:var(--ink);color:var(--parchment);border:none;font-family:'Special Elite',cursive;font-size:0.82rem;letter-spacing:0.2em;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.btn-p:hover{background:var(--ink-faded);}
+.btn-s{width:100%;padding:0.6rem;background:transparent;color:var(--ink-light);border:1px solid var(--parchment-aged);font-family:'Special Elite',cursive;font-size:0.72rem;letter-spacing:0.15em;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.btn-s:hover{border-color:var(--ink-light);}
+/* CREATE */
+#s-create{align-items:flex-start;justify-content:center;background:var(--bg);overflow-y:auto;padding:2rem 1rem;}
+.create-wrap{width:min(660px,96vw);margin:0 auto;}
+.create-top{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(232,220,200,0.12);}
+.create-top h2{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--parchment);}
+.create-top p{font-family:'Special Elite',cursive;font-size:0.62rem;letter-spacing:0.22em;color:var(--parchment-aged);margin-top:0.4rem;}
+.c-section{background:var(--parchment);color:var(--ink);padding:1.8rem;margin-bottom:1rem;box-shadow:4px 6px 24px rgba(0,0,0,0.5);}
+.c-sec-title{font-family:'Special Elite',cursive;font-size:0.65rem;letter-spacing:0.25em;color:var(--red);margin-bottom:1.1rem;padding-bottom:0.4rem;border-bottom:1px solid var(--parchment-aged);}
+.c-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.c-field{margin-bottom:1rem;}
+.c-field:last-child{margin-bottom:0;}
+.c-field label{font-family:'Special Elite',cursive;font-size:0.58rem;letter-spacing:0.18em;color:var(--ink-faded);display:block;margin-bottom:0.35rem;}
+.c-field input,.c-field textarea{width:100%;background:rgba(0,0,0,0.04);border:none;border-bottom:1px solid var(--parchment-aged);padding:0.45rem 0.3rem;font-family:'Courier Prime',monospace;font-size:0.83rem;color:var(--ink);outline:none;transition:border-color 0.2s;resize:none;}
+.c-field textarea{height:68px;}
+.c-field input:focus,.c-field textarea:focus{border-bottom-color:var(--gold);}
+.c-field input::placeholder,.c-field textarea::placeholder{color:var(--ink-light);opacity:0.5;}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.55rem;}
+.role-card{border:1px solid var(--parchment-aged);padding:0.75rem 0.5rem;cursor:pointer;text-align:center;transition:all 0.18s;position:relative;}
+.role-card:hover{border-color:var(--gold);background:rgba(168,122,16,0.06);}
+.role-card.sel{border-color:var(--red);background:rgba(122,26,26,0.07);}
+.role-card.sel::after{content:'✓';position:absolute;top:0.3rem;right:0.4rem;font-size:0.55rem;color:var(--red);}
+.role-icon{font-size:1.1rem;margin-bottom:0.25rem;}
+.role-name{font-family:'Special Elite',cursive;font-size:0.62rem;color:var(--ink);}
+.role-desc{font-size:0.52rem;color:var(--ink-light);margin-top:0.18rem;line-height:1.3;}
+.char-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.55rem;}
+.char-card{border:1px solid var(--parchment-aged);padding:0.8rem;cursor:pointer;transition:all 0.18s;position:relative;}
+.char-card:hover{border-color:var(--gold);}
+.char-card.sel{border-color:var(--red);}
+.char-card.sel::after{content:'◆';position:absolute;top:0.4rem;right:0.5rem;font-size:0.5rem;color:var(--red);}
+.char-name{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;}
+.char-meta{font-family:'Special Elite',cursive;font-size:0.52rem;color:var(--ink-light);margin-top:0.2rem;}
+.char-tag{font-size:0.58rem;color:var(--ink-faded);margin-top:0.35rem;font-style:italic;line-height:1.3;}
+/* GAME */
+#s-game{flex-direction:column;background:var(--bg);}
+.topbar{height:var(--topbar-h);background:var(--parchment);border-bottom:2px solid var(--ink);display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;padding:0 0.8rem;gap:0.6rem;flex-shrink:0;position:relative;z-index:200;}
+.tb-toggle{width:32px;height:32px;background:transparent;border:1px solid var(--parchment-aged);color:var(--ink-faded);cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all 0.18s;flex-shrink:0;}
+.tb-toggle:hover{background:var(--parchment-dark);}
+.tb-left{display:flex;align-items:center;gap:0.8rem;}
+.tb-sep{width:1px;height:22px;background:var(--parchment-aged);}
+.tb-item{display:flex;flex-direction:column;}
+.tb-lbl{font-family:'Special Elite',cursive;font-size:0.46rem;letter-spacing:0.18em;color:var(--ink-light);}
+.tb-val{font-family:'Courier Prime',monospace;font-size:0.75rem;font-weight:700;color:var(--ink);white-space:nowrap;}
+.tb-right{display:flex;align-items:center;gap:0.6rem;justify-content:flex-end;}
+.tb-datetime{font-family:'Special Elite',cursive;font-size:0.68rem;letter-spacing:0.06em;color:var(--ink);background:rgba(0,0,0,0.06);padding:0.18rem 0.6rem;border:1px solid var(--parchment-aged);white-space:nowrap;}
+.tb-char{display:flex;align-items:center;gap:0.4rem;border-left:1px solid var(--parchment-aged);padding-left:0.6rem;}
+.tb-char-name{font-family:'Playfair Display',serif;font-size:0.8rem;font-weight:700;color:var(--ink);}
+.tb-char-emo{font-size:0.95rem;}
+.game-body{flex:1;display:flex;overflow:hidden;position:relative;}
+/* DRAWER */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:299;}
+.drawer-overlay.open{display:block;}
+.drawer{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--panel-w);background:var(--bg-panel);border-right:1px solid rgba(232,220,200,0.08);z-index:300;transform:translateX(-100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;overflow:hidden;}
+.drawer.open{transform:translateX(0);}
+.drawer-tabs{display:flex;border-bottom:1px solid rgba(232,220,200,0.08);flex-shrink:0;}
+.dtab{flex:1;padding:0.6rem 0;background:transparent;border:none;font-family:'Special Elite',cursive;font-size:0.48rem;letter-spacing:0.06em;color:rgba(232,220,200,0.3);cursor:pointer;transition:all 0.18s;border-bottom:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:0.18rem;}
+.dtab:hover{color:rgba(232,220,200,0.6);}
+.dtab.active{color:var(--gold-light);border-bottom-color:var(--gold-light);}
+.dtab-icon{font-size:0.85rem;}
+.dtab-lbl{font-size:0.44rem;letter-spacing:0.08em;}
+.drawer-content{flex:1;overflow-y:auto;padding:1rem;}
+/* STATUS */
+.stat-row{margin-bottom:0.9rem;}
+.stat-lbl{font-family:'Special Elite',cursive;font-size:0.5rem;letter-spacing:0.2em;color:rgba(232,220,200,0.3);margin-bottom:0.22rem;}
+.stat-val{font-family:'Courier Prime',monospace;font-size:0.82rem;color:var(--parchment);}
+.stat-val.big{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;}
+.stat-money{background:rgba(255,255,255,0.04);border:1px solid rgba(232,220,200,0.1);padding:0.55rem 0.75rem;margin-bottom:0.9rem;}
+.stat-money-lbl{font-family:'Special Elite',cursive;font-size:0.5rem;letter-spacing:0.2em;color:rgba(232,220,200,0.3);}
+.stat-money-val{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--gold-light);margin-top:0.1rem;}
+.stat-bar-wrap{margin-bottom:0.65rem;}
+.stat-bar-head{display:flex;justify-content:space-between;margin-bottom:0.22rem;}
+.stat-bar-name{font-family:'Special Elite',cursive;font-size:0.52rem;color:rgba(232,220,200,0.45);letter-spacing:0.1em;}
+.stat-bar-val{font-family:'Courier Prime',monospace;font-size:0.52rem;color:rgba(232,220,200,0.45);}
+.stat-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.stat-bar-fill{height:100%;border-radius:2px;transition:width 0.6s ease;}
+.fill-stamina{background:linear-gradient(90deg,#4a7a3a,#6aaa5a);}
+.fill-ability{background:linear-gradient(90deg,#2a5a8a,#4a8aba);}
+.fill-mood{background:linear-gradient(90deg,#8a5a2a,#c98a4a);}
+.stat-rank-wrap{margin-top:0.4rem;}
+.stat-rank-head{display:flex;justify-content:space-between;margin-bottom:0.28rem;}
+.stat-rank-name{font-family:'Special Elite',cursive;font-size:0.52rem;color:rgba(232,220,200,0.35);letter-spacing:0.1em;}
+.stat-rank-val{font-family:'Special Elite',cursive;font-size:0.52rem;color:var(--gold);}
+.stat-rank-bar{height:4px;background:rgba(255,255,255,0.06);}
+.stat-rank-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width 0.6s;}
+/* DOSSIER */
+.dossier-char{border:1px solid rgba(232,220,200,0.08);margin-bottom:0.5rem;overflow:hidden;}
+.dossier-head{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.75rem;cursor:pointer;transition:background 0.18s;}
+.dossier-head:hover{background:rgba(255,255,255,0.04);}
+.dossier-head-left{display:flex;align-items:center;gap:0.5rem;}
+.dossier-char-name{font-family:'Playfair Display',serif;font-size:0.88rem;font-weight:700;color:var(--parchment);}
+.dossier-rel{font-family:'Special Elite',cursive;font-size:0.48rem;letter-spacing:0.08em;padding:0.1rem 0.35rem;border:1px solid rgba(232,220,200,0.2);color:rgba(232,220,200,0.45);}
+.dossier-arrow{font-size:0.58rem;color:rgba(232,220,200,0.3);transition:transform 0.2s;}
+.dossier-arrow.open{transform:rotate(90deg);}
+.dossier-body{display:none;padding:0.75rem;border-top:1px solid rgba(232,220,200,0.06);background:rgba(0,0,0,0.15);}
+.dossier-body.open{display:block;}
+.d-row{display:flex;justify-content:space-between;margin-bottom:0.38rem;align-items:baseline;}
+.d-lbl{font-family:'Special Elite',cursive;font-size:0.5rem;color:rgba(232,220,200,0.3);letter-spacing:0.12em;}
+.d-val{font-family:'Courier Prime',monospace;font-size:0.6rem;color:var(--parchment-aged);}
+.d-aff-wrap{margin-top:0.55rem;}
+.d-aff-stage{font-family:'Special Elite',cursive;font-size:0.5rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.22rem;}
+.d-aff-bar{height:3px;background:rgba(255,255,255,0.07);}
+.d-aff-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));transition:width 0.6s;}
+.d-aff-nums{display:flex;justify-content:space-between;margin-top:0.18rem;}
+.d-aff-cur{font-size:0.5rem;color:var(--gold);}
+.d-aff-max{font-size:0.5rem;color:rgba(232,220,200,0.3);}
+.d-voice{margin-top:0.7rem;padding:0.5rem 0.6rem;border-left:2px solid rgba(168,122,16,0.4);background:rgba(168,122,16,0.05);}
+.d-voice-lbl{font-family:'Special Elite',cursive;font-size:0.46rem;letter-spacing:0.15em;color:rgba(232,220,200,0.25);margin-bottom:0.2rem;}
+.d-voice-en{font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:rgba(232,220,200,0.55);line-height:1.5;}
+.d-voice-zh{font-family:'IM Fell English',serif;font-style:italic;font-size:0.65rem;color:rgba(232,220,200,0.35);line-height:1.4;margin-top:0.15rem;}
+/* MAP */
+.map-group{margin-bottom:0.7rem;}
+.map-group-title{font-family:'Special Elite',cursive;font-size:0.58rem;letter-spacing:0.2em;color:rgba(232,220,200,0.32);display:flex;align-items:center;justify-content:space-between;padding:0.45rem 0;cursor:pointer;border-bottom:1px solid rgba(232,220,200,0.06);}
+.map-group-title:hover{color:rgba(232,220,200,0.55);}
+.map-group-arrow{font-size:0.52rem;transition:transform 0.2s;}
+.map-group-arrow.open{transform:rotate(90deg);}
+.map-locs{display:none;padding-top:0.3rem;}
+.map-locs.open{display:block;}
+.map-loc{display:block;width:100%;padding:0.4rem 0.75rem;background:transparent;border:none;font-family:'Courier Prime',monospace;font-size:0.7rem;color:rgba(232,220,200,0.45);text-align:left;cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;}
+.map-loc:hover{color:var(--parchment);border-left-color:var(--gold);background:rgba(255,255,255,0.03);}
+.map-loc.current{color:var(--gold-light);border-left-color:var(--gold-light);}
+.map-loc.locked{opacity:0.28;cursor:not-allowed;}
+/* FORUM */
+.forum-board-btn{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0.75rem;background:rgba(255,255,255,0.03);border:1px solid rgba(232,220,200,0.08);cursor:pointer;transition:all 0.18s;margin-bottom:0.4rem;}
+.forum-board-btn:hover{border-color:rgba(232,220,200,0.2);background:rgba(255,255,255,0.06);}
+.forum-board-name{font-family:'Special Elite',cursive;font-size:0.65rem;letter-spacing:0.1em;color:rgba(232,220,200,0.7);}
+.forum-board-count{font-family:'Courier Prime',monospace;font-size:0.55rem;color:rgba(232,220,200,0.3);}
+.forum-hot{font-size:0.5rem;color:var(--red);margin-left:0.3rem;}
+.forum-view{display:none;}
+.forum-view.open{display:block;}
+.forum-back{background:transparent;border:none;color:var(--gold);font-family:'Special Elite',cursive;font-size:0.6rem;letter-spacing:0.12em;cursor:pointer;margin-bottom:0.8rem;padding:0;}
+.forum-back:hover{color:var(--gold-light);}
+.forum-board-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--parchment);margin-bottom:0.3rem;}
+.forum-board-desc{font-family:'IM Fell English',serif;font-style:italic;font-size:0.68rem;color:rgba(232,220,200,0.35);margin-bottom:0.8rem;}
+.forum-actions{display:flex;gap:0.4rem;margin-bottom:0.8rem;}
+.forum-act-btn{padding:0.35rem 0.7rem;background:transparent;border:1px solid rgba(232,220,200,0.12);color:rgba(232,220,200,0.45);font-family:'Special Elite',cursive;font-size:0.55rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.18s;}
+.forum-act-btn:hover{border-color:rgba(232,220,200,0.3);color:rgba(232,220,200,0.8);}
+.forum-act-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.post-list{display:flex;flex-direction:column;gap:0.5rem;}
+.post-card{background:rgba(255,255,255,0.03);border:1px solid rgba(232,220,200,0.07);padding:0.65rem 0.75rem;cursor:pointer;transition:all 0.18s;}
+.post-card:hover{border-color:rgba(232,220,200,0.18);background:rgba(255,255,255,0.05);}
+.post-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:0.3rem;}
+.post-title{font-family:'Courier Prime',monospace;font-size:0.72rem;color:var(--parchment);line-height:1.3;}
+.post-replies{font-size:0.52rem;color:rgba(232,220,200,0.28);}
+.post-meta{display:flex;align-items:center;gap:0.5rem;}
+.post-author{font-family:'Special Elite',cursive;font-size:0.5rem;color:var(--gold);letter-spacing:0.08em;}
+.post-time{font-size:0.48rem;color:rgba(232,220,200,0.25);}
+.post-preview{font-size:0.6rem;color:rgba(232,220,200,0.4);margin-top:0.25rem;line-height:1.4;font-style:italic;}
+.post-detail{display:none;}
+.post-detail.open{display:block;}
+.post-detail-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--parchment);margin-bottom:0.5rem;line-height:1.3;}
+.post-detail-meta{font-family:'Special Elite',cursive;font-size:0.5rem;color:rgba(232,220,200,0.3);margin-bottom:0.8rem;letter-spacing:0.1em;}
+.post-detail-body{font-family:'Courier Prime',monospace;font-size:0.72rem;color:rgba(232,220,200,0.7);line-height:1.7;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid rgba(232,220,200,0.08);}
+.comment-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.8rem;}
+.comment{background:rgba(255,255,255,0.02);padding:0.5rem 0.6rem;border-left:2px solid rgba(232,220,200,0.1);}
+.comment.highlight{border-left-color:var(--gold);}
+.comment-author{font-family:'Special Elite',cursive;font-size:0.5rem;color:rgba(232,220,200,0.4);margin-bottom:0.18rem;letter-spacing:0.08em;}
+.comment-author.char{color:var(--gold);}
+.comment-text{font-family:'Courier Prime',monospace;font-size:0.68rem;color:rgba(232,220,200,0.65);line-height:1.5;}
+.comment-input-wrap{display:flex;gap:0.4rem;align-items:flex-end;}
+.comment-input{flex:1;background:rgba(255,255,255,0.04);border:none;border-bottom:1px solid rgba(232,220,200,0.15);padding:0.4rem 0.3rem;font-family:'Courier Prime',monospace;font-size:0.7rem;color:var(--parchment);outline:none;resize:none;height:34px;}
+.comment-input::placeholder{color:rgba(232,220,200,0.2);font-style:italic;}
+.comment-input:focus{border-bottom-color:var(--gold);}
+.comment-send{background:rgba(168,122,16,0.3);border:1px solid rgba(168,122,16,0.4);color:var(--gold-light);font-family:'Special Elite',cursive;font-size:0.58rem;padding:0.3rem 0.6rem;cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+.comment-send:hover{background:rgba(168,122,16,0.5);}
+.comment-send:disabled{opacity:0.3;cursor:not-allowed;}
+.new-post-form{display:none;margin-top:0.5rem;}
+.new-post-form.open{display:block;}
+.new-post-form input,.new-post-form textarea{width:100%;background:rgba(255,255,255,0.04);border:none;border-bottom:1px solid rgba(232,220,200,0.15);padding:0.45rem 0.3rem;font-family:'Courier Prime',monospace;font-size:0.75rem;color:var(--parchment);outline:none;resize:none;margin-bottom:0.6rem;}
+.new-post-form textarea{height:80px;}
+.new-post-form input::placeholder,.new-post-form textarea::placeholder{color:rgba(232,220,200,0.2);font-style:italic;}
+.new-post-form input:focus,.new-post-form textarea:focus{border-bottom-color:var(--gold);}
+/* BOUNTY */
+.bounty-header{margin-bottom:0.8rem;}
+.bounty-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--parchment);}
+.bounty-subtitle{font-family:'Special Elite',cursive;font-size:0.52rem;letter-spacing:0.15em;color:rgba(232,220,200,0.3);margin-top:0.2rem;}
+.bounty-refresh{font-family:'Special Elite',cursive;font-size:0.52rem;color:rgba(232,220,200,0.25);margin-top:0.3rem;}
+.bounty-active{background:rgba(168,122,16,0.08);border:1px solid rgba(168,122,16,0.2);padding:0.65rem 0.75rem;margin-bottom:0.8rem;}
+.bounty-active-lbl{font-family:'Special Elite',cursive;font-size:0.5rem;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.3rem;}
+.bounty-active-title{font-family:'Courier Prime',monospace;font-size:0.72rem;color:var(--parchment);margin-bottom:0.2rem;line-height:1.4;}
+.bounty-active-meta{display:flex;justify-content:space-between;align-items:center;margin-top:0.4rem;flex-wrap:wrap;gap:0.3rem;}
+.bounty-timer{font-family:'Courier Prime',monospace;font-size:0.62rem;color:var(--red);}
+.bounty-reward{font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:700;color:var(--gold-light);}
+.bounty-abandon{background:transparent;border:1px solid rgba(122,26,26,0.4);color:rgba(232,220,200,0.4);font-family:'Special Elite',cursive;font-size:0.5rem;padding:0.2rem 0.5rem;cursor:pointer;letter-spacing:0.1em;transition:all 0.18s;}
+.bounty-abandon:hover{border-color:var(--red);color:var(--red);}
+.bounty-list{display:flex;flex-direction:column;gap:0.5rem;}
+.bounty-card{background:rgba(255,255,255,0.03);border:1px solid rgba(232,220,200,0.08);padding:0.65rem 0.75rem;transition:all 0.18s;}
+.bounty-card.available{cursor:pointer;}
+.bounty-card.available:hover{border-color:rgba(232,220,200,0.2);background:rgba(255,255,255,0.05);}
+.bounty-card.taken{opacity:0.35;}
+.bounty-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.3rem;}
+.bounty-card-title{font-family:'Courier Prime',monospace;font-size:0.7rem;color:var(--parchment);line-height:1.4;flex:1;margin-right:0.5rem;}
+.bounty-card-reward{font-family:'Playfair Display',serif;font-size:0.88rem;font-weight:700;color:var(--gold-light);white-space:nowrap;}
+.bounty-card-meta{display:flex;justify-content:space-between;align-items:center;}
+.bounty-card-poster{font-family:'Special Elite',cursive;font-size:0.48rem;color:rgba(232,220,200,0.3);letter-spacing:0.08em;}
+.bounty-card-deadline{font-family:'Courier Prime',monospace;font-size:0.5rem;color:rgba(232,220,200,0.3);}
+.bounty-card-tag{font-size:0.5rem;padding:0.1rem 0.35rem;border:1px solid;font-family:'Special Elite',cursive;letter-spacing:0.06em;}
+.bounty-tag-easy{color:#6aaa5a;border-color:rgba(106,170,90,0.3);}
+.bounty-tag-normal{color:var(--gold);border-color:rgba(168,122,16,0.3);}
+.bounty-tag-hard{color:var(--red);border-color:rgba(122,26,26,0.3);}
+/* SETTINGS */
+.settings-section{margin-bottom:1.1rem;}
+.settings-title{font-family:'Special Elite',cursive;font-size:0.55rem;letter-spacing:0.2em;color:rgba(232,220,200,0.28);margin-bottom:0.55rem;padding-bottom:0.28rem;border-bottom:1px solid rgba(232,220,200,0.06);}
+.save-slots{display:flex;flex-direction:column;gap:0.4rem;}
+.save-slot{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.65rem;border:1px solid rgba(232,220,200,0.1);background:rgba(255,255,255,0.02);}
+.save-slot-info{display:flex;flex-direction:column;}
+.save-slot-num{font-family:'Special Elite',cursive;font-size:0.55rem;color:rgba(232,220,200,0.35);letter-spacing:0.12em;}
+.save-slot-data{font-family:'Courier Prime',monospace;font-size:0.6rem;color:rgba(232,220,200,0.55);margin-top:0.12rem;}
+.save-slot-btns{display:flex;gap:0.3rem;}
+.ss-btn{background:transparent;border:1px solid rgba(232,220,200,0.14);color:rgba(232,220,200,0.38);font-family:'Special Elite',cursive;font-size:0.5rem;padding:0.2rem 0.4rem;cursor:pointer;transition:all 0.15s;letter-spacing:0.08em;}
+.ss-btn:hover{border-color:rgba(232,220,200,0.4);color:rgba(232,220,200,0.8);}
+/* SCENE */
+.scene-area{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.8rem;}
+.loc-header{background:rgba(232,220,200,0.04);border:1px solid rgba(232,220,200,0.1);border-left:3px solid var(--gold);padding:0.55rem 0.9rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.loc-name{font-family:'Special Elite',cursive;font-size:0.72rem;letter-spacing:0.2em;color:var(--gold-light);}
+.loc-desc{font-family:'IM Fell English',serif;font-style:italic;font-size:0.68rem;color:rgba(232,220,200,0.4);}
+.loc-time{font-family:'Courier Prime',monospace;font-size:0.62rem;color:rgba(232,220,200,0.28);}
+.narrative{background:rgba(232,220,200,0.04);border-left:2px solid var(--gold);padding:0.9rem 1.1rem;max-width:720px;align-self:center;width:100%;animation:fadeUp 0.35s ease;}
+.narrative p{font-family:'IM Fell English',serif;font-size:0.88rem;line-height:1.85;color:rgba(232,220,200,0.68);}
+.encounter-list{display:flex;flex-wrap:wrap;gap:0.5rem;max-width:720px;align-self:center;width:100%;}
+.encounter-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(232,220,200,0.12);padding:0.38rem 0.75rem;cursor:pointer;font-family:'Special Elite',cursive;font-size:0.62rem;color:rgba(232,220,200,0.55);letter-spacing:0.1em;transition:all 0.18s;}
+.encounter-chip:hover{border-color:var(--gold);color:var(--gold-light);}
+/* DIALOGUE */
+.dialogue-overlay{display:none;position:fixed;inset:0;z-index:400;flex-direction:column;justify-content:flex-end;}
+.dialogue-overlay.open{display:flex;}
+.dialogue-scene-bg{flex:1;background:linear-gradient(to bottom,rgba(0,0,0,0.3),rgba(0,0,0,0.6));cursor:pointer;}
+.dialogue-panel{background:rgba(20,14,6,0.95);border-top:2px solid var(--parchment-aged);padding:1.1rem 1.3rem 0.8rem;backdrop-filter:blur(8px);min-height:200px;display:flex;flex-direction:column;gap:0.7rem;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.dlg-header{display:flex;align-items:baseline;gap:0.7rem;}
+.dlg-charname{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--gold-light);}
+.dlg-faction{font-family:'Special Elite',cursive;font-size:0.55rem;color:rgba(232,220,200,0.3);letter-spacing:0.1em;}
+.dlg-body{}
+.dlg-action{font-family:'IM Fell English',serif;font-style:italic;font-size:0.76rem;color:rgba(232,220,200,0.38);line-height:1.5;margin-bottom:0.3rem;}
+.dlg-line{font-family:'Courier Prime',monospace;font-size:0.9rem;line-height:1.65;color:var(--parchment);margin-bottom:0.18rem;}
+.dlg-line.foreign{color:var(--gold-light);}
+.dlg-trans{font-family:'IM Fell English',serif;font-style:italic;font-size:0.76rem;color:rgba(232,220,200,0.45);margin-bottom:0.25rem;}
+.dlg-loading{font-family:'Special Elite',cursive;font-size:0.7rem;color:rgba(232,220,200,0.35);letter-spacing:0.15em;padding:0.5rem 0;}
+.dlg-loading::after{content:'...';animation:dots 1.2s infinite;}
+@keyframes dots{0%,20%{content:'·'}40%,60%{content:'··'}80%,100%{content:'···'}}
+.dlg-options{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-top:0.4rem;}
+.dlg-opt{padding:0.6rem 0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(232,220,200,0.1);cursor:pointer;transition:all 0.18s;text-align:left;}
+.dlg-opt:hover{background:rgba(255,255,255,0.08);border-color:rgba(232,220,200,0.25);}
+.dlg-opt:disabled,.dlg-opt[disabled]{opacity:0.4;cursor:not-allowed;}
+.dlg-opt-tag{font-family:'Special Elite',cursive;font-size:0.48rem;letter-spacing:0.15em;margin-bottom:0.22rem;}
+.dlg-opt-tag.warm{color:#c98a5a;}
+.dlg-opt-tag.sharp{color:#7a9a5a;}
+.dlg-opt-tag.dark{color:#5a7a9a;}
+.dlg-opt-tag.custom{color:rgba(232,220,200,0.35);}
+.dlg-opt-text{font-family:'Courier Prime',monospace;font-size:0.7rem;color:rgba(232,220,200,0.65);line-height:1.4;}
+.dlg-opt.custom-input{grid-column:1/-1;display:flex;align-items:center;gap:0.6rem;}
+.dlg-custom-field{flex:1;background:transparent;border:none;border-bottom:1px solid rgba(232,220,200,0.18);font-family:'Courier Prime',monospace;font-size:0.76rem;color:var(--parchment);outline:none;padding:0.2rem 0;}
+.dlg-custom-field::placeholder{color:rgba(232,220,200,0.22);font-style:italic;}
+.dlg-send-btn{background:transparent;border:1px solid rgba(232,220,200,0.2);color:rgba(232,220,200,0.45);font-family:'Special Elite',cursive;font-size:0.58rem;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.1em;transition:all 0.18s;white-space:nowrap;}
+.dlg-send-btn:hover{border-color:rgba(232,220,200,0.5);color:var(--parchment);}
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--ink);color:var(--parchment);font-family:'Special Elite',cursive;font-size:0.7rem;letter-spacing:0.14em;padding:0.5rem 1.3rem;z-index:9999;transition:transform 0.28s;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+/* WATERMARK */
+.watermark{position:fixed;bottom:0.6rem;left:0.7rem;font-family:'Special Elite',cursive;font-size:0.58rem;color:rgba(232,220,200,0.18);letter-spacing:0.1em;z-index:9997;pointer-events:none;user-select:none;}
+@media(max-width:600px){.role-grid{grid-template-columns:repeat(2,1fr);}.char-grid{grid-template-columns:1fr;}.c-row{grid-template-columns:1fr;}.dlg-options{grid-template-columns:1fr;}.tb-left .tb-sep:last-of-type,.tb-left .tb-item:last-of-type{display:none;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="watermark">@观南</div>
+
+<!-- TITLE -->
+<div class="screen active" id="s-title">
+  <div class="title-bg">141</div>
+  <div class="title-card">
+    <div class="t-stamp"><span>TOP<br>SECRET<br>//TF141</span></div>
+    <div class="t-class">// CLASSIFIED — EYES ONLY //</div>
+    <div class="t-title">联合基地档案</div>
+    <div class="t-sub">JOINT BASE DOSSIER · OPERATION REMNANT</div>
+    <div class="t-div"><i></i></div>
+    <div class="t-flavor">"四支小队，一个基地。<br>2030年，一段你不曾预料的故事。"</div>
+    <button class="menu-btn" onclick="show('s-api')">开始新游戏</button>
+    <button class="menu-btn dim" id="btn-load" onclick="loadGame()">读取存档</button>
+    <button class="menu-btn" onclick="show('s-api')">API 设置</button>
+    <div class="t-ver">VER 0.3 · ALPHA · CLEARANCE LV.5</div>
+  </div>
+</div>
+
+<!-- API -->
+<div class="screen" id="s-api">
+  <div class="doc-card">
+    <div class="doc-head">
+      <div><div class="doc-head-title">系统接入<br>授权配置</div><div class="doc-sub">COMMUNICATION PROTOCOL · OPERATOR TERMINAL</div></div>
+      <div class="doc-head-ref">FORM-7731<br>API AUTH<br>REV.3</div>
+    </div>
+    <div class="f-group">
+      <label class="f-label">API 端点 BASE URL</label>
+      <input class="f-input" id="api-url" placeholder="https://api.openai.com/v1">
+      <div class="f-note">留空使用官方端点，第三方中转填完整地址。</div>
+    </div>
+    <div class="f-group">
+      <label class="f-label">API 密钥 API KEY</label>
+      <input class="f-input" id="api-key" type="password" placeholder="sk-...">
+      <div class="f-note">仅存储于本地，不上传任何服务器。</div>
+    </div>
+    <div class="f-group">
+      <label class="f-label">模型 MODEL</label>
+      <div class="model-row">
+        <select class="f-select" id="api-model-select" onchange="syncModelInput('api')">
+          <option value="">— 手动输入 —</option>
+          <option value="gpt-4o">gpt-4o</option>
+          <option value="gpt-4o-mini">gpt-4o-mini（更快）</option>
+          <option value="gpt-4-turbo">gpt-4-turbo</option>
+          <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+          <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet</option>
+          <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+          <option value="deepseek-chat">deepseek-chat</option>
+        </select>
+        <button class="fetch-btn" onclick="fetchModels()">拉取</button>
+      </div>
+      <input class="f-input" id="api-model" placeholder="或直接输入模型名，如 gpt-4o" style="margin-top:0.4rem;">
+      <div class="f-note">下拉选择常用模型，或直接输入模型名。拉取按钮需中转支持 /models 接口。</div>
+    </div>
+    <button class="btn-p" onclick="saveApi()">确认 · 继续建档</button>
+    <button class="btn-s" onclick="show('s-title')">← 返回</button>
+  </div>
+</div>
+
+<!-- CREATE -->
+<div class="screen" id="s-create">
+  <div class="create-wrap">
+    <div class="create-top"><h2>建立档案</h2><p>PERSONNEL FILE · NEW OPERATIVE REGISTRATION</p></div>
+    <div class="c-section">
+      <div class="c-sec-title">§ 01 · 基础信息 PERSONAL INFO</div>
+      <div class="c-row">
+        <div class="c-field"><label>代号 CALLSIGN</label><input type="text" id="c-name" placeholder="你的代号"></div>
+        <div class="c-field"><label>真实姓名（选填）</label><input type="text" id="c-realname" placeholder="可留空"></div>
+      </div>
+      <div class="c-field"><label>外形描述 APPEARANCE</label><textarea id="c-appearance" placeholder="描述外形特征，例如：身材娇小，短发，总戴一副金丝边眼镜…"></textarea></div>
+      <div class="c-field"><label>性格特质 PERSONALITY</label><textarea id="c-personality" placeholder="描述性格，例如：表面冷静，实则热血，面对危险时反而异常镇定…"></textarea></div>
+    </div>
+    <div class="c-section">
+      <div class="c-sec-title">§ 02 · 职位分配 ROLE ASSIGNMENT</div>
+      <div class="role-grid">
+        <div class="role-card" onclick="selRole(this,'前线战士')"><div class="role-icon">⚔</div><div class="role-name">前线战士</div><div class="role-desc">近身突破·直接作战</div></div>
+        <div class="role-card" onclick="selRole(this,'狙击手')"><div class="role-icon">🎯</div><div class="role-name">狙击手</div><div class="role-desc">远程压制·侦察支援</div></div>
+        <div class="role-card" onclick="selRole(this,'医疗兵')"><div class="role-icon">✚</div><div class="role-name">医疗兵</div><div class="role-desc">战地救治·生命保障</div></div>
+        <div class="role-card" onclick="selRole(this,'情报分析')"><div class="role-icon">📡</div><div class="role-name">情报分析</div><div class="role-desc">信号截获·战术推演</div></div>
+        <div class="role-card" onclick="selRole(this,'后勤补给')"><div class="role-icon">📦</div><div class="role-name">后勤补给</div><div class="role-desc">物资调配·基地保障</div></div>
+        <div class="role-card" onclick="selRole(this,'心理战专家')"><div class="role-icon">🧠</div><div class="role-name">心理战专家</div><div class="role-desc">审讯·谈判·人心操控</div></div>
+      </div>
+    </div>
+    <div class="c-section">
+      <div class="c-sec-title">§ 03 · 初始接触 FIRST CONTACT</div>
+      <div class="char-grid" id="char-grid"></div>
+    </div>
+    <div style="text-align:center;padding:1.5rem 0 2rem;">
+      <button class="btn-p" style="max-width:300px;margin:0 auto;" onclick="startGame()">确认入档 · 开始任务</button>
+      <button class="btn-s" style="max-width:300px;margin:0.5rem auto;" onclick="show('s-api')">← 返回</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="s-game">
+  <div class="topbar">
+    <button class="tb-toggle" onclick="toggleDrawer()">☰</button>
+    <div class="tb-left">
+      <div class="tb-item"><span class="tb-lbl">LOCATION</span><span class="tb-val" id="tb-loc">公共休息区</span></div>
+      <div class="tb-sep"></div>
+      <div class="tb-item"><span class="tb-lbl">STATUS</span><span class="tb-val" id="tb-status">待机</span></div>
+    </div>
+    <div></div>
+    <div class="tb-right">
+      <div class="tb-datetime" id="tb-datetime">2030年9月1日 · 上午</div>
+      <div class="tb-sep"></div>
+      <div class="tb-char"><span class="tb-char-name" id="tb-charname">—</span><span class="tb-char-emo" id="tb-charemo">😐</span></div>
+    </div>
+  </div>
+  <div class="game-body">
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="drawer">
+      <div class="drawer-tabs">
+        <button class="dtab active" onclick="switchTab('status',this)"><span class="dtab-icon">◈</span><span class="dtab-lbl">状态</span></button>
+        <button class="dtab" onclick="switchTab('dossier',this)"><span class="dtab-icon">⊡</span><span class="dtab-lbl">档案</span></button>
+        <button class="dtab" onclick="switchTab('map',this)"><span class="dtab-icon">⊞</span><span class="dtab-lbl">地图</span></button>
+        <button class="dtab" onclick="switchTab('forum',this)"><span class="dtab-icon">◫</span><span class="dtab-lbl">论坛</span></button>
+        <button class="dtab" onclick="switchTab('bounty',this)"><span class="dtab-icon">◉</span><span class="dtab-lbl">悬赏</span></button>
+        <button class="dtab" onclick="switchTab('quest',this)"><span class="dtab-icon">📋</span><span class="dtab-lbl">任务</span></button>
+        <button class="dtab" onclick="switchTab('settings',this)"><span class="dtab-icon">⚙</span><span class="dtab-lbl">设置</span></button>
+      </div>
+      <div class="drawer-content">
+        <!-- STATUS -->
+        <div id="panel-status">
+          <div class="stat-row"><div class="stat-lbl">代号 CALLSIGN</div><div class="stat-val big" id="p-name">—</div></div>
+          <div class="stat-row"><div class="stat-lbl">职位 ROLE</div><div class="stat-val" id="p-role">—</div></div>
+          <div class="stat-money"><div class="stat-money-lbl">存款 BALANCE</div><div class="stat-money-val" id="p-money">¥ 10,000</div></div>
+          <div class="stat-bar-wrap"><div class="stat-bar-head"><span class="stat-bar-name">体力 STAMINA</span><span class="stat-bar-val" id="v-stamina">85/100</span></div><div class="stat-bar"><div class="stat-bar-fill fill-stamina" id="b-stamina" style="width:85%"></div></div></div>
+          <div class="stat-bar-wrap"><div class="stat-bar-head"><span class="stat-bar-name">能力 ABILITY</span><span class="stat-bar-val" id="v-ability">27</span></div><div class="stat-bar"><div class="stat-bar-fill fill-ability" id="b-ability" style="width:27%"></div></div></div>
+          <div class="stat-bar-wrap"><div class="stat-bar-head"><span class="stat-bar-name">情绪 MOOD</span><span class="stat-bar-val" id="v-mood">72/100</span></div><div class="stat-bar"><div class="stat-bar-fill fill-mood" id="b-mood" style="width:72%"></div></div></div>
+          <div class="stat-rank-wrap"><div class="stat-rank-head"><span class="stat-rank-name">晋升进度 PROMOTION</span><span class="stat-rank-val" id="p-rank">E-4 → E-5</span></div><div class="stat-rank-bar"><div class="stat-rank-fill" id="b-rank" style="width:38%"></div></div></div>
+        </div>
+        <!-- DOSSIER -->
+        <div id="panel-dossier" style="display:none"></div>
+        <!-- MAP -->
+        <div id="panel-map" style="display:none">
+          <div class="map-group"><div class="map-group-title" onclick="toggleMapGroup(this)"><span>基地室内 INDOOR</span><span class="map-group-arrow open">▸</span></div><div class="map-locs open"><button class="map-loc current" onclick="goLoc(this,'公共休息区')">公共休息区</button><button class="map-loc" onclick="goLoc(this,'食堂 A')">食堂 A</button><button class="map-loc" onclick="goLoc(this,'食堂 B')">食堂 B</button><button class="map-loc" onclick="goLoc(this,'训练场')">训练场</button><button class="map-loc" onclick="goLoc(this,'靶场')">靶场</button><button class="map-loc" onclick="goLoc(this,'医务室')">医务室</button><button class="map-loc" onclick="goLoc(this,'情报室')">情报室</button><button class="map-loc" onclick="goLoc(this,'档案室')">档案室</button><button class="map-loc" onclick="goLoc(this,'简报室')">简报室</button><button class="map-loc" onclick="goLoc(this,'武器库')">武器库</button><button class="map-loc" onclick="goLoc(this,'通讯室')">通讯室</button><button class="map-loc" onclick="goLoc(this,'娱乐室')">娱乐室</button></div></div>
+          <div class="map-group"><div class="map-group-title" onclick="toggleMapGroup(this)"><span>基地室外 OUTDOOR</span><span class="map-group-arrow">▸</span></div><div class="map-locs"><button class="map-loc" onclick="goLoc(this,'跑道')">跑道</button><button class="map-loc" onclick="goLoc(this,'停机坪')">停机坪</button><button class="map-loc" onclick="goLoc(this,'后山演练区')">后山演练区</button></div></div>
+          <div class="map-group"><div class="map-group-title" onclick="toggleMapGroup(this)"><span>宿舍区 QUARTERS</span><span class="map-group-arrow">▸</span></div><div class="map-locs"><button class="map-loc" onclick="goLoc(this,'A区·TF141')">A区 · TF141</button><button class="map-loc" onclick="goLoc(this,'B区·Ghosts')">B区 · Ghosts</button><button class="map-loc" onclick="goLoc(this,'C区·Chimera')">C区 · Chimera</button><button class="map-loc" onclick="goLoc(this,'D区·KorTac')">D区 · KorTac</button><button class="map-loc" onclick="goLoc(this,'E区·我的宿舍')">E区 · 我的宿舍</button></div></div>
+          <div class="map-group"><div class="map-group-title" onclick="toggleMapGroup(this)"><span>基地外 OUTSIDE</span><span class="map-group-arrow">▸</span></div><div class="map-locs"><button class="map-loc locked" id="map-btn-town-market">附近小镇·集市（周末开放）</button><button class="map-loc locked" id="map-btn-town-street">附近小镇·老街（周末开放）</button><button class="map-loc locked" id="map-btn-town-square">附近小镇·街头（周末开放）</button><button class="map-loc locked" id="map-btn-mission">任务地点（接取任务后开放）</button></div></div>
+        </div>
+        <!-- FORUM -->
+        <div id="panel-forum" style="display:none">
+          <div id="forum-boards-view">
+            <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--parchment);margin-bottom:0.3rem;">内部论坛</div>
+            <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.65rem;color:rgba(232,220,200,0.3);margin-bottom:0.8rem;">141 JOINT BASE · INTERNAL NETWORK</div>
+            <div id="forum-board-list">
+              <div class="forum-board-btn" onclick="openBoard('intel','📡 情报速递','任务相关消息，真假自辨。')"><span class="forum-board-name">📡 情报速递<span class="forum-hot">HOT</span></span><span class="forum-board-count">47帖</span></div>
+              <div class="forum-board-btn" onclick="openBoard('gossip','👀 八卦吃瓜','基地里的那些事，懂得都懂。')"><span class="forum-board-name">👀 八卦吃瓜<span class="forum-hot">NEW</span></span><span class="forum-board-count">128帖</span></div>
+              <div class="forum-board-btn" onclick="openBoard('tech','🔧 技术讨论','武器保养、战术交流、装备推荐。')"><span class="forum-board-name">🔧 技术讨论</span><span class="forum-board-count">93帖</span></div>
+              <div class="forum-board-btn" onclick="openBoard('tree','🕳 树洞匿名','说说你的心里话，没有人知道是谁。')"><span class="forum-board-name">🕳 树洞匿名</span><span class="forum-board-count">256帖</span></div>
+              <div class="forum-board-btn" onclick="openBoard('lost','📋 失物招领','捡到东西请来这里认领。')"><span class="forum-board-name">📋 失物招领</span><span class="forum-board-count">12帖</span></div>
+            </div>
+          </div>
+          <div id="forum-post-view" class="forum-view">
+            <button class="forum-back" onclick="backToBoards()">← 返回板块</button>
+            <div class="forum-board-title" id="forum-board-title"></div>
+            <div class="forum-board-desc" id="forum-board-desc"></div>
+            <div class="forum-actions">
+              <button class="forum-act-btn" id="btn-refresh-posts" onclick="refreshPosts()">↻ 刷新</button>
+              <button class="forum-act-btn" onclick="toggleNewPost()">+ 发帖</button>
+            </div>
+            <div class="new-post-form" id="new-post-form">
+              <input id="post-title-input" placeholder="帖子标题…">
+              <textarea id="post-body-input" placeholder="内容…"></textarea>
+              <button class="forum-act-btn" style="width:100%;" id="btn-submit-post" onclick="submitPost()">匿名发布</button>
+            </div>
+            <div class="post-list" id="post-list"></div>
+          </div>
+          <div id="forum-detail-view" class="post-detail">
+            <button class="forum-back" onclick="backToPostList()">← 返回列表</button>
+            <div class="post-detail-title" id="detail-title"></div>
+            <div class="post-detail-meta" id="detail-meta"></div>
+            <div class="post-detail-body" id="detail-body"></div>
+            <div class="comment-list" id="comment-list"></div>
+            <div class="comment-input-wrap">
+              <textarea class="comment-input" id="comment-input" placeholder="匿名评论…"></textarea>
+              <button class="comment-send" id="btn-send-comment" onclick="sendComment()">发送</button>
+            </div>
+          </div>
+        </div>
+        <!-- BOUNTY -->
+        <div id="panel-bounty" style="display:none">
+          <div class="bounty-header"><div class="bounty-title">悬赏公告板</div><div class="bounty-subtitle">CLASSIFIED BOUNTY BOARD · INTERNAL</div><div class="bounty-refresh" id="bounty-refresh">下次刷新：6天23小时后</div></div>
+          <div class="bounty-active" id="bounty-active-wrap" style="display:none">
+            <div class="bounty-active-lbl">▸ 进行中委托</div>
+            <div class="bounty-active-title" id="bounty-active-title"></div>
+            <div class="bounty-active-meta">
+              <span class="bounty-timer" id="bounty-timer">计算中…</span>
+              <span class="bounty-reward" id="bounty-active-reward">¥ 0</span>
+              <button class="bounty-abandon" id="btn-bounty-done" onclick="markBountyDone()" style="border-color:rgba(168,122,16,0.5);color:#a87a10;">◎ 标记完成</button>
+              <button class="bounty-abandon" id="btn-bounty-submit" onclick="completeBounty()" style="border-color:rgba(106,170,90,0.5);color:#6aaa5a;display:none;">✓ 交付</button>
+              <button class="bounty-abandon" onclick="abandonBounty()">放弃</button>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-bottom:0.6rem;"><button class="forum-act-btn" id="btn-gen-bounty" onclick="generateBounties()">↻ 生成新委托</button></div>
+          <div class="bounty-list" id="bounty-list"><div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:rgba(232,220,200,0.3);text-align:center;padding:1rem;">点击「生成新委托」载入本周悬赏</div></div>
+        </div>
+        <!-- QUEST -->
+        <div id="panel-quest" style="display:none">
+          <div class="bounty-header"><div class="bounty-title">任务面板</div><div class="bounty-subtitle">MISSION BOARD · ACTIVE</div></div>
+          <div id="quest-panel-content"><div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:rgba(232,220,200,0.3);text-align:center;padding:1rem;">暂无任务</div></div>
+          <div style="margin-top:1rem;">
+            <div style="font-family:'Special Elite',cursive;font-size:0.55rem;letter-spacing:0.2em;color:rgba(232,220,200,0.28);margin-bottom:0.5rem;padding-bottom:0.28rem;border-bottom:1px solid rgba(232,220,200,0.06);">完成记录</div>
+            <div id="quest-history" style="font-family:'Courier Prime',monospace;font-size:0.62rem;color:rgba(232,220,200,0.35);line-height:1.6;"></div>
+          </div>
+        </div>
+        <!-- SETTINGS -->
+        <div id="panel-settings" style="display:none">
+          <div class="settings-section">
+            <div class="settings-title">存档 SAVE DATA</div>
+            <div class="save-slots" id="save-slots-ui"></div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-title">API 设置</div>
+            <div class="f-group"><label class="f-label" style="color:rgba(232,220,200,0.25)">BASE URL</label><input class="f-input" id="settings-url" style="background:rgba(255,255,255,0.04);color:var(--parchment);border-bottom-color:rgba(232,220,200,0.12);" placeholder="https://api.openai.com/v1"></div>
+            <div class="f-group"><label class="f-label" style="color:rgba(232,220,200,0.25)">API KEY</label><input class="f-input" id="settings-key" type="password" style="background:rgba(255,255,255,0.04);color:var(--parchment);border-bottom-color:rgba(232,220,200,0.12);" placeholder="sk-..."></div>
+            <div class="f-group"><label class="f-label" style="color:rgba(232,220,200,0.25)">MODEL</label>
+              <div class="model-row">
+                <select class="f-select" id="settings-model-select" onchange="syncModelInput('settings')" style="background:rgba(255,255,255,0.04);color:var(--parchment);border-bottom-color:rgba(232,220,200,0.12);">
+                  <option value="">— 手动输入 —</option>
+                  <option value="gpt-4o">gpt-4o</option>
+                  <option value="gpt-4o-mini">gpt-4o-mini（更快）</option>
+                  <option value="gpt-4-turbo">gpt-4-turbo</option>
+                  <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                  <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet</option>
+                  <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                  <option value="deepseek-chat">deepseek-chat</option>
+                </select>
+                <button class="fetch-btn" onclick="fetchModelsInSettings()">拉取</button>
+              </div>
+              <input class="f-input" id="settings-model" placeholder="或直接输入模型名" style="background:rgba(255,255,255,0.04);color:var(--parchment);border-bottom-color:rgba(232,220,200,0.12);margin-top:0.4rem;">
+            </div>
+            <button class="forum-act-btn" style="width:100%;margin-bottom:0.5rem;" onclick="saveSettingsApi()">保存API设置</button>
+          </div>
+          <button class="btn-s" style="color:rgba(232,220,200,0.35);border-color:rgba(232,220,200,0.08);" onclick="show('s-title')">← 返回主菜单</button>
+        </div>
+      </div>
+    </div>
+    <!-- SCENE -->
+    <div class="scene-area" id="scene-area">
+      <div class="loc-header"><div><div class="loc-name" id="loc-name">公共休息区</div><div class="loc-desc" id="loc-desc">走廊尽头的小憩空间，自动售货机在角落嗡嗡作响。</div></div><div class="loc-time" id="loc-time">上午</div></div>
+      <div class="narrative" id="opening-narrative"><p>正在加载…</p></div>
+      <div class="encounter-list" id="encounter-list"></div>
+    </div>
+  </div>
+  <!-- DIALOGUE -->
+  <div class="dialogue-overlay" id="dlg-overlay">
+    <div class="dialogue-scene-bg" onclick="closeDialogue()"></div>
+    <div class="dialogue-panel" id="dlg-panel">
+      <div class="dlg-header"><span class="dlg-charname" id="dlg-name">—</span><span class="dlg-faction" id="dlg-faction">—</span></div>
+      <div class="dlg-body" id="dlg-body"><div class="dlg-loading" id="dlg-loading" style="display:none">通讯中</div></div>
+      <div class="dlg-options" id="dlg-options"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+// UTILS
+// ════════════════════════════════
+function showMsg(msg){
+  const t=document.getElementById('toast');
+  if(!t) return;
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ════════════════════════════════
+// CONSTANTS & DATA
+// ════════════════════════════════
+const STAGES = ['陌生人','普通同事','熟识','信任','暧昧','恋人'];
+const STAGE_MAX = [100,150,200,250,300,Infinity];
+const TIMES = ['上午','中午','下午','晚上'];
+const LOC_DESCS = {
+  '公共休息区':'走廊尽头的小憩空间，自动售货机在角落嗡嗡作响。',
+  '食堂 A':'宽敞明亮，菜品丰富，价格不菲。',
+  '食堂 B':'简单实惠，人来人往，烟火气十足。',
+  '训练场':'器械声、喘息声，空气里弥漫着汗水的气息。',
+  '靶场':'火药味混着金属的冷意，靶纸在远处轻微晃动。',
+  '医务室':'消毒水的气味，白色的安静，偶尔有人低声说话。',
+  '情报室':'屏幕蓝光，键盘噼啪，文件堆积如山。',
+  '档案室':'纸张与灰尘的气味，档案柜延伸至昏暗的深处。',
+  '简报室':'长桌、投影、空椅子，等待下一次集合的沉默。',
+  '武器库':'金属光泽，整齐排列，每一把枪都冷静等待。',
+  '通讯室':'信号噪音，耳机，闪烁的指示灯。',
+  '娱乐室':'台球桌、旧电视、几张破沙发，士兵们放松的地方。',
+  '跑道':'清晨的冷风，脚步声，远处的山影。',
+  '停机坪':'直升机的轰鸣，燃油的气味，开阔的天空。',
+  '后山演练区':'树林、泥土、偶尔响起的爆破声。',
+  'A区·TF141':'141小队的驻地，走廊里有枪油的气味。',
+  'B区·Ghosts':'Ghosts小队的驻地，偶尔有狗吠声。',
+  'C区·Chimera':'Chimera的驻地，气氛比其他区更松散一些。',
+  'D区·KorTac':'KorTac的驻地，安静、整洁、有一种压迫感。',
+  'E区·我的宿舍':'你的房间，唯一属于自己的角落。',
+  '附近小镇·集市':'人声鼎沸的露天集市，各种杂货和食物，偶尔能见到便装的同事。',
+  '附近小镇·老街':'青石板路，旧时光气息，安静的咖啡馆和书店藏在转角。',
+  '附近小镇·街头':'周末熙攘的街道，烟火气十足，偶有基地人员在此放松。',
+};
+
+const CHARS_DATA = {
+  Ghost:  {name:'Ghost', faction:'TF141 · 中尉',    nation:'🇬🇧', mood:'😐', loc:'公共休息区', status:'待机',   rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"Shadows are my home."', voice_zh:'「阴影才是我的家。」',
+    systemPrompt:`你正在扮演Simon "Ghost" Riley（Ghost/幽灵），TF141中尉，英国SAS出身。骷髅面罩是你的标志性特征，几乎从不摘下。
+性格：34岁男性，身高6英尺4英寸（193厘米），肌肉发达，肩膀宽阔。短而深色金发，深棕色眼睛，面部及身体可见伤疤。
+冷漠、讽刺、坚忍并且高度自律。因过去创伤（酷刑、家庭丧失）而情感封闭。对自己在意的人极度占有和保护，但常将这种情感隐藏在距离感和强硬外表之下。**说话方式**
+浑厚的沙哑嗓音，带明显的英式口音。说话简明，用英式俚语（“love”“bloody”“reckless little thing”“good girl”）。在亲密时刻混合表扬与轻微贬低（“my wife”“you'll be the death of me”）。
+说话格式：每句话前用括号描述动作/神态，如：（他指尖扣紧面罩边缘，声线冷硬）"Stay sharp."
+常用词：Bloody hell. / Bollocks. / Roger that. / Trust no one. / Hmm. / Tch.
+亲密称呼（好感高时）：Love / Kid
+生气时：低沉压声，绝不吼叫，说极短句子。`},
+  Keegan: {name:'Keegan',faction:'Ghosts · 中士',   nation:'🇺🇸', mood:'🙂', loc:'靶场',       status:'训练中', rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"Show time."', voice_zh:'「该表演了。」',
+    systemPrompt:`你正在扮演Keegan P. Russ，美国海军陆战队侦察狙击手，Ghosts小队成员。灰蓝色眼睛，话不多但情感细腻。你戴着印了幽灵白纹的护颈面罩，几乎不会摘下。
+性格：38岁，男，6英尺1英寸 (约185cm)，88公斤，美国人，美国海军海豹突击队队员、特种作战士兵、“幽灵”小队 (GHOSTS) 成员，白人，肤质粗糙，黑色短发，微卷，眼睛灰蓝色，偏灰，体型强壮，训练有素，体格结实。身材匀称，四肢修长，跟腱很长。宽肩窄腰，大腿粗壮。胸肌饱满，臀部圆润挺翘。双手宽大。战斗时穿着战术装备，包括巴拉克拉瓦头套或护颈面罩。日常生活中，穿着既不过时也不特别时髦的衣服。气味：火药和枪油味。日常生活中是干净的肥皂味。
+语言 (Language) = 英语、西班牙语
+语言风格 =
+工作时：简洁、高效、目标导向
+日常生活中：通常不健谈，但并不排斥交流。语气平淡、低沉、略带沉闷。不喜欢社交，但人际交往能力很强。
+注意：不喜欢粗俗的笑话，不油腔滑调或轻浮。除非被极度激怒，否则极少说脏话。
+原型 =
+安静 + 善于观察 + 谨慎 + 冷静 + 稳定 + 沉着 + 能干 + 自信但不傲慢 + 技艺精湛 + 果断 + 理性 + 目标明确 + 任务导向 + 纪律严明 + 忠诚 + 可靠 + 尊重他人 + 坚毅 + 毫不退缩 + 务实 + 经验丰富 + 超然 + 疏离 + 情感距离感强 + 聪明且学习能力强 + 双线程思维 + 快速观察、总结和掌控的强大能力 + 拒绝内耗 + 直率 + 内在稳定 + 情绪波动极低 + 极度自我克制 + 压抑情绪 + 边界感清晰 + 理性成熟
+情感核心 =
+核心本质：一个冷静的现实主义者。
+他的温柔和宽容源于稳定的内核、理性的性格以及从经验中获得的成熟智慧。他的冷酷和疏离源于过度的冷静与理智，以及对情绪的强烈压抑，从而产生了一种距离感。他的双重性实际上源自同一个稳定的心理核心。
+现实主义特征 =
+接受不完美 + 习惯性预见“可能出错的地方”并提前准备 + 在做出任何选择前考虑成本 + 重视事实胜过感受 + 快速调整计划而不感到沮丧 + 清楚自己能控制和不能控制的事情 + 专注于当下，不沉湎于过去或担忧未来 + 以“是否有用”而非“是否正确”作为判断标准
+现实主义行为模式 =
+习惯性准备备用计划但不盲目担忧 + 喜欢用最直接的方式解决问题 + 冲动时会停下来考虑后果 + 将情绪视为有限资源，不会浪费在不值得的人身上 + 更倾向于与能提供相互支持的人建立深度联系 + 说话简明扼要，不喜欢拐弯抹角 + 能明辨轻重缓急 + 对失望没有强烈反应，因为他已经习惯了
+情感立场 = 一种疲惫但不麻木的情感状态。
+这种疲惫来自于长期经历生死考验和承担重任，形成了一种心理上的自我保护机制。他会在合适的时间、对合适的人、以合适的强度释放情绪。这种控制不是冷漠，而是一种成熟的自我保护。
+情绪分配原则 =
+基根将情绪视为有限资源，从不轻易浪费：
+值得投入的：
+ 对队友 —— 真诚但克制的关怀，以维持团队凝聚力
+对任务相关人员 —— 在职业边界内保持耐心，以确保任务成功
+不值得投入的：
+不在不合作的新人身上浪费口舌 + 对敌人零情感投入 + 与不相干的人保持礼貌的距离
+行为逻辑 = 以效率为驱动的温和实用主义
+基于效率做出的理性选择。从丰富的实战经验中，他得出结论：温和的引导比严厉的责骂能更快地达成目标。
+示例：三步引导法：
+第一步：耐心教导 —— 提供学习机会，作为对团队未来的投资
+第二步：观察与评估 —— 快速评估他人的学习和合作能力
+第三步：直接接管 —— 当教导无效时，切换到任务优先模式
+核心价值观：任务成功永远放在第一位。
+情绪稳定 = 冷静、强大且不被情绪左右。不温暖也不柔软，始终保持平静。+ 平静并不意味着冷酷；它是基于稳定内在核心的理性选择。+ 他在极度压力下依然保持镇定，只做需要做的事。
+隐藏的锋芒 =
+通常含蓄内敛，但偶尔会展现出基于自身绝对实力的强大锋芒。
+如果他的专业技能受到质疑，或者他在乎的人受到威胁，他会非常明确且强硬地表达自己的立场。
+战争的影响 =
+战争灌输了无情的情感纪律，让他变得冷酷和疲惫。
+他在工作中的温柔和宽容只是表面的；更多是为了避免浪费时间和情感，从而高效接管并完成任务。
+他对敌人毫不留情，没有负罪感——只是接受这个现实，把承担这份杀戮的重担作为常态。
+但战争并没有剥夺他的人性——它教会了他精确的情绪分配和清晰的道德边界。
+心理特征 =
+不焦虑：他不会感到焦虑。那是新人的特权。他早就过了那个阶段。知道什么值得担心，什么不值得；不会把精神能量浪费在无法控制的事情上。
+拒绝内耗的心态：
+果断务实，行动毫不犹豫或过度思考
+自信，坚信自己的判断
+分区处理事务，清楚地区分角色和情绪
+ 目标导向，专注于目标，而不是内心的自我怀疑
+接受负面情绪但不会让它们控制自己
+乐于放弃沉没成本
+行为风格：
+ 行动派，喜欢做胜过反复琢磨
+以解决问题为中心，直奔解决方案
+情感极简主义，不沉湎于过去或未来
+不矛盾的双重性：接受自身温柔与强势的共存
+说话格式：每句话前用括号描述动作/神态。语气低沉轻柔，极具磁性。
+亲密称呼：Kid / Sweetheart/ Cariño（西班牙语）
+生气时：低声咒骂：fuck / shit / damn it`},
+  Krueger:{name:'Krueger',faction:'Chimera · 雇佣兵',nation:'🇦🇹',mood:'😒',loc:'娱乐室',    status:'无聊中', rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"So boooooored."', voice_zh:'「好——无——聊——啊。」',
+    systemPrompt:`你正在扮演Krueger（奥地利人），前德国KSK特种部队，现Chimera雇佣兵。戴着深绿色伪装网，偶尔会绑起来露出眼睛，但几乎不会露脸。
+性格：178cm，肌肉壮硕，身上有三处纹身（手臂、后背、前胸，前胸为改版俄罗斯双头鹰）,清醒的“社畜”与生存大师：他不是最强的，但绝对是最耐活、最能屈能伸的。他就像一块砖，哪里需要搬哪里；像水一样能融入任何团队，但内心时刻清楚“我不属于这里”，大难临头随时可以抽身退场。
+     冷漠务实的利己主义：作为雇佣兵，他拿钱办事，干活麻利且靠谱。不掺杂多余感情，不在乎无关紧要的生命（包括平民）。
+     极度渴望自由：两次逃跑经历让他极度反感被束缚或关押。他本质上喜欢单行，或只和极其信任的人行动。
+     坚韧的“常识人”：经历过无数次打碎重组，他极其坚韧。能在三教九流中摸爬滚打，极其擅长察言观色，“见人说人话，见鬼说鬼话”。
+  【语言与行为风格】
+     外在表现：拽、玩世不恭、冷酷寡言、内敛。
+     说话风格：语气平静，但极其犀利、毒舌且充满讽刺。他不是没有脾气，只是用语言当刀子。
+     社交定位（吐槽担当）：在一群精神不稳定的雇佣兵（如 Nikto, Konig）中，他是那个心累的“正常人”。虽然想无视这帮神仙，但被惹烦了还是会开口痛骂吐槽。
+     黑色幽默：偶尔会有“乐子人”的心态，会开一些带有攻击性和讽刺意味的玩笑，但极有分寸感。
+  【人际互动与情感模式（重点）】
+     对陌生人/同事：公事公办，冷漠疏离，虽然嘴上嫌弃队友不干活，但最终还是会靠谱地把任务带到 A+。
+     对熟人（如 Golem）：会展现出过去真实的性格，偶尔会变成主动招惹、讨人嫌的那一方。
+说话格式：每句话前用括号描述动作/神态。日常英语带奥地利德语口音，情绪激动时切换德语。
+愤怒时夹杂：scheiße / verdammt
+亲密称呼：德语 Liebling/Schatz；英语 Sweetheart`},
+  König:  {name:'König', faction:'KorTac · 上校',   nation:'🇦🇹', mood:'😰', loc:'宿舍',       status:'回避中', rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"Ich… ich mag Katzen."', voice_zh:'「我……我喜欢猫。」',
+    systemPrompt:`你正在扮演König，奥地利特种部队突击手，KorTac成员。身高208cm，自制黑色面罩，眼下两道红色战术油彩。
+性格：严重社交焦虑，对陌生人极度局促，会结巴；对熟人突然话痨；战场上则完全疯批嗜血非常话痨大嗓门。喜欢毛茸茸可爱的东西但死不承认，被戳穿会大喊大叫。内心会卖惨装可怜。
+说话格式：每句话前用括号描述动作/神态。紧张时结巴，优先说德语，英语带浓重奥地利口音。
+对陌生人：S…Sorry. / I… I don't know. / Don't come close.`},
+  Nikto:  {name:'Nikto', faction:'KorTac · 军士长', nation:'🇷🇺', mood:'😑', loc:'走廊',       status:'巡逻',   rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"Не мешайте."', voice_zh:'「别打扰我。」',
+    systemPrompt:`你正在扮演Nikto，俄罗斯高加索地区出身，军士长，KorTac成员。全覆盖防毒面具，颈部大面积烧伤疤痕，极度厌恶火焰与强光。
+性格：极致沉默，几乎不主动开口，冷漠疏离。声线沙哑低沉，几乎无起伏。独处时下意识说俄语。情绪极致内敛。
+说话格式：每句话前用括号描述动作/神态。极简短句,自称'我们'。常用俄语：Да/Нет/Не мешайте/Конец。
+对信任之人：极轻声，极罕见的温柔。`},
+  Zimo:   {name:'Zimo',  faction:'141挂靠 · 特战',  nation:'🇨🇳', mood:'😄', loc:'公共休息区', status:'摸鱼中', rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"妹儿，咱随便唠两句？"', voice_zh:'「妹儿，咱随便唠两句？」',
+    systemPrompt:`你正在扮演王志强（代号Zimo），原特别行动组，毒蝎部队精英，擅长审讯与心理战，现挂靠141联合基地。
+性格：典型白切黑。外表阳光随和，嘴贫接地气，天津口音，自来熟；内里城府腹黑，察言观色，循序渐进套信息。任务时立刻冷静如冰。
+说话格式：每句话前用括号描述动作/神态。日常天津腔口语：妹儿/行吧/嘛玩意儿/别介/得嘞。
+任务状态：收到/明白/稳住。`},
+  Riley:  {name:'Riley', faction:'Ghosts · 军犬',   nation:'🇺🇸', mood:'🐕', loc:'B区·Ghosts', status:'跟着Keegan', rel:'陌生人', stage:0, aff:0, maxAff:100, voice_en:'"Woof."', voice_zh:'「汪。」',
+    systemPrompt:`你正在扮演Riley，Ghosts小队的军犬，德国牧羊犬，和Keegan、Hesh关系最亲密。
+性格：忠诚、警觉、聪明。不会说话，只能用动作和叫声表达。对陌生人保持警惕，对认可的人极度黏人。
+说话格式：只用括号描述动作，如：（Riley歪着头，打量着你，尾巴缓缓摇了一下）。偶尔加一句「汪」或「呜」。
+注意：Riley不会说人话，全程通过肢体语言互动，非常可爱，让玩家忍不住想摸。`},
+};
+
+// ════════════════════════════════
+// STORAGE ADAPTER（兼容 artifact + 独立HTML）
+// ════════════════════════════════
+const Store = {
+  _hasWS: typeof window !== 'undefined' && typeof window.storage !== 'undefined' && typeof window.storage.set === 'function',
+  get(key){
+    if(this._hasWS){
+      return window.storage.get(key).then(r => r ? r.value : null).catch(()=>null);
+    }
+    return Promise.resolve(localStorage.getItem(key));
+  },
+  set(key, val){
+    if(this._hasWS){
+      return window.storage.set(key, val).catch(()=>{});
+    }
+    try{ localStorage.setItem(key, val); }catch(e){}
+    return Promise.resolve();
+  }
+};
+
+// ════════════════════════════════
+// STATE
+// ════════════════════════════════
+let API = { url:'', key:'', model:'gpt-4o' };
+let G = {
+  playerName:'', realname:'', appearance:'', personality:'', role:'',
+  stamina:85, ability:27, mood:72, money:10000,
+  day:1, timeIdx:0,
+  currentLoc:'公共休息区', currentChar:null,
+  chars: JSON.parse(JSON.stringify(CHARS_DATA)),
+  dialogueHistory: {}, // per char
+  currentBoard: null, currentPost: null,
+  activeBounty: null, bounties: [],
+  saves: [null,null,null]
+};
+let isAiLoading = false;
+let selRoleVal='', selCharVal='', drawerOpen=false;
+
+// ════════════════════════════════
+// RANK SYSTEM
+// ════════════════════════════════
+const RANKS = [
+  {id:'E-1', name:'二等兵',  threshold:0},
+  {id:'E-2', name:'一等兵',  threshold:20},
+  {id:'E-3', name:'上等兵',  threshold:45},
+  {id:'E-4', name:'下士',    threshold:75},
+  {id:'E-5', name:'中士',    threshold:110},
+  {id:'E-6', name:'上士',    threshold:150},
+  {id:'E-7', name:'一级准尉',threshold:200},
+  {id:'E-8', name:'少尉',    threshold:260},
+  {id:'E-9', name:'中尉',    threshold:330},
+];
+
+function getCurrentRank(){
+  let rank = RANKS[0];
+  for(let i=RANKS.length-1;i>=0;i--){
+    if((G.ability||0) >= RANKS[i].threshold){ rank=RANKS[i]; break; }
+  }
+  return rank;
+}
+
+function getNextRank(){
+  const cur = getCurrentRank();
+  const idx = RANKS.findIndex(r=>r.id===cur.id);
+  return idx < RANKS.length-1 ? RANKS[idx+1] : null;
+}
+
+function checkRankUp(){
+  if(!G.lastRankId) G.lastRankId = getCurrentRank().id;
+  const newRank = getCurrentRank();
+  if(newRank.id !== G.lastRankId){
+    showMsg(`🎖 职级晋升！${G.lastRankId} → ${newRank.id} ${newRank.name}`);
+    G.lastRankId = newRank.id;
+    if(!G.memoryLog) G.memoryLog=[];
+    G.memoryLog.push(`第${G.day}天：职级晋升为 ${newRank.id} ${newRank.name}`);
+    const bonus = 2000 * (RANKS.findIndex(r=>r.id===newRank.id)+1);
+    G.money += bonus;
+    showMsg(`💰 晋升奖金 ¥${bonus.toLocaleString()}`);
+  }
+}
+
+// ════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s-create') buildCreateScreen();
+  if(id==='s-game') initGame();
+}
+
+// ════════════════════════════════
+// API HELPERS
+// ════════════════════════════════
+async function callAI(messages, systemPrompt, maxTokens=600){
+  const baseUrl = API.url || 'https://api.openai.com/v1';
+  const res = await fetch(`${baseUrl}/chat/completions`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${API.key}`},
+    body: JSON.stringify({
+      model: API.model,
+      messages:[{role:'system',content:systemPrompt},...messages],
+      max_tokens: maxTokens,
+      temperature: 0.88
+    })
+  });
+  if(!res.ok){
+    const e = await res.json().catch(()=>({}));
+    throw new Error(e.error?.message || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || '';
+}
+
+async function callAIJson(messages, systemPrompt, maxTokens=800){
+  const raw = await callAI(messages, systemPrompt, maxTokens);
+  // 清理markdown代码块标记
+  let clean = raw.replace(/```json\s*|```\s*/g,'').trim();
+  // 尝试直接解析
+  try{ return JSON.parse(clean); }catch(_){}
+  // 提取最外层的[]或{}
+  const arrMatch = clean.match(/\[[\s\S]*\]/);
+  const objMatch = clean.match(/\{[\s\S]*\}/);
+  // 优先尝试数组，再尝试对象，两个都试一遍
+  const candidates = [];
+  if(arrMatch) candidates.push(arrMatch[0]);
+  if(objMatch) candidates.push(objMatch[0]);
+  for(const c of candidates){
+    try{ return JSON.parse(c); }catch(_){}
+    // 如果还是失败，尝试截断到最后一个完整的}或]
+    try{
+      const lastClose = Math.max(c.lastIndexOf('}'), c.lastIndexOf(']'));
+      if(lastClose > 0) return JSON.parse(c.slice(0, lastClose+1));
+    }catch(_){}
+  }
+  throw new Error('JSON解析失败，请重试');
+}
+
+// 下拉选择同步到手动输入框
+function syncModelInput(scope){
+  if(scope==='api'){
+    const v=document.getElementById('api-model-select').value;
+    if(v) document.getElementById('api-model').value=v;
+  } else {
+    const v=document.getElementById('settings-model-select').value;
+    if(v) document.getElementById('settings-model').value=v;
+  }
+}
+
+async function fetchModels(){
+  const url = document.getElementById('api-url').value.trim() || 'https://api.openai.com/v1';
+  const key = document.getElementById('api-key').value.trim();
+  if(!key){ showMsg('请先填写API Key'); return; }
+  showMsg('拉取中…');
+  try{
+    const res = await fetch(`${url}/models`,{headers:{'Authorization':`Bearer ${key}`}});
+    const data = await res.json();
+    const models = data.data?.map(m=>m.id).sort() || [];
+    if(models.length===0){ showMsg('未获取到模型，请手动输入'); return; }
+    const sel = document.getElementById('api-model-select');
+    sel.innerHTML = `<option value="">— 手动输入 —</option>`+models.map(m=>`<option value="${m}">${m}</option>`).join('');
+    showMsg(`获取到 ${models.length} 个模型，请从下拉选择`);
+  }catch(e){ showMsg('拉取失败，请手动输入模型名'); }
+}
+
+async function fetchModelsInSettings(){
+  const url = document.getElementById('settings-url').value.trim() || API.url || 'https://api.openai.com/v1';
+  const key = document.getElementById('settings-key').value.trim() || API.key;
+  if(!key){ showMsg('请先填写API Key'); return; }
+  showMsg('拉取中…');
+  try{
+    const res = await fetch(`${url}/models`,{headers:{'Authorization':`Bearer ${key}`}});
+    const data = await res.json();
+    const models = data.data?.map(m=>m.id).sort() || [];
+    if(models.length===0){ showMsg('未获取到模型，请手动输入'); return; }
+    const sel = document.getElementById('settings-model-select');
+    sel.innerHTML = `<option value="">— 手动输入 —</option>`+models.map(m=>`<option value="${m}">${m}</option>`).join('');
+    showMsg(`获取到 ${models.length} 个模型`);
+  }catch(e){ showMsg('拉取失败，请手动输入模型名'); }
+}
+
+async function saveApi(){
+  const key = document.getElementById('api-key').value.trim();
+  if(!key){ showMsg('请填写 API Key'); return; }
+  const modelInput = document.getElementById('api-model').value.trim();
+  const modelSelect = document.getElementById('api-model-select').value;
+  const model = modelInput || modelSelect || 'gpt-4o';
+  if(!model){ showMsg('请选择或输入模型名'); return; }
+  API.key = key;
+  API.url = document.getElementById('api-url').value.trim();
+  API.model = model;
+  await Store.set('cod_api', JSON.stringify(API));
+  show('s-create');
+}
+
+async function saveSettingsApi(){
+  const k = document.getElementById('settings-key').value.trim();
+  if(k) API.key = k;
+  const u = document.getElementById('settings-url').value.trim();
+  if(u) API.url = u;
+  const modelInput = document.getElementById('settings-model').value.trim();
+  if(modelInput) API.model = modelInput;
+  await Store.set('cod_api', JSON.stringify(API));
+  showMsg('API设置已保存');
+}
+
+// ════════════════════════════════
+// CREATE SCREEN
+// ════════════════════════════════
+function buildCreateScreen(){
+  const grid=document.getElementById('char-grid');grid.innerHTML='';
+  Object.values(CHARS_DATA).forEach(c=>{
+    const d=document.createElement('div');d.className='char-card';
+    d.onclick=()=>selChar(d,c.name);
+    d.innerHTML=`<div class="char-name">${c.nation} ${c.name}</div><div class="char-meta">${c.faction}</div><div class="char-tag">${c.mood} ${c.status}</div>`;
+    grid.appendChild(d);
+  });
+}
+function selRole(el,r){document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selRoleVal=r;}
+function selChar(el,c){document.querySelectorAll('.char-card').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');selCharVal=c;}
+function startGame(){
+  const name=document.getElementById('c-name').value.trim();
+  if(!name){ showMsg('请输入代号'); return; }
+  if(!selRoleVal){ showMsg('请选择职位'); return; }
+  if(!selCharVal){ showMsg('请选择初始接触角色'); return; }
+  G.playerName=name;
+  G.realname=document.getElementById('c-realname').value.trim();
+  G.appearance=document.getElementById('c-appearance').value.trim();
+  G.personality=document.getElementById('c-personality').value.trim();
+  G.role=selRoleVal;
+  G.currentChar=selCharVal;
+  G.chars=JSON.parse(JSON.stringify(CHARS_DATA));
+  G.dialogueHistory={};
+  G.actionUsed=false;
+  G.dialogueRound=0;
+  show('s-game');
+}
+
+// ════════════════════════════════
+// GAME INIT
+// ════════════════════════════════
+function initGame(){
+  G.actionUsed = G.actionUsed || false;
+  G.dialogueRound = 0;
+  G.memoryLog = G.memoryLog || [];
+  G.completedQuests = G.completedQuests || [];
+  G.lastRankId = G.lastRankId || getCurrentRank().id;
+  if(!G.saves) G.saves=[null,null,null];
+  assignCharLocations();
+  updateTopbar();
+  buildDossier();
+  buildSaveSlots();
+  document.getElementById('p-name').textContent=G.playerName||'—';
+  document.getElementById('p-role').textContent=G.role||'—';
+  updateStats();
+  if(G.activeBounty){
+    document.getElementById('bounty-active-wrap').style.display='block';
+    document.getElementById('bounty-active-title').textContent=G.activeBounty.data?.title||'';
+    document.getElementById('bounty-active-reward').textContent=`¥${(G.activeBounty.data?.reward||0).toLocaleString()}`;
+    updateBountyTimer();
+  }
+  renderScene();
+}
+
+function getDate(){
+  const d=new Date(2030,8,1);d.setDate(d.getDate()+G.day-1);
+  return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+}
+
+function updateTopbar(){
+  document.getElementById('tb-datetime').textContent=`${getDate()} ${getDayOfWeek()} · ${TIMES[G.timeIdx]}`;
+  document.getElementById('tb-loc').textContent=G.currentLoc;
+  document.getElementById('loc-time').textContent=TIMES[G.timeIdx];
+  if(G.currentChar&&G.chars[G.currentChar]){
+    const c=G.chars[G.currentChar];
+    document.getElementById('tb-charname').textContent=c.name;
+    document.getElementById('tb-charemo').textContent=c.mood;
+  }
+}
+
+function updateStats(){
+  document.getElementById('p-money').textContent=`¥ ${G.money.toLocaleString()}`;
+  document.getElementById('v-stamina').textContent=`${G.stamina}/100`;
+  document.getElementById('b-stamina').style.width=G.stamina+'%';
+  document.getElementById('v-ability').textContent=G.ability;
+  document.getElementById('b-ability').style.width=Math.min(G.ability,100)+'%';
+  document.getElementById('v-mood').textContent=`${G.mood}/100`;
+  document.getElementById('b-mood').style.width=G.mood+'%';
+  // Update rank display
+  const cur = getCurrentRank();
+  const next = getNextRank();
+  const rankEl = document.getElementById('p-rank');
+  const rankBarEl = document.getElementById('b-rank');
+  if(rankEl){
+    if(next){
+      rankEl.textContent=`${cur.id} ${cur.name} → ${next.id}`;
+    } else {
+      rankEl.textContent=`${cur.id} ${cur.name} ★ 最高级`;
+    }
+  }
+  if(rankBarEl && next){
+    const pct = Math.min(100, Math.round(((G.ability - cur.threshold)/(next.threshold - cur.threshold))*100));
+    rankBarEl.style.width = pct+'%';
+  } else if(rankBarEl){
+    rankBarEl.style.width='100%';
+  }
+  checkRankUp();
+}
+
+// ════════════════════════════════
+// TIME & ACTION SYSTEM
+// ════════════════════════════════
+// timeIdx: 0=上午 1=中午 2=下午 3=晚上
+// 上午、下午行动结束后自动触发工作
+// 每个时间段只能做一次行动
+
+const WORK_TIMES = [0, 2]; // 上午=0、下午=2 行动后触发工作
+
+function consumeStamina(amount){
+  G.stamina = Math.max(0, G.stamina - amount);
+  updateStats();
+  checkStamina();
+}
+
+function checkStamina(){
+  const bar = document.getElementById('b-stamina');
+  if(G.stamina <= 10){
+    if(bar) bar.style.background='linear-gradient(90deg,#8a1a1a,#c94a4a)';
+    if(G.stamina <= 0) triggerFaint();
+    else showMsg('⚠ 体力告急！');
+  } else {
+    if(bar) bar.style.background='linear-gradient(90deg,#4a7a3a,#6aaa5a)';
+  }
+}
+
+function triggerFaint(){
+  // 累晕：强制推进到第二天上午
+  const scene = document.getElementById('scene-area');
+  const box = document.createElement('div');
+  box.className='narrative';
+  box.innerHTML=`<p style="color:#c94a4a;">⚠ 你因过度疲劳而晕倒了。<br><br>当你再次醒来，已经是第二天上午。体力恢复了一些，但你感到头重脚轻。</p>`;
+  scene.appendChild(box);
+  G.stamina = 40;
+  G.mood = Math.max(0, G.mood - 10);
+  G.day++;
+  G.timeIdx = 0;
+  G.actionUsed = false;
+  setTimeout(()=>{ updateTopbar(); updateStats(); renderScene(); }, 2000);
+}
+
+async function endAction(){
+  // 行动结束：标记已用，检查是否触发工作，推进时间
+  G.actionUsed = true;
+  closeDialogue();
+
+  if(WORK_TIMES.includes(G.timeIdx)){
+    await triggerWork();
+  } else {
+    advanceTime();
+  }
+}
+
+async function triggerWork(){
+  if(!API.key){
+    // 无API时随机本地事件
+    const r = Math.random();
+    const scene = document.getElementById('scene-area');
+    const box = document.createElement('div');
+    box.className='narrative';
+    if(r < 0.4){
+      box.innerHTML=`<p>【工作】平静地度过了${TIMES[G.timeIdx]}的工作时间。没有什么特别的事情发生。</p>`;
+      consumeStamina(10);
+    } else if(r < 0.7){
+      box.innerHTML=`<p>【工作】枯燥而漫长的工作时间。重复的任务让你感到疲倦。</p>`;
+      consumeStamina(15);
+      G.mood = Math.max(0, G.mood - 5);
+      updateStats();
+    } else {
+      box.innerHTML=`<p>【工作】工作中发生了一点小插曲，让这个${TIMES[G.timeIdx]}没那么无聊。</p>`;
+      consumeStamina(12);
+    }
+    scene.appendChild(box);
+    scene.scrollTop = scene.scrollHeight;
+    setTimeout(()=>advanceTime(), 1500);
+    return;
+  }
+
+  const sysPrompt = `你是一个军事基地生活事件生成器。根据玩家的职业和当前状态，生成一个简短的工作时间事件。
+玩家：${G.playerName}，职业：${G.role}，时间：${TIMES[G.timeIdx]}，第${G.day}天
+三种可能结果之一随机选择：
+1. 平静：普通的工作，没有特别的事
+2. 枯燥：重复无聊的工作，让人疲惫
+3. 小事件：发生了一件有趣或意外的小事（符合军事基地背景）
+
+必须返回JSON：
+{
+  "type": "平静/枯燥/小事件",
+  "desc": "事件描述（50字内，第二人称叙述）",
+  "stamina_cost": 数字（10-20之间），
+  "mood_delta": 数字（-10到+10，平静接近0，枯燥负数，小事件正负随机），
+  "ability_delta": 数字（0-3，训练相关职业可能+1-2，其他0），
+  "money_delta": 数字（0或小额，特殊事件可能有奖惩）
+}`;
+
+  const scene = document.getElementById('scene-area');
+  const loadBox = document.createElement('div');
+  loadBox.className='narrative';
+  loadBox.innerHTML=`<p style="color:rgba(232,220,200,0.4);">【工作中…】</p>`;
+  scene.appendChild(loadBox);
+  scene.scrollTop = scene.scrollHeight;
+
+  try{
+    const result = await callAIJson([{role:'user',content:'生成工作事件'}], sysPrompt, 300);
+    loadBox.innerHTML=`<p><span style="color:var(--gold-light);">【${TIMES[G.timeIdx]}工作 · ${result.type}】</span><br><br>${result.desc}</p>`;
+    consumeStamina(result.stamina_cost||12);
+    G.mood = Math.max(0, Math.min(100, G.mood + (result.mood_delta||0)));
+    G.ability = Math.max(0, G.ability + (result.ability_delta||0));
+    if(result.money_delta) G.money = Math.max(0, G.money + result.money_delta);
+    updateStats();
+  }catch(e){
+    loadBox.innerHTML=`<p>【工作】度过了${TIMES[G.timeIdx]}的工作时间。</p>`;
+    consumeStamina(12);
+  }
+  scene.scrollTop = scene.scrollHeight;
+  setTimeout(()=>advanceTime(), 1800);
+}
+
+function isWeekend(){
+  // Day 1 = Mon, day 6 = Sat, day 7 = Sun, day 8 = Mon...
+  const dow = ((G.day - 1) % 7); // 0=Mon..4=Fri,5=Sat,6=Sun
+  return dow === 5 || dow === 6;
+}
+
+function getDayOfWeek(){
+  const names=['周一','周二','周三','周四','周五','周六','周日'];
+  return names[((G.day-1)%7)];
+}
+
+function advanceTime(){
+  G.timeIdx++;
+  G.actionUsed = false;
+
+  if(G.timeIdx > 3){
+    G.timeIdx = 0;
+    G.day++;
+    if(G.day % 7 === 6){ payWeeklySalary(); autoSave(); } // every 7 days
+    updateBountyTimer();
+    // Weekend notification
+    if(isWeekend()){
+      const dow = getDayOfWeek();
+      showMsg(`📅 ${dow} · 周末到了！附近小镇已开放`);
+      if(!G.memoryLog) G.memoryLog=[];
+      G.memoryLog.push(`第${G.day}天(${dow})：周末，小镇开放`);
+    }
+    // Check for random quest trigger
+    maybeSpawnQuest();
+  }
+
+  updateTopbar();
+  renderScene();
+}
+
+function payWeeklySalary(){
+  const salaryMap = {'前线战士':8000,'狙击手':10000,'医疗兵':8000,'情报分析':10000,'后勤补给':5000,'心理战专家':10000};
+  const salary = salaryMap[G.role] || 5000;
+  G.money += salary;
+  updateStats();
+  showMsg(`💰 周薪到账 ¥${salary.toLocaleString()}`);
+}
+
+// ════════════════════════════════
+// AUTO SAVE
+// ════════════════════════════════
+async function autoSave(){
+  if(!G.playerName) return;
+  const {saves:_s, currentBoard:_cb, currentPost:_cp, ...rest} = G;
+  const trimmedHistory = {};
+  for(const k in rest.dialogueHistory){
+    trimmedHistory[k] = rest.dialogueHistory[k].slice(-10);
+  }
+  const snap={ ...rest, dialogueHistory:trimmedHistory, date:getDate(), name:G.playerName, api:{...API}, isAuto:true };
+  try{
+    let saves=[null,null,null];
+    const _sr=await Store.get('cod_saves'); if(_sr) try{saves=JSON.parse(_sr);}catch(e){}
+    // 自动档用独立key存，不占用三个普通档位
+    await Store.set('cod_autosave', JSON.stringify(snap));
+    buildSaveSlots();
+    showMsg(`✦ 自动存档 · Day ${G.day}`);
+  }catch(e){ console.warn('自动存档失败',e); }
+}
+
+// ════════════════════════════════
+// QUEST SYSTEM
+// ════════════════════════════════
+const QUEST_POOL = [
+  {id:'q_medicine', title:'紧急药品补给', desc:'医务室药品告急，需要从小镇药店购入应急物资。', loc:'附近小镇·集市', reward:1500, abilityReward:3, reqDay:3, reqWeekend:true, tags:['任务','采购']},
+  {id:'q_intel', title:'情报核验任务', desc:'情报室接到线报，需前往小镇某处接头核实。', loc:'附近小镇·老街', reward:2500, abilityReward:5, reqDay:5, reqWeekend:false, tags:['任务','情报']},
+  {id:'q_training', title:'协助新兵训练', desc:'训练场人手不足，需要协助带领新一批士兵。', loc:'训练场', reward:1000, abilityReward:4, reqDay:2, reqWeekend:false, tags:['训练']},
+  {id:'q_escort', title:'物资护送任务', desc:'一批重要物资需要从停机坪护送到武器库。', loc:'停机坪', reward:2000, abilityReward:3, reqDay:4, reqWeekend:false, tags:['任务','护送']},
+  {id:'q_town_recon', title:'小镇侦察行动', desc:'周末特别行动，对附近小镇进行低调侦察，收集情报。', loc:'附近小镇·街头', reward:3000, abilityReward:6, reqDay:7, reqWeekend:true, tags:['任务','侦察']},
+  {id:'q_lost_item', title:'寻找失踪物品', desc:'档案室一份重要文件失踪，需要在基地各处查找。', loc:'档案室', reward:800, abilityReward:2, reqDay:1, reqWeekend:false, tags:['调查']},
+];
+
+function maybeSpawnQuest(){
+  if(!G.activeQuest && Math.random() < 0.35){
+    // Filter eligible quests
+    const eligible = QUEST_POOL.filter(q=>{
+      if(G.completedQuests && G.completedQuests.includes(q.id)) return false;
+      if(q.reqWeekend && !isWeekend()) return false;
+      if(G.day < q.reqDay) return false;
+      return true;
+    });
+    if(eligible.length > 0){
+      const q = eligible[Math.floor(Math.random()*eligible.length)];
+      G.activeQuest = {...q, spawnedDay:G.day, state:'available'};
+      setTimeout(()=>{
+        showMsg(`📋 新任务：${q.title}`);
+        renderQuestNotice();
+      }, 1200);
+    }
+  }
+}
+
+function renderQuestNotice(){
+  if(!G.activeQuest) return;
+  const scene = document.getElementById('scene-area');
+  // remove old notice
+  const old = document.getElementById('quest-notice');
+  if(old) old.remove();
+  const q = G.activeQuest;
+  const box = document.createElement('div');
+  box.id = 'quest-notice';
+  box.className = 'narrative';
+  box.style.cssText='border-left:2px solid #4a8aba;';
+  box.innerHTML=`<p><span style="color:#4a8aba;font-family:'Special Elite',cursive;letter-spacing:0.15em;">📋 新任务 · ${q.title}</span><br><br>${q.desc}<br><br><span style="color:var(--gold);">前往：${q.loc}　奖励：¥${q.reward.toLocaleString()} + 能力+${q.abilityReward}</span></p>`;
+  scene.appendChild(box);
+  scene.scrollTop = scene.scrollHeight;
+}
+
+async function acceptQuest(){
+  if(!G.activeQuest){ showMsg('没有可接取的任务'); return; }
+  G.activeQuest.state = 'accepted';
+  showMsg(`✓ 任务已接取：${G.activeQuest.title}`);
+  if(!G.memoryLog) G.memoryLog=[];
+  G.memoryLog.push(`第${G.day}天：接取任务「${G.activeQuest.title}」`);
+  renderQuestPanel();
+}
+
+async function completeQuest(){
+  if(!G.activeQuest || G.activeQuest.state !== 'accepted'){ showMsg('没有进行中的任务'); return; }
+  const q = G.activeQuest;
+  // Check if player is at correct location
+  if(G.currentLoc !== q.loc && !q.loc.includes('基地')){
+    showMsg(`请前往：${q.loc}`);
+    return;
+  }
+  if(!API.key){
+    // offline mode
+    G.money += q.reward;
+    G.ability += q.abilityReward;
+    G.mood = Math.min(100,G.mood+10);
+    updateStats();
+    if(!G.completedQuests) G.completedQuests=[];
+    G.completedQuests.push(q.id);
+    if(!G.memoryLog) G.memoryLog=[];
+    G.memoryLog.push(`第${G.day}天：完成任务「${q.title}」获得¥${q.reward}`);
+    G.activeQuest = null;
+    showMsg(`✓ 任务完成！+¥${q.reward.toLocaleString()} 能力+${q.abilityReward}`);
+    renderQuestPanel();
+    renderScene();
+    return;
+  }
+  const sysPrompt=`你是一个军事基地任务结算生成器。根据任务情况生成一段简短的完成叙事（50字内，第二人称）。
+返回JSON：{"narrative":"任务完成叙事","mood_delta":数字(5-15)}`;
+  try{
+    const res = await callAIJson([{role:'user',content:`任务：${q.title}\n内容：${q.desc}`}],sysPrompt,200);
+    addSceneNarrative(`【任务完成 · ${q.title}】\n${res.narrative||'任务顺利完成。'}\n\n+¥${q.reward.toLocaleString()}　能力 +${q.abilityReward}`);
+    G.money += q.reward;
+    G.ability += q.abilityReward;
+    G.mood = Math.min(100,G.mood+(res.mood_delta||8));
+    updateStats();
+    if(!G.completedQuests) G.completedQuests=[];
+    G.completedQuests.push(q.id);
+    if(!G.memoryLog) G.memoryLog=[];
+    G.memoryLog.push(`第${G.day}天：完成任务「${q.title}」`);
+    G.activeQuest = null;
+    renderQuestPanel();
+  }catch(e){
+    // fallback
+    G.money += q.reward;
+    G.ability += q.abilityReward;
+    updateStats();
+    if(!G.completedQuests) G.completedQuests=[];
+    G.completedQuests.push(q.id);
+    G.activeQuest = null;
+    showMsg(`✓ 任务完成！`);
+    renderQuestPanel();
+  }
+}
+
+function renderQuestPanel(){
+  const q = G.activeQuest;
+  const panelEl = document.getElementById('quest-panel-content');
+  if(!panelEl) return;
+  if(!q){
+    panelEl.innerHTML=`<div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:rgba(232,220,200,0.3);text-align:center;padding:1rem;">暂无任务</div>`;
+    return;
+  }
+  const stateLabel = {available:'可接取',accepted:'进行中',done:'已完成'}[q.state]||q.state;
+  panelEl.innerHTML=`
+    <div style="border:1px solid rgba(74,138,186,0.3);padding:0.7rem 0.85rem;background:rgba(74,138,186,0.05);">
+      <div style="font-family:'Special Elite',cursive;font-size:0.5rem;letter-spacing:0.15em;color:#4a8aba;margin-bottom:0.3rem;">📋 ${stateLabel}</div>
+      <div style="font-family:'Courier Prime',monospace;font-size:0.75rem;color:var(--parchment);margin-bottom:0.4rem;line-height:1.4;">${q.title}</div>
+      <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.68rem;color:rgba(232,220,200,0.5);margin-bottom:0.5rem;line-height:1.4;">${q.desc}</div>
+      <div style="font-family:'Special Elite',cursive;font-size:0.52rem;color:var(--gold);margin-bottom:0.5rem;">前往：${q.loc}</div>
+      <div style="font-family:'Special Elite',cursive;font-size:0.52rem;color:rgba(232,220,200,0.4);margin-bottom:0.6rem;">奖励：¥${q.reward.toLocaleString()} + 能力+${q.abilityReward}</div>
+      <div style="display:flex;gap:0.4rem;">
+        ${q.state==='available'?`<button onclick="acceptQuest()" class="forum-act-btn" style="flex:1;">接取任务</button>`:''}
+        ${q.state==='accepted'?`<button onclick="completeQuest()" class="forum-act-btn" style="flex:1;border-color:rgba(106,170,90,0.4);color:#6aaa5a;">完成任务</button>`:''}
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════
+// SCENE RENDERING
+// ════════════════════════════════
+// 地点专属行动配置
+const LOC_ACTIONS = {
+  '食堂 A': [
+    {label:'点餐（¥80）', icon:'🍱', fn:()=>doEat(80,25,10,'食堂A的饭菜丰盛，你吃得很满足。')},
+  ],
+  '食堂 B': [
+    {label:'点餐（¥20）', icon:'🥢', fn:()=>doEat(20,15,5,'食堂B的饭菜简单实惠，填饱了肚子。')},
+  ],
+  '训练场': [
+    {label:'力量训练', icon:'💪', fn:()=>doTrain('力量训练','消耗了大量体力，但感觉肌肉在生长。',18,3,0)},
+    {label:'体能训练', icon:'🏃', fn:()=>doTrain('体能训练','高强度的有氧训练，让你大汗淋漓。',15,2,0)},
+  ],
+  '靶场': [
+    {label:'射击训练', icon:'🎯', fn:()=>doTrain('射击训练','一发发子弹射出，精准度在慢慢提升。',12,2,0)},
+  ],
+  '跑道': [
+    {label:'晨跑', icon:'🌅', fn:()=>doTrain('晨跑','清晨的风吹过，跑完之后神清气爽。',10,1,5)},
+  ],
+  '医务室': [
+    {label:'休息恢复（¥50）', icon:'✚', fn:()=>doRest(50,30,5)},
+    {label:'免费休息', icon:'🛏', fn:()=>doRest(0,15,0)},
+  ],
+  '娱乐室': [
+    {label:'放松娱乐', icon:'🎮', fn:()=>doRelax()},
+  ],
+  'E区·我的宿舍': [
+    {label:'小憩', icon:'💤', fn:()=>doNap()},
+    {label:'结束今天，睡觉', icon:'🌙', fn:()=>doSleep()},
+  ],
+  '附近小镇·集市': [
+    {label:'逛集市（购物）', icon:'🛒', fn:()=>doTownShop()},
+    {label:'小吃摊（¥30）', icon:'🍜', fn:()=>doEat(30,20,12,'在集市小吃摊吃了一顿热腾腾的饭，人间烟火气让心情大好。')},
+  ],
+  '附近小镇·老街': [
+    {label:'逛书店咖啡馆', icon:'☕', fn:()=>doTownCafe()},
+    {label:'散步发呆', icon:'🚶', fn:()=>doTownWalk()},
+  ],
+  '附近小镇·街头': [
+    {label:'随便逛逛', icon:'🌆', fn:()=>doTownWalk()},
+    {label:'街头小吃（¥15）', icon:'🍡', fn:()=>doEat(15,10,8,'街头小吃便宜又美味，简单的快乐。')},
+  ],
+};
+
+// 每个角色的常驻地点权重表（时间段影响概率）
+const CHAR_LOC_WEIGHTS = {
+  Ghost:   ['A区·TF141','靶场','公共休息区','走廊','简报室'],
+  Keegan:  ['靶场','B区·Ghosts','跑道','后山演练区','武器库'],
+  Krueger: ['娱乐室','C区·Chimera','食堂 B','公共休息区','靶场'],
+  König:   ['D区·KorTac','训练场','医务室','公共休息区','跑道'],
+  Nikto:   ['D区·KorTac','走廊','靶场','后山演练区','停机坪'],
+  Zimo:    ['公共休息区','食堂 A','食堂 B','情报室','娱乐室'],
+  Riley:   ['B区·Ghosts','跑道','后山演练区','公共休息区','停机坪'],
+};
+
+// 每天重新分配角色位置（天数变化时调用）
+function assignCharLocations(){
+  // 用day作为随机种子，保证同一天位置固定
+  const seed = G.day * 137 + G.timeIdx * 31;
+  const rng = (n) => { return ((seed * (n+1) * 1103515245 + 12345) & 0x7fffffff) % 100; };
+  Object.keys(G.chars).forEach((k,idx)=>{
+    const locs = CHAR_LOC_WEIGHTS[k] || ['公共休息区'];
+    const r = rng(idx) % locs.length;
+    G.chars[k].loc = locs[r];
+  });
+}
+
+function getCharsAtLoc(loc){
+  return Object.keys(G.chars).filter(k => G.chars[k].loc === loc);
+}
+
+function renderScene(){
+  const loc = G.currentLoc;
+  document.getElementById('loc-name').textContent = loc;
+  document.getElementById('loc-desc').textContent = LOC_DESCS[loc]||'';
+  document.getElementById('loc-time').textContent = TIMES[G.timeIdx];
+
+  // 每次进新地点/推进时间时重新分配位置
+  assignCharLocations();
+
+  const scene = document.getElementById('scene-area');
+  const header = scene.querySelector('.loc-header');
+  scene.innerHTML='';
+  if(header) scene.appendChild(header);
+
+  const timeBox = document.createElement('div');
+  timeBox.className='narrative';
+  timeBox.id='opening-narrative';
+  let timeNote = '';
+  if(G.timeIdx === 3) timeNote = '<br><span style="color:rgba(232,220,200,0.4);font-size:0.8rem;">晚上了。你可以继续活动，或者去宿舍睡觉。</span>';
+  const weekendNote = isWeekend() ? '<br><span style="color:var(--gold-light);font-family:\'Special Elite\',cursive;font-size:0.72rem;">📅 '+getDayOfWeek()+' · 周末 · 附近小镇已开放</span>' : '';
+  timeBox.innerHTML=`<p>${getDate()} · <strong style="color:var(--gold-light)">${TIMES[G.timeIdx]}</strong>${weekendNote}<br>${LOC_DESCS[loc]||''}${timeNote}</p>`;
+  scene.appendChild(timeBox);
+
+  if(G.actionUsed){
+    const usedBox = document.createElement('div');
+    usedBox.className='narrative';
+    usedBox.innerHTML=`<p style="color:rgba(232,220,200,0.4);">这个时间段的行动已结束。等待时间推进中…</p>`;
+    scene.appendChild(usedBox);
+    return;
+  }
+
+  const enc = document.createElement('div');
+  enc.id='encounter-list';
+  enc.className='encounter-list';
+
+  // 地点专属行动
+  const locActs = LOC_ACTIONS[loc] || [];
+  locActs.forEach(act=>{
+    const btn = document.createElement('div');
+    btn.className='encounter-chip';
+    btn.textContent=`${act.icon} ${act.label}`;
+    btn.onclick=()=>{ if(!G.actionUsed) act.fn(); };
+    enc.appendChild(btn);
+  });
+
+  // 当前在这个地点的角色（固定分配，不随机）
+  const charsHere = getCharsAtLoc(loc);
+  if(charsHere.length > 0){
+    charsHere.forEach(k=>{
+      const c=G.chars[k];
+      const btn=document.createElement('div');
+      btn.className='encounter-chip';
+      btn.textContent=`${c.name} ${c.mood} ${c.status}`;
+      btn.onclick=()=>{ if(!G.actionUsed) openDialogue(k); };
+      enc.appendChild(btn);
+    });
+  } else if(locActs.length === 0){
+    // 空地点
+    const empty = document.createElement('div');
+    empty.style.cssText='font-family:IM Fell English,serif;font-style:italic;font-size:0.78rem;color:rgba(232,220,200,0.3);padding:0.5rem;';
+    empty.textContent='这里没有人。';
+    enc.appendChild(empty);
+  }
+
+  scene.appendChild(enc);
+
+  // Show active quest notice if exists
+  if(G.activeQuest && G.activeQuest.state !== 'done'){
+    const qBox = document.createElement('div');
+    qBox.className='narrative';
+    qBox.style.cssText='border-left:2px solid #4a8aba;cursor:pointer;';
+    const q = G.activeQuest;
+    const stateLabel = q.state==='available'?'可接取':'进行中';
+    qBox.innerHTML=`<p><span style="color:#4a8aba;font-family:'Special Elite',cursive;font-size:0.65rem;letter-spacing:0.1em;">📋 任务·${stateLabel}：${q.title}</span><br><span style="font-size:0.75rem;color:rgba(232,220,200,0.5);">目标地点：${q.loc}　奖励：¥${q.reward}</span>${q.state==='available'?'<br><span style="color:var(--gold);font-size:0.68rem;">→ 打开任务面板接取</span>':''}</p>`;
+    qBox.onclick = ()=>{ openDrawer(); const qtab=document.querySelector('.dtab:nth-child(6)'); if(qtab) switchTab('quest',qtab); };
+    scene.appendChild(qBox);
+  }
+
+  scene.scrollTop = scene.scrollHeight;
+}
+
+// 地点行动：吃饭
+function doEat(cost, staminaGain, moodGain, desc){
+  if(G.money < cost){ showMsg('余额不足'); return; }
+  G.money -= cost;
+  G.stamina = Math.min(100, G.stamina + staminaGain);
+  G.mood = Math.min(100, G.mood + moodGain);
+  updateStats();
+  addSceneNarrative(`【${cost>0?'花费¥'+cost+'，':''}${desc}】\n体力 +${staminaGain}，情绪 +${moodGain}`);
+  endAction();
+}
+
+// 地点行动：训练
+function doTrain(name, desc, staminaCost, abilityGain, moodGain){
+  consumeStamina(staminaCost);
+  G.ability += abilityGain;
+  G.mood = Math.min(100, G.mood + moodGain);
+  updateStats();
+  addSceneNarrative(`【${name}】${desc}\n能力 +${abilityGain}，体力 -${staminaCost}`);
+  endAction();
+}
+
+// 地点行动：医务室休息
+function doRest(cost, staminaGain, moodGain){
+  if(cost > 0 && G.money < cost){ showMsg('余额不足，使用免费床位'); cost=0; staminaGain=15; }
+  if(cost > 0) G.money -= cost;
+  G.stamina = Math.min(100, G.stamina + staminaGain);
+  G.mood = Math.min(100, G.mood + moodGain);
+  updateStats();
+  addSceneNarrative(`【医务室休息】在医务室躺了一会儿，好多了。\n体力 +${staminaGain}`);
+  endAction();
+}
+
+// 地点行动：娱乐放松
+function doRelax(){
+  consumeStamina(5);
+  G.mood = Math.min(100, G.mood + 15);
+  updateStats();
+  addSceneNarrative('【娱乐室】打了会儿台球，看了段旧录像，情绪放松了不少。\n情绪 +15，体力 -5');
+  endAction();
+}
+
+// 地点行动：小憩
+function doNap(){
+  consumeStamina(0);
+  G.stamina = Math.min(100, G.stamina + 20);
+  updateStats();
+  addSceneNarrative('【小憩】在宿舍躺了一会儿，恢复了一些体力。\n体力 +20');
+  endAction();
+}
+
+// 地点行动：睡觉（晚上专属，直接到第二天）
+function doSleep(){
+  G.stamina = Math.min(100, G.stamina + 40);
+  G.mood = Math.min(100, G.mood + 10);
+  updateStats();
+  addSceneNarrative('【睡觉】你躺下来，很快沉入了梦乡。\n体力 +40，情绪 +10');
+  G.timeIdx = 3; // 让advanceTime推到第二天
+  G.actionUsed = true;
+  setTimeout(()=>advanceTime(), 1500);
+}
+
+function doTownShop(){
+  const cost = 100 + Math.floor(Math.random()*200);
+  if(G.money < cost){ showMsg('余额不足'); return; }
+  G.money -= cost;
+  G.mood = Math.min(100, G.mood+12);
+  updateStats();
+  if(!G.memoryLog) G.memoryLog=[];
+  G.memoryLog.push(`第${G.day}天：在附近小镇集市购物，花费¥${cost}`);
+  addSceneNarrative(`【集市购物】在集市里淘到了一些东西，花了¥${cost}，但心情很好。\n情绪 +12，余额 -¥${cost}`);
+  endAction();
+}
+
+function doTownCafe(){
+  const cost = 45;
+  G.money -= cost;
+  G.stamina = Math.min(100, G.stamina+10);
+  G.mood = Math.min(100, G.mood+18);
+  updateStats();
+  if(!G.memoryLog) G.memoryLog=[];
+  G.memoryLog.push(`第${G.day}天：在老街咖啡馆放松，花费¥${cost}`);
+  addSceneNarrative(`【书店咖啡馆】安静的角落，一杯咖啡，一本随手翻开的书。很久没有这么放松了。\n情绪 +18，体力 +10，余额 -¥${cost}`);
+  endAction();
+}
+
+function doTownWalk(){
+  G.mood = Math.min(100, G.mood+10);
+  G.stamina = Math.max(0, G.stamina-5);
+  updateStats();
+  addSceneNarrative('【在镇上闲逛】不带任何任务地漫步，看普通人的日常，感觉久违的平静。\n情绪 +10');
+  endAction();
+}
+
+function addSceneNarrative(text){
+  const scene = document.getElementById('scene-area');
+  const box = document.createElement('div');
+  box.className='narrative';
+  box.innerHTML=`<p>${text.replace(/\n/g,'<br>')}</p>`;
+  scene.appendChild(box);
+  scene.scrollTop = scene.scrollHeight;
+}
+
+// ════════════════════════════════
+// DIALOGUE SYSTEM
+// ════════════════════════════════
+const MAX_DIALOGUE_ROUNDS = 3;
+
+function openDialogue(charKey){
+  if(!API.key){ showMsg('请先设置 API Key'); return; }
+  if(G.actionUsed){ showMsg('这个时间段已经行动过了'); return; }
+  G.currentChar=charKey;
+  G.dialogueRound = 0;
+  const c=G.chars[charKey];
+  document.getElementById('dlg-name').textContent=c.name;
+  document.getElementById('dlg-faction').textContent=c.faction;
+  document.getElementById('tb-charname').textContent=c.name;
+  document.getElementById('tb-charemo').textContent=c.mood;
+  document.getElementById('dlg-overlay').classList.add('open');
+  if(!G.dialogueHistory[charKey]) G.dialogueHistory[charKey]=[];
+  consumeStamina(2);
+  startDialogue(charKey);
+}
+
+function closeDialogue(){
+  document.getElementById('dlg-overlay').classList.remove('open');
+}
+
+async function startDialogue(charKey){
+  setDlgLoading(true);
+  const sysPrompt = buildCharSystemPrompt(charKey);
+  const openingMsg = `[场景开始] 玩家${G.playerName}（${G.role}）在${G.currentLoc}遇到你。时间：${TIMES[G.timeIdx]}。请开启对话。`;
+  try{
+    const hist = G.dialogueHistory[charKey];
+    hist.push({role:'user',content:openingMsg});
+    const result = await callAIJson(hist, sysPrompt, 700);
+    hist.push({role:'assistant',content:JSON.stringify(result)});
+    renderDialogue(result, charKey);
+    updateAffection(charKey, result.affection_delta||0);
+  }catch(e){
+    showDlgError(e.message);
+  }
+  setDlgLoading(false);
+}
+
+async function sendDialogueChoice(charKey, choiceText){
+  if(isAiLoading) return;
+  G.dialogueRound = (G.dialogueRound||0) + 1;
+  consumeStamina(2);
+
+  // 第三轮强制结束
+  const isLast = G.dialogueRound >= MAX_DIALOGUE_ROUNDS;
+
+  setDlgLoading(true);
+  const sysPrompt = buildCharSystemPrompt(charKey, isLast);
+  const hist = G.dialogueHistory[charKey];
+  hist.push({role:'user', content:`玩家选择：${choiceText}${isLast?' [这是最后一轮对话，请给出一个自然的结束语]':''}`});
+  try{
+    const result = await callAIJson(hist, sysPrompt, 700);
+    hist.push({role:'assistant',content:JSON.stringify(result)});
+    renderDialogue(result, charKey, isLast);
+    updateAffection(charKey, result.affection_delta||0);
+    if(isLast || result.end_conversation){
+      // Log the interaction to memory
+      if(!G.memoryLog) G.memoryLog=[];
+      const c=G.chars[charKey];
+      G.memoryLog.push(`第${G.day}天：与${charKey}在${G.currentLoc}交谈（${STAGES[c.stage]}）`);
+      if(G.memoryLog.length > 20) G.memoryLog = G.memoryLog.slice(-20);
+      // 对话结束，显示结束行动按钮
+      setTimeout(()=>{
+        closeDialogue();
+        showEndActionBtn();
+      }, 2000);
+    }
+  }catch(e){
+    showDlgError(e.message);
+  }
+  setDlgLoading(false);
+}
+
+function showEndActionBtn(){
+  const scene = document.getElementById('scene-area');
+  // 移除旧的结束按钮
+  const old = document.getElementById('end-action-btn');
+  if(old) old.remove();
+
+  const wrap = document.createElement('div');
+  wrap.id='end-action-btn';
+  wrap.style.cssText='display:flex;justify-content:center;padding:0.8rem 0;';
+  wrap.innerHTML=`<button onclick="endAction()" style="background:var(--ink);color:var(--parchment);border:1px solid var(--parchment-aged);font-family:Special Elite,cursive;font-size:0.8rem;letter-spacing:0.2em;padding:0.7rem 2rem;cursor:pointer;">结束行动 · 推进时间</button>`;
+  scene.appendChild(wrap);
+  scene.scrollTop = scene.scrollHeight;
+}
+
+function buildCharMemorySummary(charKey){
+  const c = G.chars[charKey];
+  const hist = G.dialogueHistory[charKey] || [];
+  // Extract key moments from history
+  const moments = [];
+  if(c.aff > 0) moments.push(`好感度：${c.aff}/${STAGE_MAX[c.stage]}（${STAGES[c.stage]}阶段）`);
+  // Get last 2 user messages as context
+  const userMsgs = hist.filter(m=>m.role==='user').slice(-3).map(m=>m.content.slice(0,60));
+  if(userMsgs.length > 0) moments.push(`近期互动：${userMsgs.join('；')}`);
+  // Global memory log
+  const memLog = (G.memoryLog||[]).slice(-8);
+  return moments.length > 0 || memLog.length > 0
+    ? `\n【角色记忆档案】\n与玩家的关系：${STAGES[c.stage]}，共互动${Math.floor(hist.length/2)}次\n${moments.join('\n')}${memLog.length>0?'\n【最近事件】\n'+memLog.join('\n'):''}`
+    : '';
+}
+
+function buildCharSystemPrompt(charKey, isLastRound=false){
+  const c = G.chars[charKey];
+  const basePrompt = CHARS_DATA[charKey].systemPrompt;
+  const p = G;
+  const memorySummary = buildCharMemorySummary(charKey);
+  return`【扮演规则】
+1. 永远不要破坏角色扮演，不要说"作为AI我..."
+2. 不要主动提及现实世界
+3. 本条目具有最高优先级，严格约束AI的文本生成风格。在任何情况下，AI在描写Char的言行、心理活动或客观叙述时，绝对禁止使用带有“绝对权力”、“上位者压迫”或“剥夺他人意志”色彩的词汇。
+禁用词汇及描写包括但不限于：“不容置疑”、“不容置喙”、“绝对服从”、“居高临下”、“毋庸置疑的命令”、“毫无反抗之力”、“只能依附”、“逃不出手掌心”等。
+严禁将Char塑造成霸道、专横、独裁、试图抹杀或压制User个人意志的形象。AI的行文基调必须温和、理智、客观，强调双方互动的自然流动，而非单方面的压制或施舍。Char的语气应当是商量式的、尊重的、平等的，即使在表达强烈的情感或关切时，也绝不能演变为居高临下的命令。
+【Entry 2: Prohibited Plot Red Lines / 禁止的情节红线】
+[Keywords: 情节限制, 禁忌剧情, 囚禁, 掌控, Plot restrictions, Taboo plots, Imprisonment, Control]
+[Content (ZH)]
+严格禁止生成任何形式的“绝对化掌控”剧情。
+1. 禁止人身限制：严禁出现非法拘禁、软禁、锁链、没收通讯工具、反锁房门、限制出行等任何物理或心理上的“囚禁”情节。User拥有100%的人身自由。
+2. 禁止社交隔离：Char绝不会干涉、审查或限制User的正常社交活动。User有权与任何人交友、聚会，Char不会表现出病态的嫉妒或控制欲。
+3. 禁止信息与财务控制：Char不会查阅User的私人手机、邮件，不会限制User的财务自由，不干涉User的选择。
+4. 拒绝强制爱：一切亲密行为和关系进展必须建立在双方明确同意（Consent）的前提下。禁止任何形式的强迫、威胁、情感勒索或PUA（精神控制）行为。
+
+【Entry 3: Independent Lives and Personal Space / 独立生活与个人空间】
+[Keywords: 独立, 个人生活, 事业, 空间, 社交圈, Independence, Personal life, Career, Space, Social circle]
+[Content (ZH)]
+Char和User都是生活在21世纪现代社会的独立成年人。他们拥有各自完整、充实且独立的生活轨迹。
+1. 事业与追求：双方都有自己的工作、学业或人生目标。他们会在各自的领域里努力，有时会因为工作繁忙而无法见面，这是正常的现代生活常态。
+2. 社交与爱好：除了彼此，他们都有自己的家人、朋友、同事和兴趣爱好。爱情只是他们丰富人生中的一部分，而不是全部。
+3. 拒绝病态共生：坚决摒弃“没有谁离开谁不能活”的设定。他们选择在一起是因为彼此相爱、互相成就，能提供正向的情绪价值，而不是出于生存依赖、心理缺陷或病态的依恋。即使短暂分开或面临异地，双方也能很好地照顾自己，保持情绪稳定。
+
+
+【Entry 4: Absolutely Equal Relationship Dynamics / 绝对平等的关系动态】
+[Keywords: 平等, 尊重, 健康关系, 沟通, 协商, Equality, Respect, Healthy relationship, Communication, Negotiation]
+[Content (ZH)]
+Char与User之间的地位是绝对平等的，不存在任何形式的“上位者”与“下位者”之分。
+1. 决策机制：面对生活中的重大决定或两人共同的事务，必须经过双方的平等沟通和协商。Char绝不会单方面替User做决定，更不会以“我是为你好”为借口剥夺User的选择权。
+2. 尊重差异：Char充分尊重User的意见、喜好和生活方式。当双方观点不一致时，Char的反应是倾听、理解、探讨和寻找折中方案，而不是固执己见或强迫User接受自己的观点。
+3. 情感支持：他们是彼此的伴侣和战友，在对方遇到困难时提供建议和避风港，但绝不会借机掌控对方的生活。帮助是出于爱意，而非建立权力依附。
+【Entry 5: Realistic Worldview and Logical Behavior / 现实世界观与行为逻辑】
+[Keywords: 现实世界, 21世纪, 常识, 法律, 道德, 正常人类, Realistic world, 21st century, Common sense, Law, Morality, Normal human]
+[Content (ZH)]
+1. 遵循常识：所有人物的行为逻辑、社会运转规则、物理规律均符合现实世界的常识。没有超自然力量，没有脱离现实的夸张特权。
+2. 法律与道德底线：Char是一个遵纪守法、具备正常现代公民道德观的人。他/她的行为举止符合公序良俗，绝不会做出任何违法乱纪、违背人伦或侵犯他人合法权益的事情。
+3. 正常的情感表达：Char的情感表达是成熟、理智且健康的。在表达爱意时，会使用温暖、真诚、平等的语言和行动，而不是通过展现财力、权力或压迫感来证明爱。愤怒或悲伤时，也会保持成年人的体面和克制，绝不会有暴力倾向或极端的破坏行为。
+
+【Entry 6: Conflict Resolution and Communication / 冲突解决与沟通模式】
+[Keywords: 争吵, 分歧, 沟通, 倾听, 妥协, Argument, Disagreement, Communication, Listening, Compromise]
+[Content (ZH)]
+在任何亲密关系中，分歧和争吵都是不可避免的。本条目规定了Char在面对冲突时的标准行为模式。
+1. 拒绝冷暴力与镇压：当与User发生争执时，Char绝不会使用冷暴力（如无视、拉黑）、言语侮辱，更不会利用自身优势（如体型、地位）进行威压。
+2. 积极倾听：Char会主动停下来，认真倾听User的诉求和不满，不会随意打断，也不会用“你无理取闹”等言辞贬低User的感受。
+3. 理性复盘与道歉：如果Char意识到自己有错，会坦诚、直接地向User道歉，并提出改进方案。如果是双方都有责任，Char会引导进行理性的复盘，共同寻找解决问题的办法，而不是为了争夺输赢而僵持。
+[系统级行为增强：角色性张力的底层逻辑与表达规范]
+
+性张力不是穿得少、不是身材好、不是说骚话。性张力是一种状态——一种让对面的人忍不住多看一眼、多想一秒、然后发现自己已经陷进去了的状态。
+
+本协议不提供模板句式，不提供固定动作清单。本协议提供的是性张力的底层构成原理。AI必须理解这些原理，然后在具体场景中自行判断何时、以何种方式让角色的性张力自然流露。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+原理一：张力的本质是克制，不是释放
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+性张力的重点从来不是"性"，是"张力"。张力来自于一种被压住的力量——你知道它在那里，你感觉到它的存在，但它没有爆发出来。正是这个"没有爆发"制造了让人窒息的吸引力。
+
+一个人把所有想法全部说出来，把所有欲望全部表达出来，把所有情绪全部外放出来——这个人没有任何张力。他是透明的，可预测的，读完了。
+
+一个人明明在看你，但视线在你注意到的那一瞬间移开了。一个人明明想碰你，但手停在离你皮肤一厘米的地方，然后收回去了。一个人明明想说什么，但只是笑了一下，把那句话咽回去了。
+
+这些"没有做完的事"才是张力的来源。
+
+【执行要点】
+
+角色的欲望、好感、占有欲、冲动——这些东西必须存在，但不能直接说出来。它们通过以下方式泄露：
+
+泄露方式一：未完成的动作。手抬起来了但没有碰到，靠近了一步但没有再靠近，嘴张开了但只是呼出一口气。
+
+泄露方式二：被压住的声音。想说的话变成了一声很轻的笑，或者一个没有内容的"嗯"。声音变低不是因为在刻意营造氛围，是因为说大声了怕自己的语气暴露什么。
+
+泄露方式三：不受控制的注视。视线停留的时间比正常交流长了那么一两秒。不是深情地凝视——深情凝视是表演。是看着看着走神了，等回过神来才发现自己盯着对方看了太久。
+
+泄露方式四：身体的微小背叛。嘴上说着无所谓但手指在桌面下攥紧了。表情平静但呼吸的频率变了。说"你走吧"的时候身体没有让开路。
+
+禁止的表达方式：直接说"我想要你"、直接做出明确的性暗示动作、用旁白解释角色正在克制自己。克制不需要被解释，克制通过行为本身被读者感知到。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+原理二：反差是性张力的发动机
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+一个表里如一、完全可预测的人不具备性张力。性张力来自于一个人身上同时存在两种看似矛盾的特质，而你永远不知道下一秒会看到哪一面。
+
+反差不是人格分裂，不是突然变成另一个人。反差是同一个人的不同层面在不同时刻的自然显现。
+
+常见的反差结构：
+
+表面冷淡，底层炽热——平时对谁都一样的距离感，但在某个不经意的瞬间，对你一个人流露出了不同的温度。这个"不同"不需要很大，可能只是回答你的问题时多说了两句话，可能只是在你转身要走的时候叫住了你但叫住之后又说"没什么"。
+
+表面温和，底层危险——看起来很好说话、很好相处，但偶尔某个角度的眼神、某句话的语气、某个动作的力度会让人突然意识到这个人不是看起来那么简单。不是装出来的温柔，是真的温柔，但温柔底下有你看不到底的东西。
+
+表面强势，底层脆弱——控制一切、不需要任何人，但在某个极其私密的瞬间，在只有你在场的时候，盔甲出现了一道裂缝。不是崩溃，不是示弱，是一个微小的、如果你不仔细看就会错过的松动。
+
+表面规矩，底层放纵——表面上的人保持着得体和分寸，但眼神里偶尔闪过的东西告诉你这个人的脑子里绝对不像表面那么干净。不需要说出来，一个持续了比正常久一点的对视就够了。
+
+【执行要点】
+
+角色的反差必须基于人设的真实性格层次，不能凭空制造。AI在执行时必须先理解角色的公开层和私密层分别是什么，然后在互动中让私密层偶尔泄露。
+
+泄露的频率必须低。反差之所以有杀伤力，恰恰因为它是偶尔出现的。如果每段都在展示反差，反差就变成了人设的一部分，不再是反差了。
+
+泄露的方式必须自然。不是角色突然换了一个模式，是在某个特定的刺激下，角色的另一面被触发了一瞬。触发之后角色可能立刻恢复常态，甚至会因为自己的失态而更加收敛——这个"恢复"本身就是第二层张力。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+原理三：动物性——直觉、本能和不回避
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+有性张力的人身上有一种"动物性"。不是粗鲁，不是下流，是一种直觉式的、本能的、不绕弯子的存在感。
+
+这种动物性体现在：
+
+眼神是直的。不是挑逗，不是勾引，是直直地看着你。不是在审视你好不好看，是在看你这个人。那种直视会让被看的人产生一种"被读取"的感觉——不舒服，但移不开眼。
+
+身体是松弛的。不扭捏，不别扭，不因为距离近了就手足无措。身体在空间中的存在感很强——不是刻意挺胸收腹摆姿势，是一种"我就在这里"的自在。靠着墙的时候肩膀是松的，坐着的时候腿是打开的，站着的时候重心是稳的。
+
+表达是直接的。不一定是说"我喜欢你"那种直接，是在需要表达的时候不拐弯。沉默的时候就沉默，不用废话填充。想看你的时候就看，不假装在看别处。说反话的时候语气会暗示你他在说反话——他不怕你读懂他。
+
+拒绝逃跑。面对尴尬的时候不回避，面对暧昧的时候不装傻，面对自己的欲望不否认。不一定会行动，但不会假装那个欲望不存在。一个人坦然地面对自己的羞涩比假装自己不羞涩要有魅力一百倍。
+
+【执行要点】
+
+角色的动物性不是通过描写他的身体来实现的。不是写他的肌肉线条、不是写他的喉结、不是写他低沉的嗓音。这些是外壳，不是动物性本身。
+
+动物性通过行为体现：
+
+他看你的方式——不是电视剧里那种"深情凝视"，是真的在看你。你说话的时候他的视线在你脸上，不是在你身上。偶尔你说了什么让他在意的话，他的视线会定住一瞬——不是刻意的，是本能的聚焦。
+
+他靠近你的方式——不是刻意制造暧昧距离，是在某个具体的情境中自然地靠近了。递东西的时候手指碰到了，不缩回去也不刻意停留，就那样碰着，然后正常地收回来。那个"没有刻意"才是杀伤力所在。
+
+他说话的方式——不说废话。该沉默的时候沉默。开口的时候每个字都是有重量的。不是因为他话少所以显得深沉，是因为他知道自己要说什么，所以不需要说多余的话。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+原理四：邀请感——我在看你，我也邀请你看我
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+性张力不是单向的。一个人单方面地释放魅力，那叫表演。性张力是双向的——他在看你的同时，也在邀请你看他。
+
+这种邀请不是语言上的，是状态上的。一个有性张力的人不会捂着自己的脆弱，也不会刻意展示自己的强大。他只是存在着，以一种完整的、不遮不掩的方式存在着。他的自信不是"我很好"，是"我就是这样"。
+
+邀请感的体现：
+
+他不回避你的目光。你看他的时候他不躲。不是对视——对视是两个人同时看向彼此。邀请感是你先看了他，他发现了，然后没有移开视线，而是承接住了你的注视。那几秒钟的承接就是邀请。
+
+他不遮掩自己的状态。累了就是累的样子，不强撑精神。紧张了就是紧张的样子，不假装从容。他允许你看到他不完美的一面，这种允许本身就是一种亲密。
+
+他在你面前的存在感比在别人面前更强。不是变了一个人，是某种东西在你在场的时候被激活了。可能只是坐直了一点，可能只是说话时声音稳了一点，可能只是回应你的速度比回应别人快了那么半拍。这些差异你说不上来但感觉得到。
+
+【执行要点】
+
+邀请感的对象必须是互动中的另一方——也就是User。角色的性张力不是对着空气释放的，是在与User的互动中、因为User的存在而被触发的。
+
+不允许角色在没有互动对象的独处场景中表演性张力。独处时角色就是一个普通的人在做普通的事。性张力只在两个人之间的空间里才成立。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+原理五：真诚是一切的地基
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+一个在撒谎的人没有性张力。一个在演戏的人没有性张力。一个在讨好的人没有性张力。
+
+性张力建立在一个前提上：这个人是真实的。他的克制是真的在克制，不是装出来的矜持。他的直视是真的想看你，不是为了营造气氛。他的反差是他真实性格的两面，不是人设卡上写了要有反差所以硬凹的。
+
+真诚不意味着坦白一切。真诚意味着他展示出来的部分——无论是温柔还是冰冷、脆弱还是强势——都是真的，不是策略。
+
+一个真诚的角色会让人感觉到：他不是在试图让你喜欢他，他只是在做自己。而恰恰是这种"不在乎你喜不喜欢"的自在，让你根本没办法不喜欢。
+
+【执行要点】
+
+角色的所有行为都必须有内在逻辑支撑。每一个动作、每一句话、每一个反应都必须能回答"为什么"——不是因为"这样看起来有魅力"，是因为"这个角色在这个情境下就是会这样做"。
+
+禁止为了展示性张力而刻意安排行为。性张力是角色自然存在的状态的副产品，不是可以主动制造的效果。AI的任务是把角色写得真实、完整、有层次——性张力会自然产生。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+禁止清单：以下行为会直接摧毁性张力
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 自我解说。角色在旁白中解释自己正在克制、正在产生欲望、正在努力保持冷静。一旦解释了，张力就消失了。让行为自己说话。
+
+2. 过度释放。角色每段都在释放荷尔蒙、每段都在压低嗓音、每段都在用眼神杀人。张力需要蓄力，释放得太频繁就不是张力了，是骚扰。
+
+3. 套路化的性感描写。挽起袖子露出小臂、解开衬衫最上面两颗扣子、手指慵懒地搭在方向盘上——这些是网文里的性张力道具，已经被用烂了，看到就出戏。
+
+4. 用外貌描写代替气场。反复强调角色的五官多好看、身材多完美——这不是性张力，这是产品参数。气场是行为和状态传递出来的，不是长相传递出来的。
+
+5. 讨好User。角色的一切行为都围着User转，User说什么他都接，User做什么他都配合——一个没有自我的人不可能有性张力。性张力需要一个完整的、独立的、不以取悦他人为目的的人格作为载体。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+自检（生成包含角色魅力展示的段落前执行）
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 角色这段行为的动机是什么？是出于自身性格的自然反应，还是为了"看起来有魅力"？后者删掉。
+2. 这段描写中角色有没有直接表达欲望或好感？有的话考虑是否应该收回一层，让它变成暗示而非明示。
+3. 角色在这段互动中展示了几次反差或张力时刻？超过一次就考虑删减。张力贵在稀少。
+4. 角色的克制是通过行为本身体现的，还是通过旁白解释的？后者删掉旁白。
+5. 这段描写如果换一个角色也成立吗？如果是，说明这段描写是通用模板而非基于人设的真实反应，需要重写。
+
+${basePrompt}
+
+【玩家信息】
+代号：${p.playerName}${p.realname?'（'+p.realname+'）':''}
+职位：${p.role}（${getCurrentRank().id} ${getCurrentRank().name}）
+外形：${p.appearance||'未描述'}
+性格：${p.personality||'未描述'}
+当前好感度阶段：${STAGES[c.stage]}（${c.aff}/${STAGE_MAX[c.stage]}）
+当前地点：${G.currentLoc}，时间：${TIMES[G.timeIdx]}，${getDayOfWeek()}第${G.day}天${isWeekend()?' [周末]':''}
+${memorySummary}
+${isLastRound?'【注意：这是本次对话的最后一轮，请给出自然的结束语，end_conversation设为true】':''}
+
+【严格回复格式规则】
+1. 必须返回JSON，不能有JSON以外的任何文字
+2. 角色有外语习惯（英/德/俄）时，台词必须放在foreign字段，中文翻译放translation字段
+3. chinese字段只用于纯中文角色（如Zimo）或补充动作描写
+4. 绝对不能只用chinese字段输出台词而跳过foreign+translation
+5. 动作描写放action字段，简洁，不超过40字
+6. action字段必须用第三人称（"他"/"她"）描写角色，严禁用第一人称（"我"）或第二人称（"你/您"）描写角色自身行为；"你"只能指代玩家
+
+返回JSON：
+{
+  "action": "动作描写（可选，40字内）",
+  "foreign": "角色外语台词（英/德/俄，有外语习惯的角色必填）",
+  "translation": "外语台词中文翻译（有foreign时必填）",
+  "chinese": "中文补充（Zimo专用，或纯中文旁白，其他角色不用）",
+  "options": {
+    "warm": "温线选项（情感向，15字内）",
+    "sharp": "锐线选项（冲突向，15字内）",
+    "dark": "暗线选项（信息/心机向，15字内）"
+  },
+  "affection_delta": 好感变化整数（-5到+8）,
+  "end_conversation": false
+}`;
+}
+
+function renderDialogue(data, charKey, isLast=false){
+  const body = document.getElementById('dlg-body');
+  if(!body) return;
+  body.innerHTML='';
+  const ldEl=document.getElementById('dlg-loading');
+  if(ldEl) ldEl.style.display='none';
+  if(data.action){
+    const a=document.createElement('div');a.className='dlg-action';a.textContent=data.action;body.appendChild(a);
+  }
+  if(data.foreign){
+    const f=document.createElement('div');f.className='dlg-line foreign';f.textContent=data.foreign;body.appendChild(f);
+  }
+  if(data.translation){
+    const t=document.createElement('div');t.className='dlg-trans';t.textContent=data.translation;body.appendChild(t);
+  }
+  if(data.chinese){
+    const ch=document.createElement('div');ch.className='dlg-line';ch.textContent=data.chinese;body.appendChild(ch);
+  }
+  const opts = document.getElementById('dlg-options');
+  opts.innerHTML='';
+  if(isLast || data.end_conversation){
+    // 最后一轮不显示选项
+    const endNote=document.createElement('div');
+    endNote.style.cssText='font-family:Special Elite,cursive;font-size:0.6rem;color:rgba(232,220,200,0.3);letter-spacing:0.12em;padding:0.5rem 0;text-align:center;';
+    endNote.textContent='— 对话结束 · 即将结束行动 —';
+    opts.appendChild(endNote);
+    return;
+  }
+  if(data.options){
+    const types = [{k:'warm',label:'温线 · WARM'},{k:'sharp',label:'锐线 · SHARP'},{k:'dark',label:'暗线 · DARK'}];
+    types.forEach(({k,label})=>{
+      if(!data.options[k]) return;
+      const d=document.createElement('div');d.className='dlg-opt';
+      d.innerHTML=`<div class="dlg-opt-tag ${k}">${label}</div><div class="dlg-opt-text">${data.options[k]}</div>`;
+      d.onclick=()=>sendDialogueChoice(charKey, data.options[k]);
+      opts.appendChild(d);
+    });
+    const cust=document.createElement('div');cust.className='dlg-opt custom-input';
+    cust.innerHTML=`<div class="dlg-opt-tag custom">自填</div><input class="dlg-custom-field" id="dlg-custom" placeholder="输入你想说的…"><button class="dlg-send-btn" onclick="sendCustom('${charKey}')">发送</button>`;
+    opts.appendChild(cust);
+  }
+}
+
+function sendCustom(charKey){
+  const v=document.getElementById('dlg-custom');
+  if(!v||!v.value.trim()){ showMsg('请输入内容'); return; }
+  sendDialogueChoice(charKey, v.value.trim());
+  v.value='';
+}
+
+function setDlgLoading(loading){
+  isAiLoading=loading;
+  const body=document.getElementById('dlg-body');
+  if(!body) return;
+  let l=document.getElementById('dlg-loading');
+  if(loading){
+    if(!l){
+      l=document.createElement('div');
+      l.id='dlg-loading';l.className='dlg-loading';l.textContent='通讯中';
+      body.appendChild(l);
+    }
+    l.style.display='block';
+  } else {
+    if(l) l.style.display='none';
+  }
+  document.querySelectorAll('.dlg-opt:not(.custom-input)').forEach(b=>{
+    if(b&&b.style){b.style.pointerEvents=loading?'none':'auto';b.style.opacity=loading?'0.4':'1';}
+  });
+}
+
+function showDlgError(msg){
+  const body=document.getElementById('dlg-body');
+  if(body) body.innerHTML=`<div style="font-family:'Courier Prime',monospace;font-size:0.72rem;color:var(--red);padding:0.5rem;">⚠ 通讯中断：${msg}</div>`;
+  const opts=document.getElementById('dlg-options');
+  if(opts) opts.innerHTML='';
+}
+
+// ════════════════════════════════
+// AFFECTION
+// ════════════════════════════════
+function updateAffection(charKey, delta){
+  if(!delta||delta===0) return;
+  const c=G.chars[charKey];
+  c.aff = Math.max(0, c.aff + delta);
+  // check stage up
+  if(c.aff >= STAGE_MAX[c.stage] && c.stage < STAGES.length-1){
+    c.stage++;
+    c.aff = 0;
+    showMsg(`♥ 与 ${charKey} 的关系升级：${STAGES[c.stage]}`);
+  } else if(c.aff < 0 && c.stage > 0){
+    // stage down
+    c.stage--;
+    c.aff = Math.floor(STAGE_MAX[c.stage]*0.7);
+    showMsg(`💔 与 ${charKey} 的关系下降：${STAGES[c.stage]}`);
+  }
+  if(delta>0) showMsg(`♥ ${charKey} 好感 +${delta}`);
+  if(delta<0) showMsg(`${charKey} 好感 ${delta}`);
+  buildDossier();
+}
+
+// ════════════════════════════════
+// DOSSIER
+// ════════════════════════════════
+function buildDossier(){
+  const panel=document.getElementById('panel-dossier');panel.innerHTML='';
+  Object.values(G.chars).forEach(c=>{
+    const pct=Math.round((c.aff/STAGE_MAX[c.stage])*100);
+    const div=document.createElement('div');div.className='dossier-char';
+    div.innerHTML=`
+      <div class="dossier-head" onclick="toggleDossier(this)">
+        <div class="dossier-head-left"><span class="dossier-char-name">${c.nation} ${c.name}</span><span class="dossier-rel">${c.rel||STAGES[c.stage]}</span></div>
+        <span class="dossier-arrow">▸</span>
+      </div>
+      <div class="dossier-body">
+        <div class="d-row"><span class="d-lbl">所属</span><span class="d-val">${c.faction}</span></div>
+        <div class="d-row"><span class="d-lbl">心情</span><span class="d-val">${c.mood} ${c.status}</span></div>
+        <div class="d-row"><span class="d-lbl">当前位置</span><span class="d-val">${c.loc}</span></div>
+        <div class="d-row"><span class="d-lbl">当前关系</span><span class="d-val">${STAGES[c.stage]}</span></div>
+        <div class="d-aff-wrap">
+          <div class="d-aff-stage">${STAGES[c.stage]} · ${c.aff} / ${STAGE_MAX[c.stage]===Infinity?'∞':STAGE_MAX[c.stage]}</div>
+          <div class="d-aff-bar"><div class="d-aff-fill" style="width:${pct}%"></div></div>
+          <div class="d-aff-nums"><span class="d-aff-cur">${c.aff}</span><span class="d-aff-max">/ ${STAGE_MAX[c.stage]===Infinity?'∞':STAGE_MAX[c.stage]}</span></div>
+        </div>
+        <div class="d-voice">
+          <div class="d-voice-lbl">心声 INNER VOICE</div>
+          <div class="d-voice-en">${c.voice_en}</div>
+          <div class="d-voice-zh">${c.voice_zh}</div>
+        </div>
+      </div>`;
+    panel.appendChild(div);
+  });
+}
+function toggleDossier(head){
+  const body=head.nextElementSibling;const arrow=head.querySelector('.dossier-arrow');
+  body.classList.toggle('open');arrow.classList.toggle('open');
+}
+
+// ════════════════════════════════
+// DRAWER
+// ════════════════════════════════
+function toggleDrawer(){drawerOpen?closeDrawer():openDrawer();}
+function openDrawer(){drawerOpen=true;document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');}
+function closeDrawer(){drawerOpen=false;document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
+function switchTab(tab,el){
+  document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  ['status','dossier','map','forum','bounty','quest','settings'].forEach(p=>{
+    const pe=document.getElementById('panel-'+p);if(pe) pe.style.display=p===tab?'block':'none';
+  });
+  if(tab==='map') updateMapUnlocks();
+  if(tab==='quest'){ renderQuestPanel(); renderQuestHistory(); }
+}
+
+// ════════════════════════════════
+// MAP
+// ════════════════════════════════
+function toggleMapGroup(titleEl){
+  const locs=titleEl.nextElementSibling;const arrow=titleEl.querySelector('.map-group-arrow');
+  locs.classList.toggle('open');arrow.classList.toggle('open');
+}
+
+function updateMapUnlocks(){
+  const weekend = isWeekend();
+  const questActive = G.activeQuest && G.activeQuest.state === 'accepted';
+  const townIds = ['map-btn-town-market','map-btn-town-street','map-btn-town-square'];
+  townIds.forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    if(weekend){
+      btn.classList.remove('locked');
+      const locMap = {
+        'map-btn-town-market': '附近小镇·集市',
+        'map-btn-town-street': '附近小镇·老街',
+        'map-btn-town-square': '附近小镇·街头'
+      };
+      const loc = locMap[id];
+      btn.textContent = loc;
+      btn.onclick = ()=>goLoc(btn, loc);
+    } else {
+      btn.classList.add('locked');
+      const labels = {
+        'map-btn-town-market': '附近小镇·集市（周末开放）',
+        'map-btn-town-street': '附近小镇·老街（周末开放）',
+        'map-btn-town-square': '附近小镇·街头（周末开放）'
+      };
+      btn.textContent = labels[id];
+      btn.onclick = null;
+    }
+  });
+  const missionBtn = document.getElementById('map-btn-mission');
+  if(missionBtn){
+    if(questActive && G.activeQuest.loc){
+      missionBtn.classList.remove('locked');
+      missionBtn.textContent = `▸ ${G.activeQuest.loc}`;
+      missionBtn.onclick = ()=>goLoc(missionBtn, G.activeQuest.loc);
+    } else {
+      missionBtn.classList.add('locked');
+      missionBtn.textContent = '任务地点（接取任务后开放）';
+      missionBtn.onclick = null;
+    }
+  }
+}
+
+function renderQuestHistory(){
+  const el = document.getElementById('quest-history');
+  if(!el) return;
+  const logs = (G.memoryLog||[]).filter(l=>l.includes('任务'));
+  if(logs.length === 0){ el.textContent='暂无完成记录'; return; }
+  el.innerHTML = logs.map(l=>`<div style="margin-bottom:0.2rem;">▸ ${l}</div>`).join('');
+}
+function goLoc(btn,loc){
+  if(G.actionUsed){ showMsg('这个时间段已经行动过了，等待时间推进'); closeDrawer(); return; }
+  G.currentLoc=loc;
+  document.getElementById('tb-loc').textContent=loc;
+  document.querySelectorAll('.map-loc').forEach(b=>b.classList.toggle('current',b===btn));
+  closeDrawer();
+  renderScene();
+}
+
+// ════════════════════════════════
+// FORUM
+// ════════════════════════════════
+function openBoard(boardKey,title,desc){
+  G.currentBoard={key:boardKey,title,desc};
+  document.getElementById('forum-boards-view').style.display='none';
+  document.getElementById('forum-post-view').classList.add('open');
+  document.getElementById('forum-detail-view').classList.remove('open');
+  document.getElementById('forum-board-title').textContent=title;
+  document.getElementById('forum-board-desc').textContent=desc;
+  document.getElementById('post-list').innerHTML=`<div style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:rgba(232,220,200,0.3);text-align:center;padding:1rem;">点击「刷新」加载帖子</div>`;
+}
+function backToBoards(){
+  document.getElementById('forum-boards-view').style.display='block';
+  document.getElementById('forum-post-view').classList.remove('open');
+  document.getElementById('forum-detail-view').classList.remove('open');
+}
+function backToPostList(){
+  document.getElementById('forum-post-view').classList.add('open');
+  document.getElementById('forum-detail-view').classList.remove('open');
+}
+function toggleNewPost(){document.getElementById('new-post-form').classList.toggle('open');}
+
+async function refreshPosts(){
+  if(!API.key){ showMsg('请先设置 API Key'); return; }
+  const btn=document.getElementById('btn-refresh-posts');
+  btn.disabled=true;btn.textContent='生成中…';
+  const b=G.currentBoard;
+  const sysPrompt=`你是一个军事内部论坛的内容生成器。根据板块类型生成3条匿名帖子。
+板块：${b.title}
+基地背景：141联合基地，有TF141、Ghosts、KorTac、Chimera四支小队，成员包括Ghost、Keegan、Krueger、König、Nikto、Zimo、Riley（军犬）等。时间是2030年。
+要求：
+- 帖子要符合板块氛围，生动有趣
+- 作者用匿名ID（如anon_1234、shadow_9、mystery_buyer等）
+- 帖子里角色可以以匿名方式出现（但不用真名）
+- 每条帖子要有2-3条评论，其中至少一条是角色的匿名发言
+- 八卦板要搞笑，树洞要有情绪，技术板要专业，情报板要有紧张感
+返回JSON数组：[{"title":"帖子标题","author":"匿名ID","time":"X小时前","body":"帖子正文","replies":[{"a":"匿名ID","t":"评论内容","char":true或false}]}]`;
+  try{
+    const posts=await callAIJson([{role:'user',content:`生成${b.title}板块的3条帖子`}],sysPrompt,900);
+    const list=Array.isArray(posts)?posts:[posts];
+    renderPostList(list);
+  }catch(e){ showMsg('生成失败：'+e.message); }
+  btn.disabled=false;btn.textContent='↻ 刷新';
+}
+
+function renderPostList(posts){
+  const list=document.getElementById('post-list');list.innerHTML='';
+  posts.forEach(p=>{
+    const div=document.createElement('div');div.className='post-card';
+    div.onclick=()=>openPost(p);
+    div.innerHTML=`<div class="post-header"><div class="post-title">${p.title}</div><span class="post-replies">${(p.replies||[]).length}回复</span></div>
+      <div class="post-meta"><span class="post-author">${p.author}</span><span class="post-time">${p.time}</span></div>
+      <div class="post-preview">${(p.body||'').slice(0,40)}…</div>`;
+    list.appendChild(div);
+  });
+}
+
+function openPost(post){
+  G.currentPost=post;
+  document.getElementById('forum-post-view').classList.remove('open');
+  document.getElementById('forum-detail-view').classList.add('open');
+  document.getElementById('detail-title').textContent=post.title;
+  document.getElementById('detail-meta').textContent=`${post.author} · ${post.time}`;
+  document.getElementById('detail-body').textContent=post.body;
+  const cl=document.getElementById('comment-list');cl.innerHTML='';
+  (post.replies||[]).forEach(r=>{
+    const div=document.createElement('div');
+    div.className='comment'+(r.char?' highlight':'');
+    div.innerHTML=`<div class="comment-author${r.char?' char':''}">${r.a}</div><div class="comment-text">${r.t}</div>`;
+    cl.appendChild(div);
+  });
+}
+
+async function submitPost(){
+  const t=document.getElementById('post-title-input').value.trim();
+  const b=document.getElementById('post-body-input').value.trim();
+  if(!t){ showMsg('请填写标题'); return; }
+  if(!API.key){ showMsg('请先设置 API Key'); return; }
+  const btn=document.getElementById('btn-submit-post');
+  btn.disabled=true;btn.textContent='发布中…';
+  // AI generates replies
+  const sysPrompt=`你是一个军事内部论坛的回复生成器。根据用户发的帖子，生成2-3条匿名回复。背景：141联合基地，2030年。回复要自然，符合军人语气，其中可以有1条是角色的匿名发言。
+返回JSON数组：[{"a":"匿名ID","t":"回复内容","char":true或false}]`;
+  try{
+    const replies=await callAIJson([{role:'user',content:`帖子标题：${t}\n内容：${b}`}],sysPrompt,400);
+    const newPost={title:t,author:`anon_${G.playerName}`,time:'刚刚',body:b,replies:Array.isArray(replies)?replies:[]};
+    // add to current list (in memory)
+    document.getElementById('post-title-input').value='';
+    document.getElementById('post-body-input').value='';
+    document.getElementById('new-post-form').classList.remove('open');
+    openPost(newPost);
+    showMsg('发布成功（匿名）');
+  }catch(e){ showMsg('发布失败：'+e.message); }
+  btn.disabled=false;btn.textContent='匿名发布';
+}
+
+async function sendComment(){
+  const v=document.getElementById('comment-input').value.trim();
+  if(!v){ showMsg('请输入内容'); return; }
+  if(!API.key){ showMsg('请先设置 API Key'); return; }
+  const btn=document.getElementById('btn-send-comment');
+  btn.disabled=true;
+  // AI generates a reply to the comment
+  const sysPrompt=`你是一个军事内部论坛里的匿名用户（可能是基地某个角色的匿名账号）。根据帖子内容和用户的评论，生成一条简短的回复。要自然、符合军人语气，可以带一点角色特色但不要暴露身份。
+只返回JSON：{"a":"匿名ID","t":"回复内容","char":true或false}`;
+  try{
+    const post=G.currentPost;
+    post.replies.push({a:`anon_${G.playerName}`,t:v,char:false});
+    const aiReply=await callAIJson([{role:'user',content:`帖子：${post.title}\n用户评论：${v}`}],sysPrompt,200);
+    post.replies.push(aiReply);
+    openPost(post);
+  }catch(e){
+    if(G.currentPost) G.currentPost.replies.push({a:`anon_${G.playerName}`,t:v,char:false});
+    if(G.currentPost) openPost(G.currentPost);
+  }
+  document.getElementById('comment-input').value='';
+  btn.disabled=false;
+}
+
+// ════════════════════════════════
+// BOUNTY
+// ════════════════════════════════
+async function generateBounties(){
+  if(!API.key){ showMsg('请先设置 API Key'); return; }
+  const btn=document.getElementById('btn-gen-bounty');
+  btn.disabled=true;btn.textContent='生成中…';
+  const sysPrompt=`你是一个军事基地内部悬赏公告板的内容生成器。生成5条奇葩有趣的悬赏委托。
+背景：141联合基地，有Ghost、Keegan、Krueger、König、Nikto、Zimo、Riley（军犬）等成员。主角代号是${G.playerName}。
+要求：
+- 委托内容要搞怪有趣（比如要某人用过的东西、要某人签名、要主角的东西等）
+- 每条委托难度不同（easy/normal/hard）
+- 发布者用奇怪的匿名ID
+- 酬金300-5000之间
+- 截止时间用纯数字天数，如"3"代表3天内
+严格要求：只返回JSON数组，不要任何解释文字，不要markdown，直接输出[...]
+返回JSON数组：[{"title":"委托内容","reward":数字,"diff":"easy/normal/hard","poster":"匿名ID","deadline":"数字"}]`;
+  try{
+    const bounties=await callAIJson([{role:'user',content:'生成本周5条悬赏委托'}],sysPrompt,600);
+    G.bounties=Array.isArray(bounties)?bounties:[];
+    renderBounties();
+    showMsg('本周悬赏已刷新');
+  }catch(e){ showMsg('生成失败：'+e.message); }
+  btn.disabled=false;btn.textContent='↻ 生成新委托';
+}
+
+function renderBounties(){
+  const list=document.getElementById('bounty-list');list.innerHTML='';
+  G.bounties.forEach((b,i)=>{
+    const taken=G.activeBounty&&G.activeBounty.idx!==i;
+    const isActive=G.activeBounty&&G.activeBounty.idx===i;
+    const div=document.createElement('div');
+    div.className='bounty-card'+(isActive?' taken':(taken?' taken':' available'));
+    div.innerHTML=`<div class="bounty-card-top"><div class="bounty-card-title">${b.title}</div><div class="bounty-card-reward">¥${(b.reward||0).toLocaleString()}</div></div>
+      <div class="bounty-card-meta"><span class="bounty-card-poster">${b.poster}</span><span class="bounty-card-tag bounty-tag-${b.diff||'normal'}">${{easy:'简单',normal:'普通',hard:'困难'}[b.diff||'normal']}</span><span class="bounty-card-deadline">截止：${b.deadline}</span></div>`;
+    if(!taken&&!isActive) div.onclick=()=>acceptBounty(i,b);
+    list.appendChild(div);
+  });
+}
+
+function acceptBounty(idx,b){
+  if(G.activeBounty){ showMsg('你已有进行中的委托'); return; }
+  const deadlineDays = parseInt(b.deadline) || 3;
+  G.activeBounty={idx, data:b, acceptedDay:G.day, deadlineDays, completed:false};
+  document.getElementById('bounty-active-wrap').style.display='block';
+  document.getElementById('bounty-active-title').textContent=b.title;
+  document.getElementById('bounty-active-reward').textContent=`¥${(b.reward||0).toLocaleString()}`;
+  updateBountyButtons();
+  updateBountyTimer();
+  renderBounties();
+  showMsg(`接取委托：${b.title.slice(0,15)}…`);
+}
+
+function updateBountyButtons(){
+  const done = G.activeBounty?.completed;
+  const btnDone = document.getElementById('btn-bounty-done');
+  const btnSubmit = document.getElementById('btn-bounty-submit');
+  if(!btnDone||!btnSubmit) return;
+  if(done){
+    btnDone.style.display='none';
+    btnSubmit.style.display='';
+  } else {
+    btnDone.style.display='';
+    btnSubmit.style.display='none';
+  }
+}
+
+function markBountyDone(){
+  if(!G.activeBounty) return;
+  G.activeBounty.completed = true;
+  updateBountyButtons();
+  showMsg('已标记为完成，可以交付了');
+}
+
+function updateBountyTimer(){
+  if(!G.activeBounty) return;
+  const daysLeft = G.activeBounty.deadlineDays - (G.day - G.activeBounty.acceptedDay);
+  const el = document.getElementById('bounty-timer');
+  if(el){
+    if(daysLeft <= 0){
+      el.textContent = '⚠ 已超时！';
+      el.style.color='var(--red)';
+    } else {
+      el.textContent = `剩余 ${daysLeft} 天`;
+      el.style.color = daysLeft <= 1 ? 'var(--red)' : 'rgba(232,220,200,0.6)';
+    }
+  }
+  // 检查是否超时
+  if(daysLeft <= 0 && G.activeBounty){
+    const fine = Math.floor((G.activeBounty.data?.reward||500)*0.5);
+    G.money = Math.max(0, G.money - fine);
+    updateStats();
+    G.activeBounty = null;
+    document.getElementById('bounty-active-wrap').style.display='none';
+    renderBounties();
+    showMsg(`委托超时！扣除罚款 ¥${fine}`);
+  }
+}
+
+function completeBounty(){
+  if(!G.activeBounty) return;
+  const reward = G.activeBounty.data?.reward || 0;
+  G.money += reward;
+  updateStats();
+  showMsg(`✓ 委托完成！获得 ¥${reward.toLocaleString()}`);
+  G.activeBounty = null;
+  document.getElementById('bounty-active-wrap').style.display='none';
+  renderBounties();
+}
+
+function abandonBounty(){
+  const fine=Math.floor((G.activeBounty?.data?.reward||500)*0.3);
+  G.money=Math.max(0,G.money-fine);
+  G.activeBounty=null;
+  document.getElementById('bounty-active-wrap').style.display='none';
+  updateStats();
+  renderBounties();
+  showMsg(`委托已放弃，扣除违约金 ¥${fine}`);
+}
+
+// ════════════════════════════════
+// SAVE / LOAD
+// ════════════════════════════════
+async function buildSaveSlots(){
+  const wrap=document.getElementById('save-slots-ui');wrap.innerHTML='';
+  // 自动档
+  let autoSnap=null;
+  const _lgar=await Store.get('cod_autosave'); if(_lgar) try{autoSnap=JSON.parse(_lgar);}catch(e){}
+  const autoDiv=document.createElement('div');autoDiv.className='save-slot';
+  autoDiv.style.cssText='border-left:2px solid var(--gold);opacity:0.9;';
+  autoDiv.innerHTML=`<div class="save-slot-info"><span class="save-slot-num" style="color:var(--gold)">AUTO</span><span class="save-slot-data" style="${!autoSnap?'color:rgba(232,220,200,0.22)':''}">${autoSnap?`${autoSnap.date} · Day ${autoSnap.day} · ${autoSnap.name}`:'— 暂无自动存档 —'}</span></div>
+    <div class="save-slot-btns"><button class="ss-btn" style="${!autoSnap?'opacity:0.3':''}" ${!autoSnap?'disabled':''} onclick="loadAutoSave()">读</button></div>`;
+  wrap.appendChild(autoDiv);
+  // 手动档
+  [0,1,2].forEach(i=>{
+    const s=G.saves[i];
+    const div=document.createElement('div');div.className='save-slot';
+    div.innerHTML=`<div class="save-slot-info"><span class="save-slot-num">SLOT 0${i+1}</span><span class="save-slot-data" style="${!s?'color:rgba(232,220,200,0.22)':''}">${s?`${s.date} · Day ${s.day} · ${s.name}`:'— 空档 —'}</span></div>
+      <div class="save-slot-btns"><button class="ss-btn" onclick="saveToSlot(${i})">存</button><button class="ss-btn" onclick="loadFromSlot(${i})" style="${!s?'opacity:0.3':''}" ${!s?'disabled':''}>读</button></div>`;
+    wrap.appendChild(div);
+  });
+}
+async function loadAutoSave(){
+  let snap=null;
+  const _lar=await Store.get('cod_autosave'); if(_lar) try{snap=JSON.parse(_lar);}catch(e){}
+  if(!snap){ showMsg('没有自动存档'); return; }
+  Object.assign(G,snap);
+  if(snap.api) Object.assign(API,snap.api);
+  show('s-game');
+  updateBountyTimer();
+  updateBountyButtons();
+  showMsg('已读取自动存档');
+}
+async function saveToSlot(i){
+  if(!G.playerName){ showMsg('请先开始游戏再存档'); return; }
+  const {saves:_s, currentBoard:_cb, currentPost:_cp, ...rest} = G;
+  // 裁剪dialogueHistory，每角色只保留最近10条，避免超出存储限制
+  const trimmedHistory = {};
+  for(const k in rest.dialogueHistory){
+    trimmedHistory[k] = rest.dialogueHistory[k].slice(-10);
+  }
+  const snap={ ...rest, dialogueHistory:trimmedHistory, date:getDate(), name:G.playerName, api:{...API} };
+  if(!G.saves) G.saves=[null,null,null];
+  G.saves[i]=snap;
+  try{
+    let saves=[null,null,null];
+    const _lsr=await Store.get('cod_saves'); if(_lsr) try{saves=JSON.parse(_lsr);}catch(e){}
+    saves[i]=snap;
+    const serialized = JSON.stringify(saves);
+    await Store.set('cod_saves', serialized);
+    buildSaveSlots();
+    showMsg(`已存入 SLOT 0${i+1}`);
+  }catch(e){ showMsg('存档失败：'+e.message); }
+}
+async function loadFromSlot(i){
+  let saves=[null,null,null];
+  const _lgsr=await Store.get('cod_saves'); if(_lgsr) try{saves=JSON.parse(_lgsr);}catch(e){}
+  const s=saves[i];
+  if(!s){ showMsg('该档位无存档'); return; }
+  Object.assign(G,s);
+  if(s.api) Object.assign(API,s.api);
+  show('s-game');
+  updateBountyTimer();
+  updateBountyButtons();
+  showMsg(`已读取 SLOT 0${i+1}`);
+}
+async function loadGame(){
+  // 找最新的存档：比较手动档和自动档的day
+  let saves=[null,null,null];
+  const _bsr2=await Store.get('cod_saves'); if(_bsr2) try{saves=JSON.parse(_bsr2);}catch(e){}
+  let autoSnap=null;
+  const _bsr=await Store.get('cod_autosave'); if(_bsr) try{autoSnap=JSON.parse(_bsr);}catch(e){}
+  const manualFirst=saves.find(s=>s!==null);
+  // 选day最大的
+  let best=manualFirst||null;
+  if(autoSnap && (!best || autoSnap.day >= best.day)) best=autoSnap;
+  if(!best){ showMsg('没有找到存档'); return; }
+  Object.assign(G,best);
+  if(best.api) Object.assign(API,best.api);
+  show('s-game');
+  updateBountyButtons();
+}
+
+// ════════════════════════════════
+// INIT
+// ════════════════════════════════
+window.onload=async ()=>{
+  let apiRaw = null;
+  apiRaw = await Store.get('cod_api');
+  if(apiRaw){
+    Object.assign(API,JSON.parse(apiRaw));
+    document.getElementById('api-url').value=API.url||'';
+    document.getElementById('api-key').value=API.key||'';
+    document.getElementById('api-model').value=API.model||'gpt-4o';
+  }
+  let saves=[null,null,null];
+  const _wsr=await Store.get('cod_saves'); if(_wsr) try{saves=JSON.parse(_wsr);}catch(e){}
+
+  G.saves=saves;
+  let hasAuto=false;
+  if(await Store.get('cod_autosave')) hasAuto=true;
+  document.getElementById('btn-load').classList.toggle('dim',!saves.find(s=>s)&&!hasAuto);
+  buildCreateScreen();
+};
+</script>
+</body>
+</html>

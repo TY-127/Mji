@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI电台</title>
+  <style>
+    :root {
+      --bg:#0a0a0c; --s1:#141418; --s2:#1c1c22; --s3:#242430;
+      --gold:#c8a050; --gold2:#e8c870; --red:#e05050;
+      --text:#e8e0d0; --muted:#706858; --dim:#3a3428;
+      --r:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{width:100%;height:100%;background:var(--bg);color:var(--text);
+      font-family:-apple-system,"PingFang SC",sans-serif;overflow:hidden}
+
+    /* ── 顶部频率刻度栏 ── */
+    .freq-bar{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      height:54px;background:var(--s1);
+      border-bottom:1px solid rgba(200,160,80,0.15);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      overflow:hidden;
+    }
+    .freq-title{
+      font-size:15px;font-weight:700;letter-spacing:4px;
+      color:var(--gold);z-index:2;position:relative;
+    }
+    .freq-ticks{
+      position:absolute;bottom:0;left:0;right:0;height:12px;
+      display:flex;align-items:flex-end;gap:0;overflow:hidden;
+    }
+    .freq-tick{
+      flex:1;background:rgba(200,160,80,0.18);
+      transition:background 0.3s;
+    }
+    .freq-tick:nth-child(3n){height:10px}
+    .freq-tick:nth-child(3n+1){height:6px}
+    .freq-tick:nth-child(3n+2){height:4px}
+    .freq-tick.active{background:var(--gold)}
+    .freq-needle{
+      position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+      width:2px;height:14px;background:var(--red);border-radius:1px;
+      box-shadow:0 0 6px var(--red);z-index:3;
+    }
+    .btn-back{
+      position:absolute;left:0;top:0;width:44px;height:54px;
+      background:none;border:none;color:var(--gold);font-size:26px;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+    }
+
+    /* ── 主内容区 ── */
+    #app{
+      position:fixed;top:54px;bottom:72px;left:0;right:0;
+      overflow-y:auto;-webkit-overflow-scrolling:touch;
+    }
+
+    /* ── 主播卡片 ── */
+    .station-card{
+      margin:16px 16px 0;
+      background:var(--s1);border-radius:18px;
+      border:1px solid rgba(200,160,80,0.12);
+      padding:18px 16px;
+      display:flex;align-items:center;gap:14px;
+    }
+    .station-avatar{
+      width:72px;height:72px;border-radius:12px;
+      object-fit:cover;background:var(--s2);flex-shrink:0;
+      border:2px solid var(--dim);
+    }
+    .station-avatar.avatar-empty,
+    .host-chip-av.avatar-empty{
+      background:
+        radial-gradient(circle at 50% 38%, rgba(200,160,80,0.18) 0 18%, transparent 19%),
+        linear-gradient(135deg, #25252c, #15151a);
+    }
+    .station-info{flex:1;overflow:hidden}
+    .station-title{
+      font-size:17px;font-weight:700;color:var(--gold2);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      letter-spacing:1px;
+    }
+    .station-host{font-size:13px;color:var(--muted);margin-top:4px}
+    .station-plays{
+      font-size:11px;color:var(--muted);margin-top:6px;
+      display:flex;align-items:center;gap:4px;
+    }
+    .plays-dot{
+      width:5px;height:5px;border-radius:50%;
+      background:var(--gold);opacity:0.6;
+    }
+    /* 唱片 */
+    .disc-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
+    .disc{
+      width:72px;height:72px;border-radius:50%;
+      background:conic-gradient(#1a1a22 0deg,#111116 45deg,#1a1a22 90deg,#111116 135deg,
+        #1a1a22 180deg,#111116 225deg,#1a1a22 270deg,#111116 315deg,#1a1a22 360deg);
+      border:2px solid #2a2a36;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .disc.spinning{animation:spin 3s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .disc-hole{
+      width:22px;height:22px;border-radius:50%;
+      background:radial-gradient(circle,#282832 0%,#0a0a0c 58%,#050506 100%);
+      border:1px solid #333;
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      display:flex;align-items:center;justify-content:center;
+    }
+
+    /* ── 板块切换 ── */
+    .program-tabs{
+      display:flex;gap:0;margin:14px 16px 0;
+      background:var(--s1);border-radius:12px;overflow:hidden;
+      border:1px solid rgba(200,160,80,0.1);
+    }
+    .program-tab{
+      flex:1;padding:10px 4px;text-align:center;
+      font-size:13px;color:var(--muted);cursor:pointer;
+      transition:all 0.2s;border:none;background:none;
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+    }
+    .program-tab .tab-icon{font-size:16px}
+    .program-tab .tab-name{font-size:11px}
+    .program-tab.active{
+      background:rgba(200,160,80,0.12);
+      color:var(--gold);
+    }
+
+    /* ── 主播列表 ── */
+    .host-scroll{
+      display:flex;gap:10px;padding:14px 16px 2px;
+      overflow-x:auto;-webkit-overflow-scrolling:touch;
+    }
+    .host-scroll::-webkit-scrollbar{display:none}
+    .host-chip{
+      flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px;
+      padding:8px 10px;background:var(--s1);border-radius:12px;
+      border:1.5px solid transparent;cursor:pointer;transition:all 0.2s;
+      min-width:60px;
+    }
+    .host-chip.active{border-color:var(--gold);background:rgba(200,160,80,0.1)}
+    .host-chip-av{
+      width:38px;height:38px;border-radius:50%;object-fit:cover;
+      background:var(--s2);border:1.5px solid var(--dim);
+    }
+    .host-chip.active .host-chip-av{border-color:var(--gold)}
+    .host-chip-name{font-size:11px;color:var(--muted);white-space:nowrap;
+      overflow:hidden;text-overflow:ellipsis;max-width:56px;text-align:center}
+    .host-chip.active .host-chip-name{color:var(--gold)}
+
+    /* ── 字幕区 ── */
+    .subtitle-wrap{
+      margin:14px 16px 0;
+      background:var(--s1);border-radius:var(--r);
+      border:1px solid rgba(200,160,80,0.08);
+      min-height:120px;max-height:220px;overflow-y:auto;
+      padding:14px;
+    }
+    .subtitle-wrap::-webkit-scrollbar{display:none}
+    .subtitle-line{
+      font-size:14px;line-height:1.9;color:var(--muted);
+      transition:color 0.4s,font-size 0.2s;padding:1px 0;
+    }
+    .subtitle-line.active{color:var(--text);font-size:15px}
+    .subtitle-trans{
+      font-size:12px;color:rgba(200,160,80,0.55);
+      margin-top:1px;margin-bottom:8px;display:none;
+      font-style:italic;line-height:1.6;
+    }
+    .subtitle-trans.show{display:block}
+    .subtitle-line.active + .subtitle-trans{display:block}
+
+    /* 歌曲搜索提示 */
+    .song-searching{
+      display:none;
+      align-items:center;gap:8px;
+      padding:10px 14px;
+      background:rgba(200,160,80,0.06);
+      border-radius:10px;margin-top:8px;
+      font-size:13px;color:var(--gold);
+    }
+    .song-searching.show{display:flex}
+    .song-note{font-size:13px;color:var(--muted);
+      padding:8px 14px;background:rgba(200,160,80,0.06);
+      border-radius:10px;margin-top:8px;display:none}
+    .song-note.show{display:block}
+
+    /* 状态文字 */
+    .status-line{
+      text-align:center;font-size:12px;color:var(--muted);
+      padding:10px 16px 0;min-height:28px;
+    }
+
+    /* 波形 */
+    .waveform{
+      display:flex;align-items:center;gap:2px;height:20px;
+      justify-content:center;padding:4px 0;
+    }
+    .wv-bar{
+      width:2px;border-radius:1px;background:var(--gold);
+      height:3px;opacity:0.4;
+    }
+    .waveform.active .wv-bar{animation:wv 0.8s ease infinite;opacity:1}
+    .wv-bar:nth-child(1){animation-delay:0s}
+    .wv-bar:nth-child(2){animation-delay:0.1s}
+    .wv-bar:nth-child(3){animation-delay:0.2s}
+    .wv-bar:nth-child(4){animation-delay:0.15s}
+    .wv-bar:nth-child(5){animation-delay:0.05s}
+    .wv-bar:nth-child(6){animation-delay:0.25s}
+    .wv-bar:nth-child(7){animation-delay:0.08s}
+    .wv-bar:nth-child(8){animation-delay:0.18s}
+    @keyframes wv{0%,100%{height:3px;opacity:0.3}50%{height:16px;opacity:1}}
+
+    /* ── 底部控制栏 ── */
+    .bottom-bar{
+      position:fixed;bottom:0;left:0;right:0;height:72px;z-index:100;
+      background:var(--s1);border-top:1px solid rgba(200,160,80,0.12);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;
+    }
+    .ctrl-group{display:flex;align-items:center;gap:16px}
+    .ctrl-btn{
+      width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;transition:transform 0.15s,opacity 0.15s;
+    }
+    .ctrl-btn:active{transform:scale(0.88);opacity:0.7}
+    .ctrl-play{
+      background:linear-gradient(135deg,var(--gold),#a07030);
+      color:#fff;width:54px;height:54px;font-size:22px;
+      box-shadow:0 3px 16px rgba(200,160,80,0.3);
+    }
+    .ctrl-stop{background:rgba(224,80,80,0.15);color:var(--red)}
+    .ctrl-exit{background:var(--s2);color:var(--muted);font-size:16px}
+    .now-info{flex:1;padding:0 12px;overflow:hidden}
+    .now-name{font-size:13px;color:var(--gold);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+    .now-prog{font-size:11px;color:var(--muted);margin-top:2px}
+
+    /* 加载点 */
+    .dots{display:inline-flex;gap:3px}
+    .dots span{
+      width:4px;height:4px;border-radius:50%;background:var(--gold);
+      animation:db 1.2s infinite;
+    }
+    .dots span:nth-child(2){animation-delay:.2s}
+    .dots span:nth-child(3){animation-delay:.4s}
+    @keyframes db{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+    /* 开播按钮 */
+    .start-wrap{padding:14px 16px 6px}
+    .start-btn{
+      width:100%;padding:14px;
+      background:linear-gradient(135deg,#c8a050,#a07030);
+      color:#fff;border:none;border-radius:14px;
+      font-size:16px;font-weight:700;letter-spacing:2px;cursor:pointer;
+      box-shadow:0 3px 16px rgba(200,160,80,0.22);
+      transition:transform 0.15s,opacity 0.15s;
+    }
+    .start-btn:active{transform:scale(0.97);opacity:0.85}
+    .start-btn:disabled{background:#2a2a2a;color:#555;box-shadow:none;cursor:default}
+
+    body::before{
+      content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 70% 40% at 85% 15%,rgba(200,160,80,0.03) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 50% at 15% 85%,rgba(100,80,30,0.04) 0%,transparent 60%);
+    }
+    #app{position:relative;z-index:1}
+  </style>
+</head>
+<body>
+
+<!-- 顶部频率刻度 -->
+<div class="freq-bar">
+  <button class="btn-back" onclick="Android.onBack()">‹</button>
+  <div class="freq-title" id="freqTitle">随心听 FM</div>
+  <div class="freq-ticks" id="freqTicks"></div>
+  <div class="freq-needle"></div>
+</div>
+
+<div id="app">
+
+  <!-- 主播卡片 -->
+  <div class="station-card" id="stationCard">
+    <div class="disc-wrap">
+      <div class="disc" id="disc">
+        <div class="disc-hole" id="discIcon"></div>
+      </div>
+    </div>
+    <div class="station-info">
+      <div class="station-title" id="stationTitle">选择主播开始收听</div>
+      <div class="station-host" id="stationHost">—</div>
+      <div class="station-plays">
+        <div class="plays-dot"></div>
+        <span id="stationPlays">0 次播放</span>
+      </div>
+    </div>
+    <img class="station-avatar avatar-empty" id="stationAvatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';this.classList.add('avatar-empty')" alt="">
+  </div>
+
+  <!-- 板块标签 -->
+  <div class="program-tabs">
+    <button class="program-tab active" data-type="story" onclick="selectProgram(this,'story')">
+      <span class="tab-icon">📖</span><span class="tab-name">故事</span>
+    </button>
+    <button class="program-tab" data-type="news" onclick="selectProgram(this,'news')">
+      <span class="tab-icon">📡</span><span class="tab-name">新闻</span>
+    </button>
+    <button class="program-tab" data-type="music" onclick="selectProgram(this,'music')">
+      <span class="tab-icon">🎵</span><span class="tab-name">音乐</span>
+    </button>
+    <button class="program-tab" data-type="sleep" onclick="selectProgram(this,'sleep')">
+      <span class="tab-icon">🌙</span><span class="tab-name">哄睡</span>
+    </button>
+  </div>
+
+  <!-- 主播选择 -->
+  <div class="host-scroll" id="hostList">
+    <div style="color:#555;font-size:13px;padding:8px">加载中…</div>
+  </div>
+
+  <!-- 波形 -->
+  <div class="waveform" id="waveform">
+    <div class="wv-bar"></div><div class="wv-bar"></div>
+    <div class="wv-bar"></div><div class="wv-bar"></div>
+    <div class="wv-bar"></div><div class="wv-bar"></div>
+    <div class="wv-bar"></div><div class="wv-bar"></div>
+  </div>
+
+  <!-- 字幕区 -->
+  <div class="subtitle-wrap" id="subtitleWrap" style="display:none">
+    <div id="subtitleContent"></div>
+    <div class="song-searching" id="songSearching">
+      <span class="dots"><span></span><span></span><span></span></span>
+      <span id="songSearchText">正在搜索歌曲…</span>
+    </div>
+    <div class="song-note" id="songNote"></div>
+  </div>
+
+  <!-- 状态 -->
+  <div class="status-line" id="statusLine">选择主播和节目类型后开播</div>
+
+  <!-- 开播按钮 -->
+  <div class="start-wrap">
+    <button class="start-btn" id="startBtn" disabled onclick="startProgram()">选择主播后开播</button>
+  </div>
+
+</div>
+
+<!-- 底部控制栏 -->
+<div class="bottom-bar">
+  <button class="ctrl-btn ctrl-exit" onclick="Android.onBack()" title="退出">✕</button>
+  <div class="now-info">
+    <div class="now-name" id="nowName">—</div>
+    <div class="now-prog" id="nowProg">未开播</div>
+  </div>
+  <div class="ctrl-group">
+    <button class="ctrl-btn ctrl-stop" id="btnStop" onclick="stopProgram()" style="display:none">⏹</button>
+    <button class="ctrl-btn ctrl-play" id="btnPlay" onclick="playPause()">▶</button>
+  </div>
+</div>
+
+<script>
+  const PROG_NAMES={story:'故事时间',news:'赛博新闻',music:'音乐节目',sleep:'哄睡电台'};
+  const PROG_ICONS={story:'📖',news:'📡',music:'🎵',sleep:'🌙'};
+
+  let contacts=[];
+  let selectedId=null, selectedName='', selectedAvatar='', selectedTitle='', selectedPlays=0;
+  let selectedProgram='story';
+  let isPlaying=false, isPaused=false;
+  let segments=[];
+
+  // 生成频率刻度
+  function buildFreqTicks(){
+    const wrap=document.getElementById('freqTicks');
+    for(let i=0;i<60;i++){
+      const d=document.createElement('div');
+      d.className='freq-tick';
+      wrap.appendChild(d);
+    }
+  }
+  buildFreqTicks();
+
+  // 频率针动画
+  let freqAnim=null;
+  function startFreqAnim(){
+    if(freqAnim) return;
+    const ticks=document.querySelectorAll('.freq-tick');
+    freqAnim=setInterval(()=>{
+      ticks.forEach(t=>t.classList.remove('active'));
+      const center=30+Math.floor(Math.random()*4-2);
+      for(let i=center-2;i<=center+2;i++){
+        if(ticks[i]) ticks[i].classList.add('active');
+      }
+    },200);
+  }
+  function stopFreqAnim(){
+    clearInterval(freqAnim);freqAnim=null;
+    document.querySelectorAll('.freq-tick').forEach(t=>t.classList.remove('active'));
+  }
+
+  function setContacts(json){
+    try{
+      contacts=JSON.parse(json);
+      renderHostList();
+    }catch(e){}
+  }
+
+  const EMPTY_AVATAR = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+  function normalizeAvatar(src){
+    const s=String(src||'').trim();
+    if(!s) return '';
+    if(s.startsWith('data:image') || s.startsWith('http://') || s.startsWith('https://') || s.startsWith('content://') || s.startsWith('file://')) return s;
+    if(s.startsWith('/')) return 'file://'+s;
+    return s;
+  }
+
+  function setAvatarImg(img, src){
+    if(!img) return;
+    const av=normalizeAvatar(src);
+    img.onerror=function(){
+      this.onerror=null;
+      this.src=EMPTY_AVATAR;
+      this.classList.add('avatar-empty');
+    };
+    if(av){
+      img.classList.remove('avatar-empty');
+      img.src=av;
+    }else{
+      img.src=EMPTY_AVATAR;
+      img.classList.add('avatar-empty');
+    }
+  }
+
+  function updateStationTitle(aiId, title){
+    const c=contacts.find(x=>x.id===aiId);
+    if(c){c.stationTitle=title;}
+    const chip=document.querySelector(`.host-chip[data-id="${aiId}"]`);
+    if(chip) chip.dataset.title=title;
+    if(selectedId===aiId){
+      document.getElementById('stationTitle').textContent=title||selectedName+' 的电台';
+    }
+  }
+
+  function renderHostList(){
+    const list=document.getElementById('hostList');
+    if(!contacts.length){list.innerHTML='<div style="color:#555;font-size:13px">暂无角色</div>';return;}
+    list.innerHTML=contacts.map(c=>{
+      const av=normalizeAvatar(c.avatar);
+      const safeAv=esc(av);
+      return `<div class="host-chip" data-id="${c.id}" data-name="${esc(c.name)}"
+        data-avatar="${safeAv}" data-title="${esc(c.stationTitle||'')}" data-plays="${c.playCount||0}"
+        onclick="selectHost(this)">
+        <img class="host-chip-av${av?'':' avatar-empty'}" src="${av?safeAv:EMPTY_AVATAR}" onerror="this.onerror=null;this.src='$data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';this.classList.add('avatar-empty')" alt="">
+        <div class="host-chip-name">${esc(c.name)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function selectHost(el){
+    if(isPlaying) return;
+    document.querySelectorAll('.host-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    selectedId=el.dataset.id;
+    selectedName=el.dataset.name;
+    selectedAvatar=el.dataset.avatar||'';
+    selectedTitle=el.dataset.title||selectedName+' 的电台';
+    selectedPlays=parseInt(el.dataset.plays)||0;
+
+    // 更新卡片
+    const av=document.getElementById('stationAvatar');
+    setAvatarImg(av, selectedAvatar);
+    document.getElementById('stationTitle').textContent=selectedTitle;
+    document.getElementById('stationHost').textContent=selectedName;
+    document.getElementById('stationPlays').textContent=(selectedPlays)+' 次播放';
+    document.getElementById('nowName').textContent=selectedTitle;
+
+    document.getElementById('startBtn').disabled=false;
+    document.getElementById('startBtn').textContent='开始播出';
+  }
+
+  function selectProgram(el, type){
+    if(isPlaying) return;
+    document.querySelectorAll('.program-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    selectedProgram=type;
+    document.getElementById('nowProg').textContent=PROG_NAMES[type];
+  }
+
+  function startProgram(){
+    if(!selectedId||isPlaying) return;
+    Android.startProgram(selectedId, selectedName, selectedProgram);
+  }
+
+  function stopProgram(){
+    Android.stopProgram();
+  }
+
+  function playPause(){
+    if(!isPlaying&&!isPaused){startProgram();return;}
+    Android.pauseResume();
+  }
+
+  // ── 回调 ──────────────────────────────────────────────────
+  function onGenerating(){
+    setStatus('<span class="dots"><span></span><span></span><span></span></span> 节目生成中…');
+    document.getElementById('startBtn').disabled=true;
+    document.getElementById('disc').classList.add('spinning');
+  }
+
+  function onProgramReady(jsonStr){
+    isPlaying=true;isPaused=false;
+    try{ segments=JSON.parse(jsonStr); }catch(e){segments=[];}
+    renderSubtitles();
+    document.getElementById('subtitleWrap').style.display='block';
+    document.getElementById('waveform').classList.add('active');
+    document.getElementById('btnStop').style.display='flex';
+    document.getElementById('btnPlay').textContent='⏸';
+    document.getElementById('startBtn').disabled=true;
+    document.getElementById('nowProg').textContent='🔴 直播中 · '+PROG_NAMES[selectedProgram];
+    selectedPlays++;
+    document.getElementById('stationPlays').textContent=selectedPlays+' 次播放';
+    setStatus('正在播出');
+    startFreqAnim();
+  }
+
+  function onSegmentStart(idx){
+    const lines=document.querySelectorAll('.subtitle-line');
+    const trans=document.querySelectorAll('.subtitle-trans');
+    lines.forEach((l,i)=>{
+      l.classList.toggle('active',i===idx);
+    });
+    trans.forEach((t,i)=>{
+      t.classList.toggle('show',i===idx);
+    });
+    if(lines[idx]) lines[idx].scrollIntoView({behavior:'smooth',block:'center'});
+    // 隐藏搜索提示
+    document.getElementById('songSearching').classList.remove('show');
+    document.getElementById('songNote').classList.remove('show');
+  }
+
+  function onSearchingSong(query){
+    document.getElementById('songSearchText').textContent='正在搜索「'+query+'」…';
+    document.getElementById('songSearching').classList.add('show');
+    document.getElementById('songNote').classList.remove('show');
+  }
+
+  function onSongStart(songId){
+    document.getElementById('songSearching').classList.remove('show');
+    document.getElementById('songNote').textContent='🎵 正在播放';
+    document.getElementById('songNote').classList.add('show');
+  }
+
+  function onSongError(){
+    document.getElementById('songSearching').classList.remove('show');
+    document.getElementById('songNote').textContent='⚠ 歌曲加载失败，跳过本首';
+    document.getElementById('songNote').classList.add('show');
+  }
+
+  function onProgramEnd(){
+    isPlaying=false;isPaused=false;
+    document.getElementById('disc').classList.remove('spinning');
+    document.getElementById('waveform').classList.remove('active');
+    document.getElementById('btnStop').style.display='none';
+    document.getElementById('btnPlay').textContent='▶';
+    document.getElementById('startBtn').disabled=false;
+    document.getElementById('startBtn').textContent='再播一期';
+    document.getElementById('nowProg').textContent=PROG_NAMES[selectedProgram];
+    document.getElementById('songSearching').classList.remove('show');
+    document.getElementById('songNote').classList.remove('show');
+    setStatus('本期节目播出完毕');
+    stopFreqAnim();
+  }
+
+  function onStopped(){
+    isPlaying=false;isPaused=false;
+    document.getElementById('disc').classList.remove('spinning');
+    document.getElementById('waveform').classList.remove('active');
+    document.getElementById('btnStop').style.display='none';
+    document.getElementById('btnPlay').textContent='▶';
+    document.getElementById('startBtn').disabled=!selectedId;
+    document.getElementById('startBtn').textContent=selectedId?'开始播出':'选择主播后开播';
+    document.getElementById('subtitleWrap').style.display='none';
+    document.getElementById('nowProg').textContent=PROG_NAMES[selectedProgram];
+    document.getElementById('songSearching').classList.remove('show');
+    document.getElementById('songNote').classList.remove('show');
+    setStatus('已停止');
+    stopFreqAnim();
+  }
+
+  function onPaused(){
+    isPaused=true;
+    document.getElementById('disc').classList.remove('spinning');
+    document.getElementById('waveform').classList.remove('active');
+    document.getElementById('btnPlay').textContent='▶';
+    setStatus('已暂停');
+    stopFreqAnim();
+  }
+
+  function onResumed(){
+    isPaused=false;
+    document.getElementById('disc').classList.add('spinning');
+    document.getElementById('waveform').classList.add('active');
+    document.getElementById('btnPlay').textContent='⏸';
+    setStatus('正在播出');
+    startFreqAnim();
+  }
+
+  function onError(msg){
+    isPlaying=false;
+    document.getElementById('disc').classList.remove('spinning');
+    document.getElementById('waveform').classList.remove('active');
+    document.getElementById('btnStop').style.display='none';
+    document.getElementById('btnPlay').textContent='▶';
+    document.getElementById('startBtn').disabled=!selectedId;
+    document.getElementById('startBtn').textContent=selectedId?'重试':'选择主播后开播';
+    setStatus('⚠ '+msg);
+    stopFreqAnim();
+  }
+
+  function renderSubtitles(){
+    const box=document.getElementById('subtitleContent');
+    box.innerHTML=segments.map((s,i)=>`
+      <div class="subtitle-line${i===0?' active':''}">${esc(s.text)}</div>
+      ${s.trans?`<div class="subtitle-trans${i===0?' show':''}">${esc(s.trans)}</div>`:''}
+    `).join('');
+  }
+
+  function setStatus(html){ document.getElementById('statusLine').innerHTML=html; }
+  function esc(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

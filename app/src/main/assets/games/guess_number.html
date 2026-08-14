@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        body { background: #1a1a2e; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 24px 20px; }
+        h2 { font-size: 22px; margin-bottom: 8px; color: #e0e0ff; }
+        .desc { font-size: 13px; color: #888; margin-bottom: 28px; }
+        .range { font-size: 28px; font-weight: bold; color: #7c83fd; margin-bottom: 24px; }
+        .input-row { display: flex; gap: 10px; width: 100%; max-width: 320px; margin-bottom: 20px; }
+        input[type=number] {
+          flex: 1; padding: 14px; border-radius: 12px;
+          background: #252540; border: 2px solid #3a3a6a;
+          color: #fff; font-size: 20px; text-align: center; outline: none;
+          transition: border-color .2s;
+        }
+        input[type=number]:focus { border-color: #7c83fd; }
+        button {
+          padding: 14px 22px; border-radius: 12px; border: none;
+          background: #7c83fd; color: #fff; font-size: 16px;
+          font-weight: 600; cursor: pointer; transition: opacity .2s;
+        }
+        button:active { opacity: .8; }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .hint { font-size: 18px; min-height: 28px; margin-bottom: 16px; color: #ffd700; font-weight: 500; }
+        .history { width: 100%; max-width: 320px; }
+        .history-item {
+          display: flex; justify-content: space-between;
+          padding: 8px 12px; border-radius: 8px;
+          background: #252540; margin-bottom: 6px;
+          font-size: 14px;
+        }
+        .tag-high { color: #ff6b6b; }
+        .tag-low { color: #6bffb8; }
+        .tag-win { color: #ffd700; }
+        .tries { font-size: 13px; color: #666; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+<h2>🎯 猜数字</h2>
+<div class="desc">我心里有一个 1-100 的数字</div>
+<div class="range" id="rangeHint">范围：1 ~ 100</div>
+<div class="tries" id="triesText">已猜 0 次</div>
+<div class="hint" id="hint"></div>
+<div class="input-row">
+    <input type="number" id="guessInput" min="1" max="100" placeholder="输入数字">
+    <button id="guessBtn" onclick="doGuess()">猜！</button>
+</div>
+<div class="history" id="history"></div>
+
+<script>
+    let secret = Math.floor(Math.random() * 100) + 1;
+    let tries = 0;
+    let lo = 1, hi = 100;
+    let gameOver = false;
+
+    function notify(type, data) {
+      try { Android.onGameEvent(type, JSON.stringify(data)); } catch(e) {}
+    }
+
+    // 游戏开始通知
+    notify('start', { game: 'guess_number', range: '1-100' });
+
+    document.getElementById('guessInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doGuess();
+    });
+
+function doGuess() {
+  if (gameOver) return;
+  const val = parseInt(document.getElementById('guessInput').value);
+  if (isNaN(val) || val < 1 || val > 100) {
+    document.getElementById('hint').textContent = '请输入 1-100 的数字';
+    return;
+  }
+  tries++;
+  document.getElementById('triesText').textContent = `已猜 ${tries} 次`;
+  document.getElementById('guessInput').value = '';
+
+  const item = document.createElement('div');
+  item.className = 'history-item';
+
+  if (val === secret) {
+    gameOver = true;
+    document.getElementById('hint').textContent = `🎉 答对了！答案就是 ${secret}`;
+    document.getElementById('guessBtn').disabled = true;
+    item.innerHTML = `<span>猜了 <b>${val}</b></span><span class="tag-win">✓ 正确！</span>`;
+    document.getElementById('history').prepend(item);
+    // 关键节点1：猜对了
+    notify('win', { guess: val, tries: tries, secret: secret });
+
+  } else if (val < secret) {
+    lo = Math.max(lo, val + 1);
+    document.getElementById('hint').textContent = '📈 猜小了，再大一点';
+    document.getElementById('rangeHint').textContent = `范围：${lo} ~ ${hi}`;
+    item.innerHTML = `<span>猜了 <b>${val}</b></span><span class="tag-low">↑ 小了</span>`;
+    document.getElementById('history').prepend(item);
+
+    const remaining = hi - lo + 1;
+    // 关键节点2：猜错超过5次
+    if (tries === 5) {
+      notify('struggling', { guess: val, result: 'low', tries: tries, remaining: remaining });
+    // 关键节点3：范围缩小到10以内
+    } else if (remaining <= 10 && remaining > 1) {
+      notify('almost', { guess: val, result: 'low', tries: tries, remaining: remaining });
+    }
+
+  } else {
+    hi = Math.min(hi, val - 1);
+    document.getElementById('hint').textContent = '📉 猜大了，再小一点';
+    document.getElementById('rangeHint').textContent = `范围：${lo} ~ ${hi}`;
+    item.innerHTML = `<span>猜了 <b>${val}</b></span><span class="tag-high">↓ 大了</span>`;
+    document.getElementById('history').prepend(item);
+
+    const remaining = hi - lo + 1;
+    if (tries === 5) {
+      notify('struggling', { guess: val, result: 'high', tries: tries, remaining: remaining });
+    } else if (remaining <= 10 && remaining > 1) {
+      notify('almost', { guess: val, result: 'high', tries: tries, remaining: remaining });
+    }
+  }
+}
+</script>
+</body>
+</html>

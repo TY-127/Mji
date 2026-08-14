@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>每日盲盒</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;500&display=swap');
+    :root {
+      --red:#E8453C; --yellow:#F5A623; --cream:#FFF8F0; --warm:#FFF0DC;
+      --dark:#3a2a1a; --mid:#8a6a4a; --light:#f7c96e;
+      --border:rgba(232,69,60,0.2); --shadow:rgba(58,42,26,0.12);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{width:100%;height:100%;font-family:'Noto Serif SC',serif;background:var(--cream);color:var(--dark);overflow:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 70% 50% at 10% 10%,rgba(245,166,35,0.15) 0%,transparent 60%),
+                 radial-gradient(ellipse 60% 60% at 90% 90%,rgba(232,69,60,0.10) 0%,transparent 55%)}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;height:54px;
+      background:rgba(255,248,240,0.95);backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+    .nav-title{font-family:'Ma Shan Zheng',cursive;font-size:20px;color:var(--red);letter-spacing:3px}
+    .nav-back{width:34px;height:34px;border:none;background:none;cursor:pointer;color:var(--red);font-size:22px;display:flex;align-items:center;justify-content:center}
+    .nav-right{font-size:13px;color:var(--yellow);background:rgba(245,166,35,0.12);border:1.5px solid rgba(245,166,35,0.3);border-radius:16px;padding:4px 12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap}
+    .main-page{position:fixed;inset:0;top:54px;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:16px 20px 40px;gap:16px}
+    /* 扭蛋机 */
+    .gachapon-wrap{width:200px;height:285px;position:relative;flex-shrink:0}
+    .g-globe{width:180px;height:180px;border-radius:50%;
+      background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.9),rgba(200,240,255,0.6) 40%,rgba(180,220,255,0.3));
+      border:4px solid var(--red);position:absolute;top:0;left:10px;overflow:hidden}
+    .g-globe::after{content:'';position:absolute;top:10px;left:18px;width:50px;height:30px;border-radius:50%;background:rgba(255,255,255,0.55);transform:rotate(-20deg)}
+    .g-balls{position:absolute;bottom:8px;left:8px;right:8px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:flex-end;padding:0 6px}
+    .g-ball{border-radius:50%;box-shadow:inset -2px -2px 4px rgba(0,0,0,0.15),inset 1px 1px 3px rgba(255,255,255,0.6)}
+    .g-cap{width:120px;height:20px;background:linear-gradient(180deg,#cc3333,var(--red));border-radius:50% 50% 0 0/100% 100% 0 0;position:absolute;top:158px;left:40px}
+    .g-cap-top{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#ffcc00,var(--yellow));position:absolute;top:150px;left:88px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:2}
+    .g-body{width:160px;height:95px;background:linear-gradient(180deg,var(--yellow) 0%,#e8951a 100%);border-radius:10px 10px 18px 18px;position:absolute;top:172px;left:20px}
+    .g-panel{width:76px;height:64px;background:linear-gradient(180deg,#cc2222,#aa1111);border-radius:8px;position:absolute;top:180px;left:62px}
+    .g-knob{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--light),var(--yellow));position:absolute;top:196px;left:84px;box-shadow:0 2px 6px rgba(0,0,0,0.25)}
+    .g-slot{width:38px;height:5px;border-radius:3px;background:rgba(0,0,0,0.3);position:absolute;top:184px;left:81px}
+    .g-base{width:178px;height:16px;background:linear-gradient(180deg,#cc3333,#aa1111);border-radius:0 0 18px 18px;position:absolute;top:260px;left:11px}
+    .g-outlet-anim{position:absolute;top:228px;left:76px;width:48px;height:32px;display:flex;align-items:center;justify-content:center;z-index:10}
+    /* 倒计时 */
+    .countdown{font-size:13px;color:var(--mid);text-align:center;line-height:1.8;flex-shrink:0}
+    .countdown strong{color:var(--red);font-size:14px}
+    /* 物品 */
+    .item-display{width:100%;background:rgba(255,240,220,0.85);border:2px solid rgba(245,166,35,0.3);border-radius:20px;padding:20px;text-align:center;box-shadow:0 4px 20px var(--shadow);animation:popIn .4s cubic-bezier(.34,1.4,.64,1);flex-shrink:0}
+    @keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+    .item-emoji{font-size:50px;margin-bottom:10px;display:block}
+    .item-name{font-family:'Ma Shan Zheng',cursive;font-size:22px;color:var(--red);margin-bottom:6px}
+    .item-desc{font-size:13px;color:var(--mid);line-height:1.7}
+    .item-action-btn{margin-top:14px;padding:10px 28px;background:var(--red);color:#fff;border:none;border-radius:20px;cursor:pointer;font-family:'Noto Serif SC',serif;font-size:14px;box-shadow:0 3px 12px rgba(232,69,60,0.35);transition:transform .2s}
+    .item-action-btn:active{transform:scale(.95)}
+    /* 按钮 */
+    .draw-btn{width:100%;max-width:300px;padding:15px;border-radius:24px;background:linear-gradient(135deg,var(--red),#c0392b);color:#fff;border:none;cursor:pointer;font-family:'Ma Shan Zheng',cursive;font-size:20px;letter-spacing:3px;box-shadow:0 4px 20px rgba(232,69,60,0.4);transition:transform .2s,box-shadow .2s;flex-shrink:0}
+    .draw-btn:active{transform:scale(.96)}
+    .draw-btn:disabled{background:#bbb;box-shadow:none;cursor:default}
+    .treasury-btn{width:100%;max-width:300px;padding:12px;border-radius:20px;background:rgba(245,166,35,0.12);border:2px solid rgba(245,166,35,0.4);color:var(--yellow);cursor:pointer;font-family:'Ma Shan Zheng',cursive;font-size:17px;letter-spacing:2px;transition:all .2s;flex-shrink:0}
+    .treasury-btn:active{background:rgba(245,166,35,0.22)}
+    /* 对话弹窗 */
+    .modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(58,42,26,0.45);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center}
+    .modal-box{width:100%;max-width:480px;background:var(--cream);border-radius:24px 24px 0 0;max-height:88vh;display:flex;flex-direction:column;animation:slideUp .3s cubic-bezier(.34,1.15,.64,1)}
+    @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .modal-header-emoji{font-size:28px}
+    .modal-header-title{font-family:'Ma Shan Zheng',cursive;font-size:18px;color:var(--red)}
+    .modal-header-sub{font-size:12px;color:var(--mid);margin-top:2px}
+    .modal-body{flex:1;overflow-y:auto;padding:16px 20px}
+    .dialog-step{margin-bottom:20px;animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .dialog-q{font-size:14px;color:var(--dark);line-height:1.7;padding:10px 14px;background:rgba(245,166,35,0.1);border-left:3px solid var(--yellow);border-radius:0 10px 10px 0;margin-bottom:10px}
+    .dialog-char-name{font-size:11px;color:var(--mid);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+    .dialog-char-name::before{content:'✦';color:var(--yellow);font-size:8px}
+    .options-wrap{display:flex;flex-direction:column;gap:8px}
+    .option-btn{padding:10px 14px;border-radius:12px;border:1.5px solid var(--border);background:rgba(255,248,240,0.9);font-family:'Noto Serif SC',serif;font-size:13px;color:var(--dark);cursor:pointer;text-align:left;transition:all .2s;line-height:1.6}
+    .option-btn:active{background:rgba(232,69,60,0.08);border-color:var(--red)}
+    .contact-grid{display:flex;flex-wrap:wrap;gap:8px}
+    .contact-chip{padding:7px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--warm);font-size:13px;color:var(--dark);cursor:pointer;transition:all .2s}
+    .contact-chip.selected{background:var(--red);color:#fff;border-color:var(--red)}
+    .answered{padding:8px 12px;border-radius:10px;background:rgba(232,69,60,0.08);border:1px solid rgba(232,69,60,0.2);font-size:13px;color:var(--red);margin-top:6px}
+    .progress-wrap{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0}
+    .progress-label{font-size:12px;color:var(--mid);margin-bottom:8px;display:flex;justify-content:space-between}
+    .progress-bar{height:6px;background:rgba(232,69,60,0.15);border-radius:3px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--red));border-radius:3px;transition:width .6s ease}
+    .progress-btn{width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,var(--red),#c0392b);color:#fff;border:none;border-radius:16px;font-family:'Noto Serif SC',serif;font-size:14px;cursor:pointer}
+    .progress-btn:disabled{opacity:.5;cursor:default}
+    /* 同人文 */
+    .fanfic-overlay{position:fixed;inset:0;z-index:400;background:rgba(58,42,26,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
+    .fanfic-box{width:100%;max-width:480px;background:var(--cream);border-radius:20px;max-height:88vh;display:flex;flex-direction:column;animation:popIn .35s cubic-bezier(.34,1.2,.64,1);box-shadow:0 8px 40px rgba(58,42,26,0.25)}
+    .fanfic-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .fanfic-title{font-family:'Ma Shan Zheng',cursive;font-size:17px;color:var(--red)}
+    .fanfic-close{width:30px;height:30px;border-radius:50%;background:rgba(232,69,60,0.1);border:none;color:var(--red);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .fanfic-body{flex:1;overflow-y:auto;padding:16px 18px 20px}
+    .fanfic-text{font-size:14px;line-height:2;color:var(--dark);white-space:pre-wrap}
+    .fanfic-generating{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px}
+    .fanfic-gen-title{font-family:'Ma Shan Zheng',cursive;font-size:18px;color:var(--red)}
+    .fanfic-gen-sub{font-size:13px;color:var(--mid);text-align:center;line-height:1.8}
+    .gen-progress-bar{width:100%;height:4px;background:rgba(232,69,60,0.15);border-radius:2px;overflow:hidden}
+    .gen-progress-fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--red));border-radius:2px;animation:filling 12s ease-in-out forwards}
+    @keyframes filling{from{width:0%}to{width:95%}}
+    /* 珍品室 */
+    .treasury-page{position:fixed;inset:0;top:54px;overflow-y:auto;padding:16px 16px 80px;display:none;background:var(--cream)}
+    .treasury-page.active{display:block}
+    .treasury-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .treasury-item{background:rgba(255,240,220,0.85);border:1.5px solid rgba(245,166,35,0.25);border-radius:16px;padding:14px 8px;text-align:center;cursor:pointer;transition:transform .2s;user-select:none;-webkit-user-select:none;position:relative}
+    .treasury-item:active{transform:scale(.95)}
+    .treasury-item-emoji{font-size:32px;display:block;margin-bottom:6px}
+    .treasury-item-name{font-size:12px;color:var(--dark);line-height:1.4}
+    .treasury-item-date{font-size:10px;color:var(--mid);margin-top:3px}
+    .treasury-del-overlay{position:absolute;inset:0;border-radius:16px;background:rgba(232,69,60,0.12);display:flex;align-items:center;justify-content:center;z-index:5}
+    .treasury-del-btn{background:var(--red);color:#fff;padding:6px 16px;border-radius:8px;font-size:12px;cursor:pointer}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--mid);font-size:14px;line-height:2.2;grid-column:1/-1}
+    .empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
+    .answer-pending{font-size:13px;color:var(--mid);font-style:italic;display:flex;align-items:center;gap:6px;padding:4px 0}
+    .dots{display:inline-flex;gap:3px}
+    .dots span{width:5px;height:5px;border-radius:50%;background:var(--red);animation:blink 1.2s infinite}
+    .dots span:nth-child(2){animation-delay:.2s}
+    .dots span:nth-child(3){animation-delay:.4s}
+    @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+    *{scrollbar-width:thin;scrollbar-color:rgba(232,69,60,0.3) transparent}
+  </style>
+</head>
+<body>
+
+<div class="nav">
+  <button class="nav-back" id="navBack">‹</button>
+  <span class="nav-title" id="navTitle">每日盲盒</span>
+  <button class="nav-right" id="navRight">✨ 珍品室</button>
+</div>
+
+<div class="main-page" id="mainPage">
+  <div class="gachapon-wrap">
+    <div class="g-globe"><div class="g-balls" id="gBalls"></div></div>
+    <div class="g-cap-top"></div>
+    <div class="g-cap"></div>
+    <div class="g-body"></div>
+    <div class="g-panel">
+      <div class="g-slot"></div>
+      <div class="g-knob"></div>
+    </div>
+    <div class="g-outlet-anim" id="gOutlet"></div>
+    <div class="g-base"></div>
+  </div>
+  <div id="itemArea"></div>
+  <button class="draw-btn" id="drawBtn">转动扭蛋机</button>
+  <button class="treasury-btn" id="treasuryBtnBottom">✨ 珍品室</button>
+  <div class="countdown" id="countdown"></div>
+</div>
+
+<div class="treasury-page" id="treasuryPage">
+  <div class="treasury-grid" id="treasuryGrid"></div>
+</div>
+
+<div class="modal-overlay" id="dialogModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-emoji" id="dialogEmoji"></div>
+      <div>
+        <div class="modal-header-title" id="dialogTitle"></div>
+        <div class="modal-header-sub" id="dialogSub"></div>
+      </div>
+    </div>
+    <div class="modal-body" id="dialogBody"></div>
+    <div class="progress-wrap" id="progressWrap" style="display:none">
+      <div class="progress-label">
+        <span>故事存档中</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <button class="progress-btn" id="progressBtn" disabled>生成同人文</button>
+    </div>
+  </div>
+</div>
+
+<div class="fanfic-overlay" id="fanficOverlay" style="display:none">
+  <div class="fanfic-box">
+    <div class="fanfic-header">
+      <div class="fanfic-title" id="fanficTitle">✦ 同人文</div>
+      <button class="fanfic-close" id="fanficCloseBtn">✕</button>
+    </div>
+    <div class="fanfic-body" id="fanficBody"></div>
+  </div>
+</div>
+
+<script>
+  let contacts=[];
+  let apiConfig={};
+  const K_TODAY='blindbox_today_v4';
+  const K_TREASURY='blindbox_treasury_v4';
+  let todayData=null;
+  let treasury=[];
+  let currentView='main';
+  let dialogState={step:0,selectedChar:null,answers:[],aiQuestions:[],loading:false};
+  const BALL_COLORS=['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8','#f06595','#74c0fc'];
+
+  function getTodayKey(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`}
+  function loadData(k) {
+    try {
+        if (window.Android) {
+            if (k === K_TREASURY) return JSON.parse(window.Android.loadTreasury() || '[]');
+            if (k === K_TODAY) return JSON.parse(window.Android.loadTodayData() || 'null');
+        }
+        return JSON.parse(localStorage.getItem(k) || 'null');
+    } catch { return null; }
+}
+
+function saveData(k, d) {
+    try {
+        if (window.Android) {
+            if (k === K_TREASURY) window.Android.saveTreasury(JSON.stringify(d));
+            if (k === K_TODAY) window.Android.saveTodayData(JSON.stringify(d));
+            return;
+        }
+        localStorage.setItem(k, JSON.stringify(d));
+    } catch {}
+}
+  function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+  function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+  function init(){
+    try{
+      if(window.Android){
+        contacts=JSON.parse(window.Android.getContacts());
+        apiConfig=JSON.parse(window.Android.getApiConfig());
+      }else{
+        contacts=[{id:'k',name:'Keegan',avatar:''},{id:'g',name:'Ghost',avatar:''}];
+        apiConfig={apiUrl:'https://api.gemai.cc/',apiKey:'test',modelName:'gemini-pro'};
+      }
+    }catch(e){contacts=[];apiConfig={};}
+
+    treasury=loadData(K_TREASURY)||[];
+    const saved=loadData(K_TODAY);
+    if(saved&&saved.date===getTodayKey()) todayData=saved;
+
+    document.getElementById('drawBtn').addEventListener('click',drawItem);
+    document.getElementById('navRight').addEventListener('click',openTreasury);
+    document.getElementById('navBack').addEventListener('click',goBack);
+    document.getElementById('treasuryBtnBottom').addEventListener('click',openTreasury);
+    document.getElementById('progressBtn').addEventListener('click',startGenerate);
+    document.getElementById('fanficCloseBtn').addEventListener('click',closeFanfic);
+
+    renderBalls();
+    renderMain();
+    startCountdown();
+  }
+
+  function renderBalls(){
+    const wrap=document.getElementById('gBalls');
+    const sizes=[26,22,24,20,26,22,24,20,22,24];
+    wrap.innerHTML=sizes.map((s,i)=>
+      `<div class="g-ball" style="width:${s}px;height:${s}px;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.7),${BALL_COLORS[i%BALL_COLORS.length]})"></div>`
+    ).join('');
+  }
+
+  function startCountdown(){
+    function update(){
+      const now=new Date(),midnight=new Date(now);
+      midnight.setHours(24,0,0,0);
+      const diff=midnight-now;
+      const h=Math.floor(diff/3600000);
+      const m=Math.floor((diff%3600000)/60000);
+      const s=Math.floor((diff%60000)/1000);
+      document.getElementById('countdown').innerHTML=
+        `每日盲盒将在 <strong>${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</strong> 后刷新`;
+    }
+    update();setInterval(update,1000);
+  }
+
+  function renderMain(){
+    const itemArea=document.getElementById('itemArea');
+    const drawBtn=document.getElementById('drawBtn');
+    document.getElementById('gOutlet').innerHTML='';
+    if(todayData&&todayData.item){
+      const it=todayData.item;
+      itemArea.innerHTML=`
+        <div class="item-display">
+          <span class="item-emoji">${it.emoji}</span>
+          <div class="item-name">${escHtml(it.name)}</div>
+          <div class="item-desc">${escHtml(it.desc)}</div>
+          <button class="item-action-btn" id="itemActionBtn">
+            ${todayData.fanfic?'再看同人文 ✦':'开启互动 ✦'}
+          </button>
+        </div>`;
+      document.getElementById('itemActionBtn').addEventListener('click',openDialog);
+      drawBtn.disabled=true;
+      drawBtn.textContent='今日已抽取';
+    }else{
+      itemArea.innerHTML='';
+      drawBtn.disabled=false;
+      drawBtn.textContent='转动扭蛋机';
+    }
+  }
+
+  async function drawItem(){
+    const btn=document.getElementById('drawBtn');
+    btn.disabled=true;btn.textContent='✦ 转动中…';
+    const outlet=document.getElementById('gOutlet');
+    const rndColor=BALL_COLORS[Math.floor(Math.random()*BALL_COLORS.length)];
+    outlet.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.7),${rndColor});display:flex;align-items:center;justify-content:center;font-size:16px">⟳</div>`;
+
+    const today=getTodayKey();
+    const system=`你是一台神秘的扭蛋机，今天（${today}）会随机吐出一件独特的盲盒物品。
+  物品范围极广：书籍、首饰、鲜花、衣服、鞋子、食物、古董、乐器、文具、香水、植物、游戏道具、艺术品、玩具、生活用品、科技产品……越意想不到越好。
+  必须严格按照JSON格式输出，不要加任何其他内容，不要加markdown代码块：
+  {"emoji":"一个最贴切的emoji","name":"物品名称（8字以内）","desc":"物品描述（35字以内，有质感有细节）"}`;
+
+    let rndItem;
+    try{
+      const resp=await callAI(system,'请生成今天的盲盒物品',150);
+      const clean=resp.replace(/```json|```/g,'').trim();
+      rndItem=JSON.parse(clean);
+    }catch(e){
+      rndItem={emoji:'🎁',name:'神秘礼物',desc:'包装精美，触感柔软，不知道里面藏着什么惊喜'};
+    }
+
+    outlet.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.7),${rndColor});display:flex;align-items:center;justify-content:center;font-size:16px;animation:popIn .4s ease">${rndItem.emoji}</div>`;
+
+    setTimeout(()=>{
+      outlet.innerHTML='';
+      todayData={date:getTodayKey(),item:rndItem,dialog:null,fanfic:null};
+      saveData(K_TODAY,todayData);
+      treasury=loadData(K_TREASURY)||[];
+      const existing=treasury.findIndex(t=>t.date===todayData.date);
+      if(existing>=0) treasury[existing]={...todayData};
+      else treasury.unshift({...todayData});
+      saveData(K_TREASURY,treasury);
+      renderMain();
+    },800);
+  }
+
+  function openDialog(){
+    if(todayData.fanfic){showFanfic(todayData.fanfic,todayData.item);return;}
+    dialogState={step:0,selectedChar:null,answers:[],aiQuestions:[],loading:false};
+    const it=todayData.item;
+    document.getElementById('dialogEmoji').textContent=it.emoji;
+    document.getElementById('dialogTitle').textContent=it.name;
+    document.getElementById('dialogSub').textContent='与角色的互动对话';
+    document.getElementById('progressWrap').style.display='none';
+    renderDialogStep();
+    document.getElementById('dialogModal').style.display='flex';
+  }
+
+  function renderDialogStep(){
+    const body=document.getElementById('dialogBody');
+    if(dialogState.step===0){
+      body.innerHTML=`
+        <div class="dialog-step">
+          <div class="dialog-q">这个盲盒，你想送给谁？</div>
+          <div class="contact-grid">
+            ${contacts.map(c=>`<div class="contact-chip ${dialogState.selectedChar?.id===c.id?'selected':''}" data-id="${escHtml(c.id)}" data-name="${escHtml(c.name)}">${escHtml(c.name)}</div>`).join('')}
+          </div>
+        </div>`;
+      body.querySelectorAll('.contact-chip').forEach(chip=>{
+        chip.addEventListener('click',()=>selectContact(chip.dataset.id,chip.dataset.name));
+      });
+      return;
+    }
+    let html=`<div class="dialog-step">
+      <div class="dialog-q">这个盲盒，你想送给谁？</div>
+      <div class="answered">→ ${escHtml(dialogState.selectedChar?.name||'')}</div>
+    </div>`;
+    dialogState.aiQuestions.forEach((q,i)=>{
+      const ans=dialogState.answers[i];
+      html+=`<div class="dialog-step">
+        <div class="dialog-char-name">${escHtml(q.charName)} 说</div>
+        <div class="dialog-q">${escHtml(q.question)}</div>
+        ${ans
+          ?`<div class="answered">→ ${escHtml(ans)}</div>`
+          :q.options
+            ?`<div class="options-wrap">${q.options.map(o=>`<button class="option-btn" data-idx="${i}" data-opt="${escHtml(o)}">${escHtml(o)}</button>`).join('')}</div>`
+            :`<div class="answer-pending"><span class="dots"><span></span><span></span><span></span></span> 角色正在想说什么…</div>`
+        }
+      </div>`;
+    });
+    if(dialogState.loading){
+      html+=`<div class="dialog-step"><div class="answer-pending"><span class="dots"><span></span><span></span><span></span></span> 角色正在想说什么…</div></div>`;
+    }
+    body.innerHTML=html;
+    body.scrollTop=body.scrollHeight;
+    body.querySelectorAll('.option-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>selectOption(parseInt(btn.dataset.idx),btn.dataset.opt));
+    });
+    checkProgress();
+  }
+
+  function selectContact(id,name){
+    dialogState.selectedChar={id,name};
+    dialogState.step=1;
+    renderDialogStep();
+    generateNextQuestion(0);
+  }
+
+  async function generateNextQuestion(idx){
+    if(idx>=4) return;
+    dialogState.loading=true;renderDialogStep();
+    const it=todayData.item,ch=dialogState.selectedChar;
+    const prevQA=dialogState.answers.map((a,i)=>`${dialogState.aiQuestions[i]?.charName}说：${dialogState.aiQuestions[i]?.question} / 用户选择：${a}`).join('\n');
+    const system=`你正在扮演"${ch.name}"这个角色。
+  用户今天抽到了盲盒，里面是：${it.emoji}${it.name}（${it.desc}）。用户把这个盲盒送给了你。
+  请根据这个物品和你的人设性格，生成一句自然的互动对话（不超过35字），同时生成3个用户可以选择的回应选项（每个不超过20字，口语化）。
+  ${prevQA?`之前的对话记录：\n${prevQA}`:''}
+  必须严格按照JSON格式输出，不要加任何其他内容，不要加markdown代码块：
+  {"question":"角色说的话","options":["选项A","选项B","选项C"]}`;
+    try{
+      const resp=await callAI(system,'请生成对话和选项',200);
+      const clean=resp.replace(/```json|```/g,'').trim();
+      const parsed=JSON.parse(clean);
+      dialogState.aiQuestions[idx]={charName:ch.name,question:parsed.question,options:parsed.options};
+    }catch(e){
+      dialogState.aiQuestions[idx]={charName:ch.name,question:`这个${it.name}……是给我的？`,options:['是的，特意选的','随便送送','看你喜不喜欢']};
+    }
+    dialogState.loading=false;renderDialogStep();
+  }
+
+  function selectOption(idx,option){
+    dialogState.answers[idx]=option;dialogState.step=idx+2;renderDialogStep();
+    if(idx<3) generateNextQuestion(idx+1);
+    else showProgressBar();
+  }
+
+  function checkProgress(){
+    const pct=Math.round((dialogState.answers.length/4)*100);
+    const pEl=document.getElementById('progressPct'),fEl=document.getElementById('progressFill');
+    if(pEl) pEl.textContent=pct+'%';
+    if(fEl) fEl.style.width=pct+'%';
+  }
+
+  function showProgressBar(){
+    document.getElementById('progressWrap').style.display='block';
+    document.getElementById('progressBtn').disabled=false;
+    setTimeout(()=>{
+      document.getElementById('progressPct').textContent='100%';
+      document.getElementById('progressFill').style.width='100%';
+    },400);
+  }
+
+  async function startGenerate(){
+    const btn=document.getElementById('progressBtn');
+    btn.disabled=true;btn.textContent='生成中…';
+    document.getElementById('fanficTitle').textContent='✦ 故事生成中';
+    document.getElementById('fanficBody').innerHTML=`
+      <div class="fanfic-generating">
+        <div class="fanfic-gen-title">正在编织故事…</div>
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="gen-progress-bar"><div class="gen-progress-fill"></div></div>
+        <div class="fanfic-gen-sub">参考小红书、lofter、晋江、ao3风格<br>为你生成专属同人文</div>
+      </div>`;
+    document.getElementById('fanficOverlay').style.display='flex';
+    document.getElementById('dialogModal').style.display='none';
+    const it=todayData.item,ch=dialogState.selectedChar;
+    const qaText=dialogState.aiQuestions.map((q,i)=>`${q.charName}：${q.question}\n用户：${dialogState.answers[i]||'…'}`).join('\n\n');
+   const system=`你是一位擅长写同人文的作者。
+请根据以下信息，创作一篇约2000字的同人文短篇故事。
+角色：${ch.name}
+今日盲盒物品：${it.emoji}${it.name}（${it.desc}）
+两人的互动对话：
+${qaText}
+
+写作要求：
+1. 第三或第二人称叙述，重点描写角色收到物品时的反应和情感，融入对话细节，结尾留有余韵，直接输出正文不需要标题
+
+【文风规范——最高优先级，凌驾一切】
+语言质地：以名词和动词为骨架，削减形容词与副词。不说"她很悲伤"，写她做了什么。意象优先——角色的心境借由器物、景致、气味来烘托，不直接点破。
+叙事距离：叙事者保持疏离的旁观姿态，如隔薄雾观察，不直接介入角色内心。情节推进缓慢，重心在氛围营造与情绪沉淀，不制造强烈戏剧冲突。
+情感处理：情感是水面之下的潜流，从不喷涌。巨大的悲喜往往通过极平淡的日常行为表现。对话简短，充满潜台词，沉默与停顿本身就是表达。
+句式节奏：长短句交替，善用短句制造停顿。单独成行的短句有重量。说七分，留三分给读者。
+具体禁令：禁止极其、无比、心跳骤停、命运齿轮、刻进DNA、难以言喻、邪魅一笑、眸色一暗、四肢百骸；禁止直接抒情，禁止写"我爱你""我被感动了""我心里涌起一阵暖意"；禁止网文套路结构和爽文节奏。
+结尾：意犹未尽。可以是一个动作，一句话，一个场景，一个细节。不总结，不点题，不升华主题。结尾像一扇半开的门。
+参照气质：白先勇的瑰丽沧桑、汪曾祺的闲适冲淡、沈从文的山水人情、阿城的简劲克制。学习其精神，不模仿其句式。`;
+    try{
+      const fanfic=await callAI(system,'请开始写故事',4000);
+      todayData.fanfic=fanfic;
+      saveData(K_TODAY,todayData);
+      treasury=loadData(K_TREASURY)||[];
+      const existing=treasury.findIndex(t=>t.date===todayData.date);
+      if(existing>=0) treasury[existing]={...todayData};
+      else treasury.unshift({...todayData});
+      saveData(K_TREASURY,treasury);
+      showFanfic(fanfic,it);
+    }catch(e){
+      document.getElementById('fanficBody').innerHTML=`<div class="fanfic-generating"><div class="fanfic-gen-title" style="color:var(--mid)">生成失败</div><div class="fanfic-gen-sub">请检查网络和API配置后重试</div></div>`;
+    }
+  }
+
+  function showFanfic(text,item){
+    document.getElementById('fanficTitle').textContent=`✦ ${item.emoji} ${item.name} 的故事`;
+    document.getElementById('fanficBody').innerHTML=`<div class="fanfic-text">${escHtml(text)}</div>`;
+    document.getElementById('fanficOverlay').style.display='flex';
+    document.getElementById('dialogModal').style.display='none';
+  }
+
+  function closeFanfic(){
+    document.getElementById('fanficOverlay').style.display='none';
+    renderMain();
+  }
+
+  function openTreasury(){
+    currentView='treasury';
+    document.getElementById('mainPage').style.display='none';
+    document.getElementById('treasuryPage').classList.add('active');
+    document.getElementById('navTitle').textContent='珍品室';
+    document.getElementById('navRight').style.display='none';
+    treasury=loadData(K_TREASURY)||[];
+    renderTreasury();
+  }
+
+  function goBack(){
+    if(currentView==='treasury'){
+      currentView='main';
+      document.getElementById('mainPage').style.display='flex';
+      document.getElementById('treasuryPage').classList.remove('active');
+      document.getElementById('navTitle').textContent='每日盲盒';
+      document.getElementById('navRight').style.display='block';
+ }else{
+      if(window.ActivityBridge) ActivityBridge.onBack();
+      else if(window.Android&&window.Android.onBack) Android.onBack();
+      else history.back();
+    }
+  }
+
+  function renderTreasury(){
+    const grid=document.getElementById('treasuryGrid');
+    if(!treasury.length){
+      grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🎁</div>珍品室空空如也<br>快去抽盲盒吧</div>`;
+      return;
+    }
+    grid.innerHTML=treasury.map((t,i)=>`
+      <div class="treasury-item" data-idx="${i}">
+        <span class="treasury-item-emoji">${t.item.emoji}</span>
+        <div class="treasury-item-name">${escHtml(t.item.name)}</div>
+        <div class="treasury-item-date">${t.date}</div>
+      </div>`).join('');
+    grid.querySelectorAll('.treasury-item').forEach(item=>{
+      item.addEventListener('click',()=>viewTreasuryItem(parseInt(item.dataset.idx)));
+      let timer=null;
+      const start=()=>{timer=setTimeout(()=>{
+        const ov=document.createElement('div');
+        ov.className='treasury-del-overlay';
+        ov.innerHTML='<div class="treasury-del-btn">删除</div>';
+        item.appendChild(ov);
+        ov.querySelector('.treasury-del-btn').addEventListener('click',(e)=>{
+          e.stopPropagation();
+          treasury.splice(parseInt(item.dataset.idx),1);
+          saveData(K_TREASURY,treasury);renderTreasury();
+        });
+        const cancel=(e)=>{if(!item.contains(e.target)){ov.remove();document.removeEventListener('touchstart',cancel);document.removeEventListener('mousedown',cancel);}};
+        setTimeout(()=>{document.addEventListener('touchstart',cancel,{passive:true});document.addEventListener('mousedown',cancel);},50);
+      },600);};
+      const end=()=>clearTimeout(timer);
+      item.addEventListener('touchstart',start,{passive:true});
+      item.addEventListener('touchend',end);
+      item.addEventListener('touchcancel',end);
+      item.addEventListener('mousedown',start);
+      item.addEventListener('mouseup',end);
+    });
+  }
+
+  function viewTreasuryItem(idx){
+    const t=treasury[idx];if(!t) return;
+    if(t.fanfic) showFanfic(t.fanfic,t.item);
+    else{todayData=t;openDialog();}
+  }
+
+  async function callAI(systemPrompt,userPrompt,maxTokens=300,retries=2){
+    if(!apiConfig.apiUrl||!apiConfig.apiKey) throw new Error('API未配置');
+    let url=apiConfig.apiUrl.replace(/\/$/,'');
+    if(!url.endsWith('/chat/completions')) url+=url.includes('/v1')?'/chat/completions':'/v1/chat/completions';
+    for(let attempt=0;attempt<=retries;attempt++){
+      try{
+        const resp=await fetch(url,{method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiConfig.apiKey},
+          body:JSON.stringify({model:apiConfig.modelName,messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt}],max_tokens:maxTokens,temperature:0.95})
+        });
+        if(!resp.ok) throw new Error('HTTP '+resp.status);
+        const data=await resp.json();
+        const text=data.choices?.[0]?.message?.content?.trim()||'';
+        if(text) return text;
+        throw new Error('空响应');
+      }catch(e){
+        if(attempt<retries) await sleep(2000*(attempt+1));
+        else throw e;
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F2F6">
+
+    <!-- 顶部招牌：带返回和新增按钮。标题现在是隐藏地下室的开关！ -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:paddingHorizontal="16dp">
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="&lt; 返回"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/tvSecretTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="世界书设定"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/btnAddEntry"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:text="新增 +"
+            android:textSize="16sp"
+            android:textColor="#007AFF"/>
+    </RelativeLayout>
+
+    <!-- 角色关系图谱入口 -->
+    <LinearLayout
+        android:id="@+id/btnCharRelationship"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:layout_marginTop="8dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="👥 角色关系图谱"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置 ›"
+            android:textSize="14sp"
+            android:textColor="#007AFF"/>
+    </LinearLayout>
+
+    <!-- 装书本的巨大书架 (现在明面上纯属用户专区) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewWorldBook"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="12dp"/>
+</LinearLayout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+
+        tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- 密语时刻 BLE 玩具控制 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.M叽"
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true">
+
+
+        <activity android:name=".SplashActivity" android:exported="true" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".MainActivity" android:exported="false">
+        </activity>
+        <activity android:name=".AppThemeSettingsActivity"/>
+        <activity android:name=".RadioActivity" />
+        <activity android:name=".ThoughtsCardSettingsActivity"/>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".SportActivity" />
+        <activity android:name=".CallActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".LedgerActivity" />
+        <activity android:name=".BookShelfActivity"/>
+        <activity android:name=".PetHouseActivity" android:screenOrientation="portrait" />
+        <receiver android:name=".PetCareReceiver" android:exported="false" />
+        <activity android:name=".TravelActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".PackageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ReadingActivity"/>
+        <activity android:name=".ChatThemeSettingsActivity"/>
+        <activity android:name=".DreamHouseActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:hardwareAccelerated="true" />
+        <activity android:name=".UserProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".McpSettingsActivity" android:exported="false" />
+        <activity android:name=".McpOAuthActivity" android:exported="true" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mji" android:host="oauth" android:path="/mcp" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".WechatActivity" android:exported="false" />
+        <activity android:name=".WorldBookActivity" android:exported="false" />
+        <activity android:name=".CharacterRelationshipActivity" android:exported="false" />
+        <activity android:name=".MailboxActivity" />
+        <activity android:name=".PomodoroActivity" />
+        <activity android:name=".GroupSettingsActivity" />
+        <activity android:name=".BlindboxActivity" />
+        <activity android:name=".DiaryActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".AiDiaryActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".UserDiaryActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".MusicActivity"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"/>
+        <activity android:name=".UniverseActivity" />
+        <activity android:name=".EditProfileActivity" android:exported="false" />
+        <activity android:name=".AddContactActivity" android:exported="false" />
+        <activity android:name=".OfflineContactActivity" android:exported="false" />
+        <activity android:name=".OfflineChatActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".DoorThemeSettingsActivity" android:exported="false" />
+        <activity android:name=".CharacterSettingsActivity" />
+        <activity android:name=".MessageDetailActivity" />
+        <activity android:name=".WeatherActivity" android:screenOrientation="portrait" />
+        <activity android:name=".AddMomentActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MyCalendarActivity" android:screenOrientation="portrait" />
+        <activity android:name=".CalendarActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ScheduleDetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".MemoryVaultActivity" />
+        <activity android:name=".MemoryDetailActivity" />
+        <activity android:name=".GameCenterActivity" />
+        <activity android:name=".GamePlayActivity" />
+        <activity android:name=".CreateGroupActivity" />
+        <activity android:name=".GroupChatActivity" />
+        <activity android:name=".ForumActivity" />
+        <activity android:name=".ForumPostDetailActivity" />
+        <activity android:name=".ForumPostEditorActivity" />
+        <activity android:name=".StickerImportActivity" />
+        <activity android:name=".StickerManageActivity" />
+        <activity android:name=".HackerActivity" />
+        <activity android:name=".PhoneLockActivity" />
+        <activity android:name=".HealthActivity" />
+        <activity android:name=".PhoneViewActivity" />
+        <activity android:name=".OfflineSetupActivity" />
+
+
+        <service
+            android:name=".PatienceService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+        <service
+            android:name=".ScreenShareService"
+            android:foregroundServiceType="mediaProjection"
+            android:exported="false" />
+        <service
+            android:name=".MusicService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

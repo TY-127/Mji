@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <!-- ⚡ 极其装逼的顶栏 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="取消"
+            android:textColor="#333333"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/btnPublish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="#07C160"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="发表"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <!-- ⚡ 你自由发挥的输入区 -->
+    <EditText
+        android:id="@+id/etMomentContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="120dp"
+        android:background="@null"
+        android:gravity="top|start"
+        android:hint="这一刻的想法..."
+        android:padding="16dp"
+        android:textColor="#333333"
+        android:textSize="16sp"/>
+
+    <!-- ⚡ 选配图的极其隐蔽的加号 -->
+    <ImageView
+        android:id="@+id/ivSelectImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="#F0F0F0"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_camera"
+        android:tint="#999999"/>
+
+</LinearLayout>

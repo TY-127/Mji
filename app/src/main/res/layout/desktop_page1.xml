@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp">
+
+    <!-- 第一排：记忆 / 门 / 论坛 / 入侵 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout android:id="@+id/btnOpenMemory" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_memory_png"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="记忆" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/btnOpenDoor" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_door_png"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="门" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/btnOpenForum" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_forum_png"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="论坛" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/btnOpenHacker" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_hacker_png"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="入侵" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 第二排：匿名信箱 / 盲盒 / 游戏 / 里世界 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start">
+
+        <LinearLayout android:id="@+id/btnOpenMailbox" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_mailbox"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="匿名信箱" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/btnOpenBlindbox" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_blindbox"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="盲盒" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/btnOpenGameCenter" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@drawable/ic_gamepad"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="游戏" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/btnOpenUniverse" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:elevation="8dp">
+            <ImageView android:layout_width="60dp" android:layout_height="60dp" android:padding="13dp" android:tint="#000000" android:scaleType="fitCenter" android:src="@android:drawable/ic_menu_mapmode"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="里世界" android:textColor="#000000" android:textSize="13sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

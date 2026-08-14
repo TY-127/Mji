@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F7F8FA"
+    android:padding="15dp">
+
+    <!-- ⚡ 极其高贵的顶部标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="现实行程雷达"
+        android:textColor="#333333"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="5dp"/>
+
+    <!-- ⚡ 常驻作息模块 -->
+    <LinearLayout
+        android:id="@+id/btnSetRoutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_card"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="15dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💼 常驻作息 (工作日)"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/tvMyRoutine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="尚未设定 (AI不知道你几点上班)"
+                android:textColor="#999999"
+                android:layout_marginTop="4dp"
+                android:textSize="13sp"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改"
+            android:textColor="#4FC3F7"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- ⚡ 纯手搓的上帝级红点日历面板 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_card"
+        android:elevation="2dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp">
+
+        <!-- 月份切换头 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingVertical="10dp">
+            <TextView
+                android:id="@+id/btnPrevMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="◀"
+                android:textColor="#999999"
+                android:textSize="18sp"
+                android:paddingHorizontal="20dp"/>
+            <TextView
+                android:id="@+id/tvCalendarTitle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="2026年5月"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/btnNextMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="▶"
+                android:textColor="#999999"
+                android:textSize="18sp"
+                android:paddingHorizontal="20dp"/>
+        </LinearLayout>
+
+        <!-- 星期头 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="日" android:textColor="#999999" android:textSize="13sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="一" android:textColor="#999999" android:textSize="13sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="二" android:textColor="#999999" android:textSize="13sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="三" android:textColor="#999999" android:textSize="13sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="四" android:textColor="#999999" android:textSize="13sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="五" android:textColor="#999999" android:textSize="13sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="六" android:textColor="#999999" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <!-- ⚡ 极其硬核的日期网格矩阵 -->
+        <GridLayout
+            android:id="@+id/glMyCalendarDays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="7"
+            android:rowCount="6"
+            android:alignmentMode="alignBounds">
+        </GridLayout>
+    </LinearLayout>
+
+    <!-- ⚡ 选中日期的特殊事件 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="5dp">
+
+        <TextView
+            android:id="@+id/tvSelectedDateTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📌 2026年5月4日 行程"
+            android:textColor="#333333"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/btnAddMyEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="➕ 增加事件"
+            android:textColor="#4FC3F7"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:padding="5dp"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMyEvents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_white_card"
+        android:elevation="1dp"
+        android:padding="10dp"/>
+</LinearLayout>

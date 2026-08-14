@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /*
+      原创“羊皮档案袋”门主题。
+      --door-* 变量负责美化 Android 原生卡片；下方 .dossier-card 是可复用的 HTML 卡片组件。
+    */
+    :root {
+      --door-screen-bg: #c9ad79;
+      --door-header-bg: #4a3322;
+      --door-header-text: #f7e8c7;
+      --door-story-bg: rgba(111, 76, 43, 0.16);
+      --door-card-bg: rgba(244, 224, 181, 0.97);
+      --door-user-card-bg: rgba(232, 202, 148, 0.97);
+      --door-text: #3c2a1e;
+      --door-user-text: #4a2e20;
+      --door-muted-text: #806344;
+      --door-border: #8f6a3f;
+      --door-accent: #7a2f25;
+      --door-input-area-bg: #4a3322;
+      --door-input-bg: #f1dfb8;
+      --door-input-text: #38271c;
+      --door-input-hint: #927654;
+      --door-send-bg: #7a2f25;
+      --door-send-text: #fff1d2;
+      --door-regen-bg: #8a653b;
+      --door-option-bg: #e3c68f;
+      --door-option-text: #573924;
+      --door-option-border: #9f7847;
+      --door-card-border-width: 0dp;
+      --door-card-radius: 6dp;
+      --door-avatar-size: 62dp;
+      --door-avatar-radius: 4dp;
+      --door-text-size: 16sp;
+      --door-item-horizontal-padding: 18dp;
+      --door-item-vertical-gap: 18dp;
+      --door-line-height: 1.68;
+    }
+
+    html, body {
+      background: #c9ad79;
+    }
+
+    /* 装饰背景：纸纤维、档案袋折线与印章，不含第三方图像素材。 */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      opacity: .2;
+      background-image:
+        repeating-linear-gradient(7deg, transparent 0 11px, rgba(79,47,24,.2) 12px, transparent 13px),
+        repeating-linear-gradient(97deg, transparent 0 17px, rgba(255,244,210,.28) 18px, transparent 19px);
+    }
+
+    .envelope-fold {
+      position: fixed;
+      width: 68vw;
+      height: 42vw;
+      right: -25vw;
+      top: 18vh;
+      border: 1px solid rgba(91, 57, 29, .25);
+      transform: rotate(32deg);
+      background: linear-gradient(145deg, rgba(255,238,197,.18), rgba(102,68,35,.06));
+    }
+
+    .archive-stamp {
+      position: fixed;
+      left: -22px;
+      bottom: 18vh;
+      width: 104px;
+      height: 104px;
+      border: 3px double rgba(111, 43, 34, .22);
+      border-radius: 50%;
+      transform: rotate(-14deg);
+    }
+
+    /* ── 响应式档案卡组件 ─────────────────────────────── */
+    .dossier-card {
+      container-type: inline-size;
+      position: relative;
+      display: grid;
+      grid-template-columns: clamp(48px, 14vw, 72px) minmax(0, 1fr) auto;
+      grid-template-areas: "avatar identity floor";
+      gap: clamp(8px, 2.5vw, 16px);
+      align-items: center;
+      width: min(100%, 720px);
+      padding: clamp(14px, 4vw, 24px);
+      overflow: hidden;
+      color: #3c2a1e;
+      background:
+        linear-gradient(100deg, rgba(255,255,255,.16), transparent 32%),
+        #f1dcae;
+      border: 0;
+      border-radius: 6px;
+      box-shadow: 0 8px 22px rgba(66, 39, 18, .18), inset 0 0 28px rgba(116, 77, 39, .08);
+      font-family: Georgia, "Noto Serif SC", "Songti SC", serif;
+    }
+
+    .dossier-card::before {
+      content: "ARCHIVE";
+      position: absolute;
+      right: -12px;
+      bottom: 7px;
+      color: rgba(111, 43, 34, .13);
+      font: 700 clamp(22px, 8vw, 54px)/1 Georgia, serif;
+      letter-spacing: .08em;
+      transform: rotate(-5deg);
+    }
+
+    .dossier-avatar {
+      grid-area: avatar;
+      width: clamp(48px, 14vw, 72px);
+      aspect-ratio: 1;
+      display: block;
+      object-fit: cover;
+      background: #d5b77e;
+      border: 4px solid #f8e7bf;
+      border-radius: 4px;
+      outline: 1px solid #795839;
+      filter: sepia(.18) contrast(.96);
+    }
+
+    .dossier-identity {
+      grid-area: identity;
+      min-width: 0;
+    }
+
+    .dossier-label {
+      margin-bottom: 3px;
+      color: #8a6845;
+      font: 700 10px/1.2 system-ui, sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .dossier-name {
+      overflow: hidden;
+      color: #4b3020;
+      font-size: clamp(17px, 5cqw, 25px);
+      font-weight: 700;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dossier-floor {
+      grid-area: floor;
+      align-self: start;
+      min-width: 54px;
+      padding: 6px 9px;
+      color: #7a2f25;
+      background: rgba(122, 47, 37, .06);
+      border: 0;
+      border-radius: 3px;
+      font: 700 12px/1 system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-align: center;
+    }
+
+    @container (max-width: 330px) {
+      .dossier-card {
+        grid-template-columns: 52px minmax(0, 1fr);
+        grid-template-areas:
+          "avatar identity"
+          "floor floor";
+      }
+      .dossier-floor {
+        justify-self: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="envelope-fold"></div>
+  <div class="archive-stamp"></div>
+
+  <!--
+    组件使用示例。放在 template 中，因此作为门主题导入时不会生成虚假的聊天卡片。
+    若在普通网页中使用，可克隆模板并替换三个占位值。
+  -->
+  <template id="dossier-card-template">
+    <article class="dossier-card">
+      <img class="dossier-avatar" src="{{avatar}}" alt="{{name}}的头像">
+      <div class="dossier-identity">
+        <div class="dossier-label">Record holder</div>
+        <div class="dossier-name">{{name}}</div>
+      </div>
+      <div class="dossier-floor">{{floor}} 楼</div>
+    </article>
+  </template>
+</body>
+</html>

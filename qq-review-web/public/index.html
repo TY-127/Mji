@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>小手机入群审核</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <span class="eyebrow">观南 · 小手机</span>
+      <h1>入群审核</h1>
+      <p>按顺序完成测试、成年验证、关注验证和审核群语音截图。全部通过后自动显示群号。</p>
+    </header>
+
+    <section class="card">
+      <h2>1. 基本信息</h2>
+      <label>QQ 号<input id="qq" inputmode="numeric" placeholder="请输入申请人的 QQ 号"></label>
+    </section>
+
+    <section class="card">
+      <h2>2. 两套测试</h2>
+      <div id="concentration"></div>
+      <p class="warning">浓度测试仅有一次提交机会，提交后不可重答。请确认答案后再提交。</p>
+      <button id="submitConcentration">提交浓度测试（仅一次）</button>
+      <p id="concentrationResult" class="result"></p>
+      <div id="introBlock" class="locked">
+        <div id="intro"></div>
+        <button id="submitIntro">提交入门问卷</button>
+        <p id="introResult" class="result"></p>
+      </div>
+    </section>
+
+    <section class="card locked" id="materials">
+      <h2>3. 上传验证材料</h2>
+      <div class="upload">
+        <label>成年验证（二选一）
+          <small>腾讯健康系统明确显示成年，或微信个人信息生日可证明满 18 岁。</small>
+          <input id="adultFile" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+        <button data-verify="adult">验证成年材料</button>
+        <p id="adultResult" class="result"></p>
+      </div>
+      <div class="upload">
+        <label>关注验证（二选一）
+          <small>小红书「观南」或抖音「观南」主页，必须显示“已关注”。</small>
+          <input id="followFile" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+        <button data-verify="follow">验证关注材料</button>
+        <p id="followResult" class="result"></p>
+      </div>
+    </section>
+
+    <section class="card locked" id="voiceCard">
+      <h2>4. 审核群语音验证</h2>
+      <div class="upload">
+        <label>请在审核群内发送任意语音，然后截图上传。
+          <small>截图必须能看出是群聊界面，且右侧有一条己方发送的语音气泡。</small>
+          <input id="voiceFile" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+        <button data-verify="voice">验证语音截图</button>
+        <p id="voiceResult" class="result"></p>
+      </div>
+    </section>
+
+    <section class="card locked" id="completeCard">
+      <h2>5. 完成审核</h2>
+      <button id="complete">检查并完成审核</button>
+      <div id="finalResult"></div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

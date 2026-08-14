@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /* 原创“暮色档案”示例：只使用门功能公开的 --door-* 变量。 */
+    :root {
+      --door-screen-bg: #171520;
+      --door-header-bg: #211c2b;
+      --door-header-text: #f4eaf2;
+      --door-story-bg: rgba(23, 21, 32, 0.72);
+      --door-card-bg: rgba(43, 36, 52, 0.94);
+      --door-user-card-bg: rgba(53, 42, 57, 0.94);
+      --door-text: #f0e8ee;
+      --door-user-text: #f5e8df;
+      --door-muted-text: #b9a8b7;
+      --door-border: #665268;
+      --door-accent: #d3a7c4;
+      --door-input-area-bg: #211c2b;
+      --door-input-bg: #30283a;
+      --door-input-text: #f4edf3;
+      --door-input-hint: #a997a8;
+      --door-send-bg: #9a657f;
+      --door-send-text: #fff9fd;
+      --door-regen-bg: #725b89;
+      --door-option-bg: #3a3046;
+      --door-option-text: #e9cfdf;
+      --door-option-border: #705a76;
+      --door-card-border-width: 0dp;
+      --door-card-radius: 20dp;
+      --door-avatar-size: 58dp;
+      --door-avatar-radius: 18dp;
+      --door-text-size: 16sp;
+      --door-item-horizontal-padding: 14dp;
+      --door-item-vertical-gap: 14dp;
+      --door-line-height: 1.62;
+    }
+    .glow { position:fixed; border-radius:50%; filter:blur(1px); opacity:.28; }
+    .one { width:52vw; height:52vw; right:-18vw; top:9vh; background:#b47eaa; }
+    .two { width:38vw; height:38vw; left:-15vw; bottom:14vh; background:#6f75b5; }
+    .grain { position:fixed; inset:0; opacity:.16; background-image:radial-gradient(#fff 0.55px,transparent 0.65px); background-size:9px 9px; }
+  </style>
+</head>
+<body>
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+  <div class="grain"></div>
+</body>
+</html>

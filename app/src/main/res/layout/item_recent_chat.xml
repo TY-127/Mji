@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemRoot"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="#FFFFFF"
+    android:paddingHorizontal="14dp">
+
+    <!-- 头像 -->
+    <ImageView
+        android:id="@+id/ivRecentAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="centerCrop"
+        android:background="@android:color/darker_gray" />
+
+    <!-- 未读红点 -->
+    <TextView
+        android:id="@+id/tvUnreadCount"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignTop="@id/ivRecentAvatar"
+        android:layout_alignEnd="@id/ivRecentAvatar"
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-4dp"
+        android:background="@drawable/bg_unread_badge"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <!-- 右侧时间 -->
+    <TextView
+        android:id="@+id/tvRecentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="14dp"
+        android:textColor="#BBBBBB"
+        android:textSize="11sp" />
+
+    <!-- 名字 -->
+    <TextView
+        android:id="@+id/tvRecentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/ivRecentAvatar"
+        android:layout_toStartOf="@id/tvRecentTime"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="13dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="#111111"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- 最后一条消息预览 -->
+    <TextView
+        android:id="@+id/tvRecentMsg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvRecentName"
+        android:layout_toEndOf="@id/ivRecentAvatar"
+        android:layout_toStartOf="@id/tvRecentTime"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="3dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="#888888"
+        android:textSize="13sp" />
+
+    <!-- 底部分割线 -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="72dp"
+        android:background="#F0F0F0" />
+
+</RelativeLayout>

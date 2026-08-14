@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 头像 -->
+        <ImageView
+            android:id="@+id/ivEditMyAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="#E0E0E0"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <!-- 名字和ID -->
+        <EditText
+            android:id="@+id/etMyName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入名字"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <EditText
+            android:id="@+id/etMyId"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入用户ID"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <!-- 性别、生日、MBTI -->
+        <EditText
+            android:id="@+id/etMyGender"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入性别"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <EditText
+            android:id="@+id/etMyBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入生日（例：2000-01-01）"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <EditText
+            android:id="@+id/etMyMbti"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFFFFF"
+            android:hint="请输入MBTI (例: INTP)"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:paddingHorizontal="12dp" />
+
+        <!-- 具体设定 -->
+        <EditText
+            android:id="@+id/etMyIdentity"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginBottom="30dp"
+            android:background="#FFFFFF"
+            android:gravity="top"
+            android:hint="请输入具体身份设定..."
+            android:inputType="textMultiLine"
+            android:textColorHint="#999999"
+            android:textColor="#333333"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btnSaveProfile"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="#07C160"
+            android:text="保存身份设定"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>

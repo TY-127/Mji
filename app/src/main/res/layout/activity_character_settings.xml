@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="40dp">
+
+        <!-- 顶部标题栏 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF"
+            android:paddingHorizontal="16dp">
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="&lt;"
+                android:textColor="#000000"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="记忆"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- 模块1：AI 记忆与上下文 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="AI 记忆与上下文"
+            android:textColor="#888888"
+            android:textSize="13sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <!-- 上下文深度 -->
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="上下文深度" android:textColor="#000000" android:textSize="16sp" />
+                <EditText android:id="@+id/editContextDepth" android:layout_width="80dp" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:background="@null" android:gravity="end" android:text="500" android:textColor="#000000" android:textSize="16sp" />
+            </RelativeLayout>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="AI 将读取你填写的条数作为短期记忆上下文。" android:textColor="#999999" android:textSize="12sp" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="#F2F2F6" />
+            <!-- 同步开关 -->
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="跨对话记忆同步" android:textColor="#000000" android:textSize="16sp" />
+                <Switch android:id="@+id/switchMemorySync" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="#F2F2F6" />
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="与角色的关系"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+                <Spinner
+                    android:id="@+id/spinnerRelationship"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:entries="@array/relationship_options" />
+            </RelativeLayout>
+        </LinearLayout>
+        <!-- 翻译设定区 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="翻译设定 (Translation)"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+
+            <!-- ⚡ 新增：母语选择下拉框 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="语言选择 (角色母语)"
+                    android:textColor="#111111"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinnerLanguage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/language_options" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginStart="16dp"/>
+
+            <!-- 原来的自动翻译开关 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="开启自动翻译"
+                    android:textColor="#111111"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchTranslate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginStart="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="翻译专用模型"
+                        android:textColor="#111111"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="留空则使用默认模型"
+                        android:textColor="#999999"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/editTransModel"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="end"
+                        android:hint="例如：gemini-flash"
+                        android:textColor="#3B82F6"
+                        android:textSize="13sp"
+                        android:singleLine="true" />
+
+                    <TextView
+                        android:id="@+id/btnFetchModels"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="#007AFF"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="6dp"
+                        android:text="拉取"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 模块3：语音生成 (你要加的音色选择在这里！) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="语音设定 (TTS)"
+            android:textColor="#888888"
+            android:textSize="13sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:id="@+id/tvTtsTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="开启语音生成" android:textColor="#000000" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/tvTtsTitle" android:layout_marginTop="4dp" android:text="通话时使用语音合成 (TTS)" android:textColor="#999999" android:textSize="12sp" />
+                <Switch android:id="@+id/switchTtsEnable" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:layout_centerVertical="true" />
+            </RelativeLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="#F2F2F6" />
+            <!-- 专属音色填坑处 -->
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:text="当前角色音色 ID" android:textColor="#000000" android:textSize="16sp" />
+                <EditText android:id="@+id/editCharacterVoiceId" android:layout_width="180dp" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:background="@null" android:gravity="end" android:hint="输入模型编号..." android:textColor="#3B82F6" android:textSize="14sp" android:singleLine="true" />
+            </RelativeLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="#F2F2F6" />
+            <!-- 新增：语音随机触发概率 -->
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="语音随机触发概率" android:textColor="#000000" android:textSize="16sp" />
+                <TextView android:id="@+id/tvVoiceProbValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="30%" android:textColor="#3B82F6" android:textSize="16sp" android:textStyle="bold" />
+            </RelativeLayout>
+            <SeekBar android:id="@+id/seekBarVoiceProb" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:max="100" android:progress="30" />
+        </LinearLayout>
+        <!-- 外形描写模块 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="外形描写（生图参考）"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="角色外貌特征，生图时自动参考"
+                android:textColor="#111111"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="填写越详细，生成的图片越贴近角色形象"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginBottom="12dp" />
+            <EditText
+                android:id="@+id/etAppearance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="例如：黑色短发，蓝色眼睛，穿黑色风衣，冷峻气质，日系风格..."
+                android:minLines="3"
+                android:maxLines="6"
+                android:inputType="textMultiLine"
+                android:textColor="#111111"
+                android:textSize="14sp"
+                android:background="@null" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etMemoryBank"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="危险操作 (Danger Zone)"
+            android:textColor="#888888"
+            android:textSize="13sp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+            <!-- 修改信息 -->
+            <TextView
+                android:id="@+id/btnImportPreset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📦 导入预设"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp"
+                android:textColor="#FFFFFF"
+                android:background="#007AFF"/>
+            <TextView
+                android:id="@+id/btnEditCharacter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="修改角色信息"
+                android:textColor="#007AFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"/>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginStart="16dp"/>
+            <!-- 拉黑 -->
+            <TextView
+                android:id="@+id/btnBlockCharacter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="拉黑"
+                android:textColor="#FF9500"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"/>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginStart="16dp"/>
+
+            <TextView
+                android:id="@+id/btnClearAllChats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚠️ 清空所有聊天记录"
+                android:textColor="#FF9500"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>
+            <!-- 删除角色 -->
+            <TextView
+                android:id="@+id/btnDeleteCharacter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="删除角色"
+                android:textColor="#FF3B30"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

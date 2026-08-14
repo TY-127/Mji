@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 25%透明度的纯黑 -->
+    <solid android:color="#4D000000"/>
+    <!-- 极其丝滑的圆角 -->
+    <corners android:radius="24dp"/>
+</shape>

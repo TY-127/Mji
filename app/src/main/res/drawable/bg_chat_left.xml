@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 模糊底层：稍深一点的白，制造层次感 -->
+    <item>
+        <shape>
+            <solid android:color="#20FFFFFF" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+    <!-- 主体磨砂层 -->
+    <item android:top="0.5dp" android:left="0.5dp" android:right="0.5dp" android:bottom="0.5dp">
+        <shape>
+            <solid android:color="#AAFFFFFF" />
+            <corners android:radius="16dp" />
+            <stroke android:width="0.5dp" android:color="#33FFFFFF" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="relationship_options">
+        <item>普通朋友</item>
+        <item>好友</item>
+        <item>恋人</item>
+        <item>暗恋对象</item>
+        <item>家人</item>
+        <item>陌生人</item>
+
+    </string-array>
+</resources>

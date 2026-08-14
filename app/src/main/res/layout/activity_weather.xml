@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#1E1E1E">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="☁️ 赛博气象局"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"/>
+
+    <EditText
+        android:id="@+id/etCityName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#333333"
+        android:hint="输入你所在的城市 (如: 北京)"
+        android:textColorHint="#888888"
+        android:textColor="#FFFFFF"
+        android:paddingHorizontal="15dp"
+        android:layout_marginBottom="15dp"/>
+
+    <TextView
+        android:id="@+id/btnFetchWeather"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#07C160"
+        android:gravity="center"
+        android:text="📡 呼叫气象卫星"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/tvWeatherDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="150dp"
+        android:background="#222222"
+        android:padding="15dp"
+        android:text="等待接收卫星信号..."
+        android:textColor="#AAAAAA"
+        android:textSize="16sp"
+        android:lineSpacingExtra="6dp"/>
+</LinearLayout>
